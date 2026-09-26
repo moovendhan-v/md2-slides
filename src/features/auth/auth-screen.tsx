@@ -1,14 +1,10 @@
 "use client";
 
 import { BrandMark } from "@/components/shell/app-header";
-import { Icon } from "@/components/common/icon";
-import { useSession } from "@/stores/session";
-import { ConsentPanel } from "./consent-panel";
 import { SignInPanel } from "./sign-in-panel";
 
-/** Split-screen GitHub sign-in: hero on the left, auth flow on the right. */
+/** Split-screen GitHub sign-in: hero on the left, sign-in on the right. */
 export function AuthScreen() {
-  const status = useSession((s) => s.status);
   return (
     <div className="grid min-h-dvh bg-zinc-950 md:grid-cols-2">
       <section
@@ -23,18 +19,10 @@ export function AuthScreen() {
           <h1 className="text-[44px] leading-[1.02] font-semibold tracking-[-0.035em] text-balance">Your decks are Markdown. Your history is Git.</h1>
           <p className="text-[15px] leading-relaxed text-zinc-400">Sign in with GitHub to open repositories, edit slides and push changes as commits.</p>
         </div>
-        <p className="text-xs text-zinc-600">We never store your code. Tokens are scoped to the repos you pick.</p>
+        <p className="text-xs text-zinc-600">Your GitHub token stays in an encrypted, http-only cookie and is only used server-side.</p>
       </section>
       <section className="flex items-center justify-center p-6">
-        {status === "consent" ? (
-          <ConsentPanel />
-        ) : status === "loading" ? (
-          <div className="flex items-center gap-2 text-sm text-zinc-400">
-            <Icon name="circle-notch" className="animate-spin" /> Connecting to GitHub…
-          </div>
-        ) : (
-          <SignInPanel />
-        )}
+        <SignInPanel />
       </section>
     </div>
   );

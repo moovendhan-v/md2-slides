@@ -1,28 +1,13 @@
 /**
- * Seed data for the demo workspace. Everything here is plain JSON so it can be
- * replaced by a real backend (GitHub API, template service) without code changes.
+ * Built-in catalog data (templates, block snippets, code layouts, AI prompt
+ * suggestions). Plain JSON so it can move to a backend without code changes.
  */
 import type { TemplateRecord } from "@/engine/types";
 import aiPresets from "./ai-presets.json";
 import codeTemplates from "./code-templates.json";
-import repos from "./repos.json";
 import snippets from "./snippets.json";
 import studioGuide from "./studio-guide.json";
 import templates from "./templates.json";
-
-export interface RepoNode {
-  name: string;
-  content?: string;
-  children?: RepoNode[];
-}
-
-export interface RepoSeed {
-  id: string;
-  private: boolean;
-  branch: string;
-  updated: string;
-  tree: RepoNode[];
-}
 
 export interface Snippet {
   label: string;
@@ -35,7 +20,6 @@ export interface AiPreset {
   label: string;
   icon: string;
   prompt: string;
-  md: string;
 }
 
 export interface CodeTemplate {
@@ -45,7 +29,6 @@ export interface CodeTemplate {
   sample: string;
 }
 
-export const SEED_REPOS = repos as RepoSeed[];
 export const SEED_TEMPLATES = templates as TemplateRecord[];
 export const BLOCK_SNIPPETS = snippets as Snippet[];
 export const AI_PRESETS = aiPresets as AiPreset[];
@@ -68,5 +51,3 @@ export const codeTemplateRecords = (): TemplateRecord[] =>
     html: c.html,
     config: { id: c.id, ...c.config },
   }));
-
-export const DEMO_USER = { login: "yoni-o", initials: "YO", connected: "12 Sep 2026" };

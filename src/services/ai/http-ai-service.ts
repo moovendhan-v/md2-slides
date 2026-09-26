@@ -1,26 +1,24 @@
-import { AI_PRESETS } from "@/data";
-import type { AiDeckService, DeckDraft } from "./types";
+import type { AiDeckService, DeckDraft, GenerateOptions, ProviderAttempt } from "./types";
 
-/** Closest ready-made deck for a prompt (keyword overlap). */
-export function closestPreset(prompt: string) {
-  const words = prompt.toLowerCase().split(/\W+/).filter((w) => w.length > 4);
-  return AI_PRESETS.find((p) => words.some((w) => p.prompt.toLowerCase().includes(w))) ?? AI_PRESETS[0];
+/** AI failure with the providers that were tried (for a useful error message). */
+export class AiError extends Error {
+  constructor(message: string, public status: number, public attempts: ProviderAttempt[] = []) {
+    super(message);
+  }
 }
 
-/** Calls `/api/ai`; falls back to the nearest example deck when AI is unavailable. */
+/** Calls `/api/ai`, which fails over between Cloudflare Workers AI and Gemini. */
 export class HttpAiDeckService implements AiDeckService {
-  async generate(prompt: string, slides: number, signal?: AbortSignal): Promise<DeckDraft> {
-    try {
-      const res = await fetch("/api/ai", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ prompt, slides }), signal });
-      if (res.ok) {
-        const { markdown } = (await res.json()) as { markdown: string };
-        return { markdown, source: "ai" };
-      }
-      const reason = res.status === 503 ? "AI service unavailable" : (await res.text()) || "AI request failed";
-      return { markdown: closestPreset(prompt).md, source: "example", note: `${reason} — used the closest ready-made deck.` };
-    } catch (e) {
-      if ((e as Error).name === "AbortError") throw e;
-      return { markdown: closestPreset(prompt).md, source: "example", note: "AI service unreachable — used the closest ready-made deck." };
-    }
+  async generate(prompt: string, { slides, provider, byok, signal }: GenerateOptions): Promise<DeckDraft> {
+    const res = await fetch("/api/ai", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ prompt, slides, provider, byok }),
+      signal,
+      cache: "no-store",
+    });
+    const j = (await res.json().catch(() => ({}))) as Partial<DeckDraft> & { error?: string; attempts?: ProviderAttempt[] };
+    if (!res.ok || !j.markdown || !j.provider) throw new AiError(j.error || `AI request failed (${res.status})`, res.status, j.attempts);
+    return { markdown: j.markdown, provider: j.provider, attempts: j.attempts ?? [] };
   }
 }

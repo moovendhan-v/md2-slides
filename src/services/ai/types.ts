@@ -1,10 +1,25 @@
+import type { AiProviderName, ByokKeys } from "@/stores/byok";
+
+export interface ProviderAttempt {
+  provider: AiProviderName;
+  ok: boolean;
+  status?: number;
+  error?: string;
+}
+
 export interface DeckDraft {
   markdown: string;
-  /** "ai" when a model wrote it, "example" for the offline fallback. */
-  source: "ai" | "example";
-  note?: string;
+  provider: AiProviderName;
+  attempts: ProviderAttempt[];
+}
+
+export interface GenerateOptions {
+  slides: number;
+  provider?: AiProviderName;
+  byok?: { gemini?: Partial<ByokKeys["gemini"]>; cloudflare?: Partial<ByokKeys["cloudflare"]> };
+  signal?: AbortSignal;
 }
 
 export interface AiDeckService {
-  generate(prompt: string, slides: number, signal?: AbortSignal): Promise<DeckDraft>;
+  generate(prompt: string, opts: GenerateOptions): Promise<DeckDraft>;
 }

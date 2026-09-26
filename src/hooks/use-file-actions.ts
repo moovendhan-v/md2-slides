@@ -7,8 +7,10 @@ import { buildFrontMatter, stripFrontMatter } from "@/domain/source/frontmatter"
 import { useDeck } from "@/app-shell/deck-context";
 import { useEditor } from "@/stores/editor";
 import { useUi } from "@/stores/ui";
-import { selectChanged, useWorkspace } from "@/stores/workspace";
-import { useSaveTemplate } from "./use-queries";
+import { selectChanged, splitKey, useWorkspace } from "@/stores/workspace";
+import { useQueryClient } from "@tanstack/react-query";
+import { useServices } from "@/app-shell/services";
+import { ensureFile, useSaveTemplate } from "./use-queries";
 
 const LOOK_KEYS = ["theme", "mode", "accent", "bg", "glass", "font", "radius", "density"];
 
@@ -16,9 +18,25 @@ const LOOK_KEYS = ["theme", "mode", "accent", "bg", "glass", "font", "radius", "
 export function useFileActions() {
   const active = useDeck();
   const saveTemplate = useSaveTemplate();
+  const qc = useQueryClient();
+  const { git } = useServices();
   return useMemo(() => {
     const ui = useUi.getState;
-    const openFile = (key: string) => {
+    /** Repo new decks go into: the open file's repo, else the repo being browsed. */
+    const targetRepo = () => active.repo || ui().repoView || useWorkspace.getState().repos[0]?.id || "";
+    const openFile = async (key: string) => {
+      const { repo: repoId, path } = splitKey(key);
+      const repo = useWorkspace.getState().repos.find((r) => r.id === repoId);
+      if (repo && useWorkspace.getState().files[key] == null) {
+        const t = toast.loading(`Opening ${path}…`);
+        try {
+          await ensureFile(qc, git, repo, path);
+          toast.dismiss(t);
+        } catch (e) {
+          toast.error(`Could not open ${path}: ${(e as Error).message}`, { id: t });
+          return;
+        }
+      }
       useWorkspace.getState().openFile(key);
       useEditor.getState().set({ curLine: 0, pick: null, jump: { line: 0, nonce: Date.now() } });
       ui().set({ view: "editor", pane: "editor", modal: null, sidebarOpen: ui().width > 760 ? ui().sidebarOpen : false });
@@ -27,8 +45,10 @@ export function useFileActions() {
     const createFromTemplate = (t: Pick<TemplateRecord, "id" | "name" | "md" | "look">) => {
       const look = Object.fromEntries(Object.entries(t.look ?? {}).map(([k, v]) => [k === "palette" ? "theme" : k, v]));
       const content = `${buildFrontMatter({ title: t.name, ...look })}\n${t.md}\n`;
-      const key = useWorkspace.getState().createFile(active.repo, `decks/${t.id}`, content);
-      openFile(key);
+      const repo = targetRepo();
+      if (!repo) return toast.error("Connect a repository first");
+      const key = useWorkspace.getState().createFile(repo, `decks/${t.id}`, content);
+      void openFile(key);
       toast(`Created ${key.split("::")[1]} from “${t.name}”`);
     };
 
@@ -64,5 +84,5 @@ export function useFileActions() {
       },
       changedKeys: () => selectChanged(useWorkspace.getState()),
     };
-  }, [active, saveTemplate]);
+  }, [active, saveTemplate, qc, git]);
 }

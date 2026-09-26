@@ -116,6 +116,7 @@ export function useDeckActions() {
       },
       present: (from?: number, overview = false) => {
         useUi.getState().closeModal();
+        if (!active.deck.slides.length) return toast("Open a deck with at least one slide to present");
         usePresent.getState().start(from ?? active.current, overview);
       },
     };

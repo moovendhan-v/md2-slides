@@ -23,7 +23,11 @@ interface Cmd {
 export function CommandPalette() {
   const open = useUi((s) => s.modal === "palette");
   const { closeModal, openModal, setView, set } = useUi();
-  const fileKeys = useWorkspace((s) => Object.keys(s.files).filter((k) => k.endsWith(".md")).join("\n"));
+  const fileKeys = useWorkspace((s) => {
+    const known = new Set(Object.keys(s.files).filter((k) => k.endsWith(".md")));
+    Object.entries(s.paths).forEach(([repo, ps]) => ps.forEach((p) => p.endsWith(".md") && known.add(`${repo}::${p}`)));
+    return [...known].join("\n");
+  });
   const { options } = useDeck();
   const deck = useDeckActions();
   const file = useFileActions();
@@ -64,7 +68,7 @@ export function CommandPalette() {
           {fileKeys.split("\n").filter(Boolean).map((k) => {
             const { repo, path } = splitKey(k);
             return (
-              <CommandItem key={k} value={`${path} ${repo}`} onSelect={() => file.openFile(k)}>
+              <CommandItem key={k} value={`${path} ${repo}`} onSelect={() => void file.openFile(k)}>
                 <Icon name="file-md" className="text-blue-400" />
                 {path}
                 <CommandShortcut className="tracking-normal">{repo.split("/")[1]}</CommandShortcut>

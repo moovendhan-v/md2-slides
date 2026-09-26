@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { buildTree, fileIcon, isMarkdown, type TreeNode } from "@/domain/workspace/tree";
 import { Icon } from "@/components/common/icon";
 import { useFileActions } from "@/hooks/use-file-actions";
+import { useRepoTree } from "@/hooks/use-queries";
+import type { Repo } from "@/services/git/types";
 import { cn } from "@/lib/utils";
 import { pref, useSession } from "@/stores/session";
 import { useUi } from "@/stores/ui";
@@ -57,7 +59,7 @@ function Nodes({ repo, nodes, depth, changed }: { repo: string; nodes: TreeNode[
             active={active}
             dirty={changed.includes(key)}
             title={md ? `Open ${n.path}` : `${n.path} — not a Markdown file`}
-            onClick={() => (md ? openFile(key) : toast(`${n.name} is not a Markdown file — only .md opens as slides`))}
+            onClick={() => (md ? void openFile(key) : toast(`${n.name} is not a Markdown file — only .md opens as slides`))}
           >
             <Icon name={fileIcon(n.name)} className={md ? "text-blue-400" : "text-zinc-600"} />
             <span className={cn("truncate", md ? (active ? "font-medium text-zinc-50" : "text-zinc-300") : "text-zinc-500")}>{n.name}</span>
@@ -68,45 +70,52 @@ function Nodes({ repo, nodes, depth, changed }: { repo: string; nodes: TreeNode[
   );
 }
 
+function RepoRow({ repo, changed }: { repo: Repo; changed: string[] }) {
+  const open = useWorkspace((s) => !!s.expanded[repo.id]);
+  const paths = useWorkspace((s) => s.paths[repo.id]);
+  const toggle = useWorkspace((s) => s.toggleExpanded);
+  const { view, repoView, setView } = useUi();
+  const tree = useRepoTree(repo, open);
+  const nodes = useMemo(() => buildTree(paths ?? []), [paths]);
+  const act = view === "repo" && repoView === repo.id;
+  return (
+    <div>
+      <Row
+        depth={0}
+        active={act}
+        dirty={changed.some((k) => k.startsWith(repo.id + "::"))}
+        title={repo.id}
+        onClick={() => {
+          toggle(repo.id, !open || act);
+          setView("repo", repo.id);
+        }}
+      >
+        <Icon name={open ? "caret-down" : "caret-right"} className="text-[11px] text-zinc-500" />
+        <Icon name="github-logo" className="text-zinc-400" />
+        <span className="truncate font-semibold text-zinc-50">{repo.id.split("/")[1]}</span>
+        {repo.private && <Icon name="lock-simple" className="ml-auto text-[11px] text-zinc-600" />}
+      </Row>
+      {open && tree.isPending && <p className="py-1 pl-8 text-xs text-zinc-500">Loading files…</p>}
+      {open && tree.isError && <p className="py-1 pl-8 text-xs text-red-400">{tree.error.message}</p>}
+      {open && <Nodes repo={repo.id} nodes={nodes} depth={0} changed={changed} />}
+    </div>
+  );
+}
+
 export function FileTree() {
   const repos = useWorkspace((s) => s.repos);
-  const paths = useWorkspace((s) => s.paths);
-  const expanded = useWorkspace((s) => s.expanded);
-  const toggle = useWorkspace((s) => s.toggleExpanded);
   const files = useWorkspace((s) => s.files);
   const orig = useWorkspace((s) => s.orig);
   const changed = useMemo(() => selectChanged({ files, orig }), [files, orig]);
   const prefs = useSession((s) => s.prefs);
-  const { view, repoView, setView } = useUi();
-  const trees = useMemo(() => Object.fromEntries(Object.entries(paths).map(([r, p]) => [r, buildTree(p)])), [paths]);
+  if (!repos.length) return <p className="px-3 py-2 text-xs text-zinc-500">No repositories found on your GitHub account.</p>;
   return (
     <div className="flex flex-col gap-0.5">
       {repos
         .filter((r) => pref(prefs, "repo:" + r.id, true))
-        .map((r) => {
-          const open = !!expanded[r.id];
-          const act = view === "repo" && repoView === r.id;
-          return (
-            <div key={r.id}>
-              <Row
-                depth={0}
-                active={act}
-                dirty={changed.some((k) => k.startsWith(r.id + "::"))}
-                title={r.id}
-                onClick={() => {
-                  toggle(r.id, !open || act);
-                  setView("repo", r.id);
-                }}
-              >
-                <Icon name={open ? "caret-down" : "caret-right"} className="text-[11px] text-zinc-500" />
-                <Icon name="github-logo" className="text-zinc-400" />
-                <span className="truncate font-semibold text-zinc-50">{r.id.split("/")[1]}</span>
-                {r.private && <Icon name="lock-simple" className="ml-auto text-[11px] text-zinc-600" />}
-              </Row>
-              {open && <Nodes repo={r.id} nodes={trees[r.id] ?? []} depth={0} changed={changed} />}
-            </div>
-          );
-        })}
+        .map((r) => (
+          <RepoRow key={r.id} repo={r} changed={changed} />
+        ))}
     </div>
   );
 }
