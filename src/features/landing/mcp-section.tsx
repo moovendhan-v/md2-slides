@@ -55,7 +55,7 @@ export function McpSection() {
             <div className="mt-3 rounded-lg border border-zinc-800 bg-zinc-950 p-3 font-mono text-[12px] text-zinc-400">
               <span className="text-green-400">✓</span> create_deck decks/acme-q3.md · 6 slides · 0 problems
               <br />
-              <span className="text-blue-400">→</span> preview: md2slides.app/v#AQBVj1F…
+              <span className="text-blue-400">→</span> preview: www.md2slides.cyertechmind.com/v#AQBVj1F…
             </div>
           </div>
         </div>

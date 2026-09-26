@@ -12,7 +12,17 @@ import { deck, mockApp } from "./lib/mock.mjs";
 import { prepareContext, Recorder } from "./lib/recorder.mjs";
 
 const HERE = new URL(".", import.meta.url).pathname;
-const APP = process.env.APP_URL ?? "http://localhost:3100";
+const LOCAL = process.env.APP_URL ?? "http://localhost:3100";
+// Pages load under the public domain (so share links and URLs look real) and are served from the local app.
+const APP = process.env.VIDEO_ORIGIN ?? "https://www.md2slides.cyertechmind.com";
+
+async function serveAsDomain(context) {
+  if (APP === LOCAL) return;
+  await context.route(`${APP}/**`, async (route) => {
+    const res = await route.fetch({ url: route.request().url().replace(APP, LOCAL) });
+    await route.fulfill({ response: res });
+  });
+}
 export const VIEWPORT = { width: 1600, height: 900 };
 const DPR = 1.5;
 
@@ -23,6 +33,7 @@ const START = `${HEAD}\n---\n${TITLE}`.trimEnd() + "\n";
 async function open(browser, files, path = "/app") {
   const context = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: DPR, reducedMotion: "no-preference", ignoreHTTPSErrors: true });
   await prepareContext(context);
+  await serveAsDomain(context);
   await mockApp(context, () => files);
   const page = await context.newPage();
   page.setDefaultTimeout(8000);
@@ -223,7 +234,7 @@ const CLIPS = {
     await rec.click(copy, { after: 900 });
     await rec.focus(null);
     rec.mark("viewer");
-    await page.goto(url.replace(/^https?:\/\/[^/]+/, APP), { waitUntil: "networkidle" });
+    await page.goto(url, { waitUntil: "networkidle" });
     await rec.wait(1200);
     await rec.press("ArrowRight");
     await rec.wait(1400);
@@ -297,6 +308,7 @@ async function stills(browser) {
   const out = join(HERE, ".cache/stills");
   mkdirSync(out, { recursive: true });
   const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 2, ignoreHTTPSErrors: true });
+  await serveAsDomain(context);
   const page = await context.newPage();
   for (const [name, md] of [["acme", FULL], ["launch", deck("launch-plan.md")]]) {
     await page.goto(`${APP}/v#${shareHash(md, name + ".md")}`, { waitUntil: "networkidle" });

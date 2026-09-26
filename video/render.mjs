@@ -28,7 +28,7 @@ const ONLY = arg("only", "")?.split(",").filter(Boolean);
 const FFMPEG = process.env.FFMPEG ?? execFileSync("python3", ["-c", "import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())"]).toString().trim();
 
 const LEAD = 0.35;
-const CLIP_URL = { community: "md2slides.app", share: "md2slides.app/app" };
+const CLIP_URL = { community: "www.md2slides.cyertechmind.com", share: "www.md2slides.cyertechmind.com/app" };
 
 /** Scene list with absolute times, clip timing and caption text. */
 function timeline(voice) {
@@ -49,7 +49,7 @@ function timeline(voice) {
       const len = meta.duration / 1000 - start - 0.25;
       out.rate = Math.min(1.6, Math.max(0.7, len / dur));
       out.clip = { ...meta, start, url: `/video/.cache/clips/${s.visual.clip}` };
-      out.url = CLIP_URL[id] ?? "md2slides.app/app";
+      out.url = CLIP_URL[id] ?? "www.md2slides.cyertechmind.com/app";
     } else out.motionName = s.visual.motion;
     t += dur;
     return out;

@@ -357,7 +357,7 @@
           <div class="cta-tag" style="margin-top:24px;font:500 ${P ? 46 : 44}px var(--sans);color:#d4d4d8">Update the file. <span class="grad">Your slides follow.</span></div>
           <div class="cta-pills" style="margin-top:48px;display:flex;${P ? "flex-direction:column;align-items:center" : ""};gap:18px">
             <span class="chip" style="height:62px;font-size:26px;padding:0 24px;color:#e4e4e7"><span style="color:#4ade80">$</span> npx -y md2slides-mcp</span>
-            <span class="chip" style="height:62px;font-size:26px;padding:0 24px;background:#fafafa;color:#09090b;font-family:var(--sans);font-weight:700"><i class="ph ph-arrow-up-right"></i>md2slides.app</span>
+            <span class="chip" style="height:62px;font-size:26px;padding:0 24px;background:#fafafa;color:#09090b;font-family:var(--sans);font-weight:700"><i class="ph ph-arrow-up-right"></i>www.md2slides.cyertechmind.com</span>
           </div>
           <div class="cta-foot" style="margin-top:44px;font:500 ${P ? 28 : 24}px var(--sans);color:#71717a"><i class="ph ph-github-logo"></i> Free &amp; open source · github.com/moovendhan-v/md2-slides</div>
         </div></div>`;

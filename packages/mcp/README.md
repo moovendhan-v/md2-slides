@@ -51,6 +51,6 @@ The `new_deck` prompt runs the whole flow for a topic.
 | Flag / env | Default | |
 | --- | --- | --- |
 | `--root` / `MD2SLIDES_ROOT` | current directory | Workspace the decks are written under |
-| `--app-url` / `MD2SLIDES_APP_URL` | `https://md2slides.app` | App used for preview links (use your own deployment) |
+| `--app-url` / `MD2SLIDES_APP_URL` | `https://www.md2slides.cyertechmind.com` | App used for preview links (use your own deployment) |
 
 Everything runs locally and needs Node 18.17+.
