@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import type { Block } from "@/engine/types";
 import type { TransformTarget } from "@/domain/deck/constants";
 import { slideFocusLine } from "@/domain/deck/queries";
-import { duplicateBlock, removeBlock, setFenceArg, setImageArg, setImageSrc, setVariant } from "@/domain/source/blocks";
+import { duplicateBlock, insertAtOffset, removeBlock, setFenceArg, setImageArg, setImageSrc, setRowIcon, setVariant } from "@/domain/source/blocks";
 import { setDirective, setLayout, setLayoutImage } from "@/domain/source/directives";
 import { writeMeta } from "@/domain/source/frontmatter";
 import { appendSlides, deleteSlide, duplicateSlide, formatSource, insertAtLine, insertSlideAfter } from "@/domain/source/slides";
@@ -101,6 +101,19 @@ export function useDeckActions() {
       setFenceArg: (b: Block, key: string, v: string) => {
         apply(setFenceArg(src(), b.line, key, v));
         editor().set({ pick: { ...b, args: { ...b.args, [key]: v } } });
+      },
+      setRowIcon: (b: Block, row: number, icon: string) => {
+        const target = b.source ?? b;
+        apply(setRowIcon(src(), target, row, icon));
+        const rows = target.rows?.map((r, k) => (k !== row ? r : r.includes("|") ? r.replace(/^[^|]*/, `${icon} `) : `${icon} | ${r}`));
+        if (editor().pick) editor().set({ pick: { ...target, rows } });
+      },
+      /** Insert inline text (e.g. `:rocket:`) at the editor caret. */
+      insertInline: (text: string) => {
+        const at = editor().caret;
+        apply(insertAtOffset(src(), at, text));
+        editor().set({ caret: at + text.length });
+        toast(`Inserted ${text}`);
       },
       setImageArg: (line: number, key: string, v: string) => apply(setImageArg(src(), line, key, v)),
       setImageSrc: (line: number, url: string) => apply(setImageSrc(src(), line, url)),

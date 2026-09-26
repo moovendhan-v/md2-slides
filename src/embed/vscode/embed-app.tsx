@@ -20,6 +20,7 @@ import { usePresent } from "@/stores/present";
 import { useIsNarrow, useUi } from "@/stores/ui";
 import { onHost } from "./bridge";
 import type { EmbedSettings } from "./protocol";
+import { InsertTools } from "./insert-tools";
 import { useVscodeSync } from "./use-vscode-sync";
 
 function Toggle({ icon, label, on, onClick }: { icon: string; label: string; on: boolean; onClick: () => void }) {
@@ -49,6 +50,7 @@ function EmbedShell({ settings }: { settings: EmbedSettings }) {
           <Toggle icon="presentation" label="Slides" on={view === "preview"} onClick={() => setView("preview")} />
           <Toggle icon="squares-four" label="Components" on={view === "blocks"} onClick={() => setView("blocks")} />
         </div>
+        <InsertTools />
         <span className="min-w-0 flex-1 truncate font-mono text-xs text-zinc-500">
           {path} · {sourceCount(deck)} slides
         </span>

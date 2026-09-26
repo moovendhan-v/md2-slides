@@ -1,7 +1,8 @@
 import type { ComponentType } from "react";
 import type { Block, BlockType } from "@/engine/types";
 import { ChartBlock } from "./chart-block";
-import { CodeBlock, TableBlock, TerminalBlock } from "./code-blocks";
+import { TableBlock, TerminalBlock } from "./code-blocks";
+import { CodeOrDiagramBlock } from "./mermaid-block";
 import { FlowBlock, TimelineBlock } from "./flow-blocks";
 import { CardsBlock, ListBlock, StatsBlock } from "./list-blocks";
 import { GalleryBlock, ImageBlock } from "./media-blocks";
@@ -22,7 +23,7 @@ const registry = new Map<BlockType, BlockComponent>([
   ["flow", FlowBlock],
   ["timeline", TimelineBlock],
   ["terminal", TerminalBlock],
-  ["code", CodeBlock],
+  ["code", CodeOrDiagramBlock],
   ["table", TableBlock],
   ["callout", CalloutBlock],
   ["chart", ChartBlock],

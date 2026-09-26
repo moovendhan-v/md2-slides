@@ -19,7 +19,8 @@ export function webviewHtml(webview: vscode.Webview, extensionUri: vscode.Uri, d
     `media-src ${webview.cspSource} https:`,
     `style-src ${webview.cspSource} 'unsafe-inline' https://fonts.googleapis.com`,
     `font-src ${webview.cspSource} https://fonts.gstatic.com data:`,
-    `script-src 'nonce-${n}' 'wasm-unsafe-eval'`,
+    // The entry script carries the nonce; its lazily imported chunks come from the extension's dist folder.
+    `script-src 'nonce-${n}' ${webview.cspSource} 'wasm-unsafe-eval'`,
     `connect-src ${webview.cspSource} https:`,
   ].join("; ");
   return `<!doctype html>
@@ -37,7 +38,7 @@ export function webviewHtml(webview: vscode.Webview, extensionUri: vscode.Uri, d
 <body class="bg-zinc-950 text-[13px] text-zinc-50 antialiased">
   <div id="root"></div>
   <script nonce="${n}">window.__SLIDEWISE_WASM__ = ${JSON.stringify(asset("slide_engine_bg.wasm"))};</script>
-  <script nonce="${n}" src="${asset("main.js")}"></script>
+  <script type="module" nonce="${n}" src="${asset("main.js")}"></script>
 </body>
 </html>`;
 }

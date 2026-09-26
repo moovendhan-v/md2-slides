@@ -1,6 +1,6 @@
 //! Block-level constructs: fences, code, callouts, quotes, images, tables, lists.
 
-use super::code::{fence_header, import_line, make_code, mermaid};
+use super::code::{fence_header, import_line, make_code};
 use super::text::{is_attribution, is_check_item, is_numbered, list_marker, parse_args, word_prefix};
 use super::Ctx;
 use crate::model::{Args, Block, Severity};
@@ -152,18 +152,14 @@ fn code_fence(cx: &mut Ctx, start: usize, header: &str) -> usize {
     }
     let end = i.min(cx.lines.len() - 1);
     if spec.lang.eq_ignore_ascii_case("mermaid") {
-        match mermaid(&code) {
-            Some((rows, style)) => {
-                let mut b = Block::new("flow", start);
-                b.mermaid = true;
-                let mut a = Args::new();
-                a.insert("style".into(), style.into());
-                b.args = Some(a);
-                b.rows = Some(rows);
-                cx.push(b);
-            }
-            None => cx.problem(start, Severity::Warn, "Mermaid: no edges found (use A[Label] --> B[Label])"),
+        // Rendered by the Mermaid library on the client; kept whole (never split or highlighted).
+        if code.iter().all(|l| l.trim().is_empty()) {
+            cx.problem(start, Severity::Warn, "Empty mermaid diagram");
+            return end;
         }
+        let mut b = make_code(start, "mermaid", String::new(), code, None, false, false, None);
+        b.mermaid = true;
+        cx.push(b);
         return end;
     }
     let block = make_code(start, spec.lang, spec.title.clone(), code, spec.spec, spec.magic, spec.bare, None);

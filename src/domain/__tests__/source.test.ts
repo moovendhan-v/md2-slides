@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { Block, Deck, Slide } from "@/engine/types";
-import { setVariant, removeBlock, setImageArg } from "@/domain/source/blocks";
+import { hasRowIcons, insertAtOffset, setVariant, removeBlock, setImageArg, setRowIcon } from "@/domain/source/blocks";
+import { searchIcons } from "@/domain/icons/search";
+import { searchSnippets } from "@/domain/deck/snippet-search";
 import { setDirective, setLayout } from "@/domain/source/directives";
 import { writeMeta } from "@/domain/source/frontmatter";
 import { diffText } from "@/domain/source/diff";
@@ -85,5 +87,49 @@ describe("markdown-only tree", () => {
     const paths = ["README.md", "src/index.ts", "crates/lib.rs", "docs/talks/intro.md", "public/logo.svg"].filter(isMarkdown);
     const t = buildTree(paths);
     expect(t.map((n) => n.name)).toEqual(["docs", "README.md"]);
+  });
+});
+
+describe("icons", () => {
+  const cards: Block = { type: "cards", line: 1, rows: ["- rocket | Fast | x", "- Plain title"], args: {} };
+  const src = "# T\n:::cards style=grid\n- rocket | Fast | x\n\n- Plain title\n:::\nafter";
+  it("sets a row's icon cell, adding one when missing", () => {
+    expect(setRowIcon(src, cards, 0, "lightning")).toBe("# T\n:::cards style=grid\n- lightning | Fast | x\n\n- Plain title\n:::\nafter");
+    expect(setRowIcon(src, cards, 1, "star")).toContain("- star | Plain title");
+    expect(setRowIcon(src, cards, 5, "star")).toBe(src);
+    expect(hasRowIcons(cards)).toBe(true);
+    expect(hasRowIcons({ ...cards, type: "flow", mermaid: true })).toBe(false);
+  });
+  it("inserts inline text at an offset", () => {
+    expect(insertAtOffset("ab", 1, ":x:")).toBe("a:x:b");
+    expect(insertAtOffset("ab", 99, "!")).toBe("ab!");
+  });
+  it("ranks icon search results", () => {
+    const icons = [
+      { name: "rocket-launch", categories: ["objects"], tags: ["space"] },
+      { name: "rocket", categories: ["objects"], tags: ["space"] },
+      { name: "planet", categories: ["nature"], tags: ["space", "rocketry"] },
+      { name: "pocket", categories: ["objects"], tags: [] },
+    ];
+    expect(searchIcons(icons, "rocket").map((i) => i.name)).toEqual(["rocket", "rocket-launch", "planet"]);
+    expect(searchIcons(icons, "launch").map((i) => i.name)).toEqual(["rocket-launch"]);
+    expect(searchIcons(icons, "", "nature").map((i) => i.name)).toEqual(["planet"]);
+  });
+});
+
+describe("snippet search", () => {
+  const S = [
+    { label: "Cards · grid", cat: "Cards", md: ":::cards" },
+    { label: "Mermaid · sequence", cat: "Mermaid", md: "```mermaid\nsequenceDiagram" },
+    { label: "Mermaid · pie", cat: "Mermaid", md: "```mermaid\npie" },
+    { label: "Stats · big", cat: "Data", md: ":::stats" },
+  ];
+  it("filters by every word and ranks label matches first", () => {
+    expect(searchSnippets(S, "")).toEqual([0, 1, 2, 3]);
+    expect(searchSnippets(S, "mermaid")).toEqual([1, 2]);
+    expect(searchSnippets(S, "mermaid pie")).toEqual([2]);
+    expect(searchSnippets(S, "sequencediagram")).toEqual([1]);
+    expect(searchSnippets(S, "grid")).toEqual([0]);
+    expect(searchSnippets(S, "zzz")).toEqual([]);
   });
 });

@@ -2,7 +2,7 @@
 /**
  * Builds the VS Code extension from the same sources as the web app:
  *   dist/extension.js      extension host (vscode-extension/src)
- *   dist/webview/main.js   the Slidewise UI (src/embed/vscode → src/**)
+ *   dist/webview/main.js   the Slidewise UI (src/embed/vscode → src/**), plus lazy chunks/
  *   dist/webview/app.css   Tailwind, compiled from src/app/globals.css
  *   dist/webview/*.wasm    the prebuilt slide engine (public/wasm)
  * Usage: node vscode-extension/scripts/build.mjs [--dev]
@@ -37,11 +37,15 @@ await Promise.all([
   }),
   esbuild.build({
     entryPoints: [join(root, "src/embed/vscode/main.tsx")],
-    outfile: join(out, "webview/main.js"),
+    outdir: join(out, "webview"),
+    entryNames: "main",
+    // Heavy, rarely used libraries (Mermaid, the icon catalog) load as separate chunks on demand.
+    splitting: true,
+    chunkNames: "chunks/[name]-[hash]",
     tsconfig: join(root, "tsconfig.json"),
     bundle: true,
     platform: "browser",
-    format: "iife",
+    format: "esm",
     target: "es2022",
     jsx: "automatic",
     loader: { ".woff2": "file", ".woff": "file", ".ttf": "file", ".svg": "file", ".eot": "file" },

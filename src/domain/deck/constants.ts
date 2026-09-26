@@ -91,7 +91,7 @@ export const SYNTAX: [string, string][] = [
   ["<!-- zoom: 0.8 -->", "Scale the slide content (fit dense slides)"],
   ["<!-- clicks: true -->", "Reveal blocks one per click while presenting (front-matter clicks: true for all)"],
   ["<!-- src: ./other.md -->", "Import slides from another file in the same repo"],
-  ["```mermaid", "graph LR; A[Client] --> B[API] --> C[DB] — rendered as a native diagram"],
+  ["```mermaid", "Any Mermaid diagram (flowchart, sequence, class, state, ER, gantt, pie, mindmap, timeline, gitGraph …) — rendered and themed"],
   ["<!-- transition: zoom -->", "fade, slide, slide-right, slide-up, slide-down, push, zoom, zoom-out, flip, flip-x, cube, swing, rotate, skew, drop, blur, wipe, wipe-up, iris, glitch, none"],
   ["<!-- animate: fade-up -->", "Block entrance: fade | fade-up | fade-down | zoom-in | slide-left | blur-in | pop | none (+ stagger=120)"],
   ["![alt](src){w=60 h=30 fit=contain r=0}", "Image size (%/cqw), fit cover|contain, radius, pos, filter=grayscale"],

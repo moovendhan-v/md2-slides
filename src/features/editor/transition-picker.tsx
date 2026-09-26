@@ -29,11 +29,7 @@ export function TransitionPicker() {
   const shown = hover || own || def;
   const w = Math.min(440, width - 24);
   const above = pick.y >= 380;
-  // Vertical strip: open beside the chip, kept inside the window.
-  const place: React.CSSProperties =
-    pick.side === "right"
-      ? { left: Math.min(pick.x + 8, width - w - 12), top: Math.max(12, Math.min(pick.y - 120, window.innerHeight - 440)) }
-      : { left: Math.max(12, Math.min(pick.x - 20, width - w - 12)), ...(above ? { bottom: window.innerHeight - pick.y + 8 } : { top: pick.y + 36 }) };
+  const place: React.CSSProperties = { left: Math.max(12, Math.min(pick.x - 20, width - w - 12)), ...(above ? { bottom: window.innerHeight - pick.y + 8 } : { top: pick.y + 36 }) };
   const choose = (v: string) => {
     actions.setDirective("transition", v === "inherit" ? null : v, pick.index);
     setSeed(seed + 1);

@@ -3,6 +3,8 @@ import type { Block } from "@/engine/types";
 
 interface EditorState {
   curLine: number;
+  /** Caret offset in the textarea (inline inserts such as `:icon:`). */
+  caret: number;
   /** Block selected in the preview for restyling. */
   pick: Block | null;
   /** Request for the textarea to focus/select a line (nonce re-triggers). */
@@ -14,8 +16,7 @@ interface EditorState {
   problemsOpen: boolean;
   /** Source pane shows raw Markdown or the draggable component view. */
   sourceView: "raw" | "blocks";
-  /** Transition popover for slide `index`, anchored at x/y (below the chip, or to its right in the vertical strip). */
-  transitionPick: { index: number; x: number; y: number; side?: "below" | "right" } | null;
+  transitionPick: { index: number; x: number; y: number } | null;
   /** Bump to replay animations in focus preview / motion tab. */
   focusSeed: number;
   motionSeed: number;
@@ -25,6 +26,7 @@ interface EditorState {
 
 export const useEditor = create<EditorState>((set) => ({
   curLine: 0,
+  caret: 0,
   pick: null,
   jump: null,
   insertOpen: false,

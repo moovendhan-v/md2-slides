@@ -23,7 +23,7 @@ exports.run = async function run() {
   await until(() => ext.isActive, "activation on a Markdown file");
 
   const commands = await vscode.commands.getCommands(true);
-  for (const c of ["slidewise.openPreview", "slidewise.present", "slidewise.openInEditor"]) assert.ok(commands.includes(c), `${c} is registered`);
+  for (const c of ["slidewise.openPreview", "slidewise.present", "slidewise.openInEditor", "slidewise.insertSlide", "slidewise.insertBlock", "slidewise.insertIcon"]) assert.ok(commands.includes(c), `${c} is registered`);
 
   await vscode.commands.executeCommand("slidewise.openPreview");
   await until(() => tabs().some((t) => t.label === "Slides · demo.md"), "the slides panel");

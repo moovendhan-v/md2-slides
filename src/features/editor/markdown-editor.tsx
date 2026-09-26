@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { BLOCK_SNIPPETS } from "@/data";
 import { highlightMarkdown } from "@/domain/deck/highlight";
 import { frontMatterEnd } from "@/domain/source/frontmatter";
 import { lineOffset } from "@/domain/source/slides";
 import { useDeck } from "@/app-shell/deck-context";
-import { useDeckActions } from "@/hooks/use-deck-actions";
 import { useEditor } from "@/stores/editor";
 import { useActiveSource, useWorkspace } from "@/stores/workspace";
 
@@ -21,8 +19,7 @@ export function MarkdownEditor() {
   const src = useActiveSource();
   const setSource = useWorkspace((s) => s.setSource);
   const { deck } = useDeck();
-  const actions = useDeckActions();
-  const { curLine, jump, insertOpen, snipHover, set } = useEditor();
+  const { curLine, jump, set } = useEditor();
   const ta = useRef<HTMLTextAreaElement>(null);
   const [scroll, setScroll] = useState({ top: 0, left: 0 });
 
@@ -45,19 +42,12 @@ export function MarkdownEditor() {
 
   const syncCaret = (el: HTMLTextAreaElement) => {
     const ln = el.value.slice(0, el.selectionStart).split("\n").length - 1;
-    if (ln !== useEditor.getState().curLine) set({ curLine: ln });
+    const st = useEditor.getState();
+    if (ln !== st.curLine || el.selectionStart !== st.caret) set({ curLine: ln, caret: el.selectionStart });
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const el = e.currentTarget;
-    const N = BLOCK_SNIPPETS.length;
-    if (insertOpen && ["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
-      e.preventDefault();
-      if (e.key === "Enter") actions.insertAtCursor(BLOCK_SNIPPETS[snipHover].md);
-      else set({ snipHover: (snipHover + (e.key === "ArrowDown" ? 1 : N - 1)) % N });
-      return;
-    }
-    if (insertOpen && e.key.length === 1) set({ insertOpen: false });
     if (e.key === "Tab") {
       e.preventDefault();
       const a = el.selectionStart;
@@ -115,6 +105,7 @@ export function MarkdownEditor() {
           onSelect={(e) => syncCaret(e.currentTarget)}
           onClick={(e) => syncCaret(e.currentTarget)}
           onKeyDown={onKeyDown}
+          onKeyUp={(e) => syncCaret(e.currentTarget)}
           onScroll={(e) => setScroll({ top: e.currentTarget.scrollTop, left: e.currentTarget.scrollLeft })}
           className={`${mono} absolute inset-0 resize-none overflow-auto bg-transparent text-transparent caret-zinc-100 outline-none`}
           style={{ padding: `${PAD}px ${PAD}px 200px 4px`, whiteSpace: "pre" }}
