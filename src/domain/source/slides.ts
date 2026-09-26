@@ -61,18 +61,6 @@ export const formatSource = (src: string) =>
     .replace(/\n{3,}/g, "\n\n")
     .replace(/\n*$/, "\n");
 
-/** Line-count diff used by the commit dialog. */
-export function lineDiff(a: string | undefined, b: string | undefined) {
-  const A = (a || "").split("\n");
-  const B = (b || "").split("\n");
-  const cnt: Record<string, number> = {};
-  A.forEach((l) => (cnt[l] = (cnt[l] || 0) + 1));
-  let add = 0;
-  B.forEach((l) => (cnt[l] > 0 ? cnt[l]-- : add++));
-  const del = Object.values(cnt).reduce((x, y) => x + y, 0);
-  return { add, del: a == null ? 0 : del };
-}
-
 /** Byte offset of the start of `line` (for textarea selection). */
 export function lineOffset(src: string, line: number) {
   const L = src.split("\n");
