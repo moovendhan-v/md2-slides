@@ -4,6 +4,7 @@ import { useDeck } from "@/app-shell/deck-context";
 import { Icon } from "@/components/common/icon";
 import { SlideView } from "@/components/slide/slide-view";
 import { slideLabel } from "@/domain/deck/queries";
+import { slideNumber } from "@/domain/deck/paginate";
 import { cn } from "@/lib/utils";
 import { usePresent } from "@/stores/present";
 
@@ -33,7 +34,7 @@ export function OverviewGrid({ current }: { current: number }) {
               <SlideView slide={s} index={k} total={deck.slides.length} look={look} />
             </div>
             <span className="truncate text-xs text-zinc-400">
-              <span className="font-mono text-zinc-500">{String(k + 1).padStart(2, "0")}</span> {slideLabel(s, k)}
+              <span className="font-mono text-zinc-500">{slideNumber(s, k)}</span> {slideLabel(s, k)}
             </span>
           </button>
         ))}

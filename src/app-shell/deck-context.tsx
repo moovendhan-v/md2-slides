@@ -4,6 +4,7 @@ import { createContext, useContext, useDeferredValue, useMemo, type ReactNode } 
 import type { Deck } from "@/engine/types";
 import { useEngine } from "@/engine/provider";
 import { buildLook, deckOptions, type DeckOptions, type Look } from "@/domain/deck/look";
+import { paginate } from "@/domain/deck/paginate";
 import { resolveRelative, slideAtLine } from "@/domain/deck/queries";
 import { splitKey, useWorkspace } from "@/stores/workspace";
 import { useEditor } from "@/stores/editor";
@@ -15,7 +16,10 @@ export interface ActiveDeck {
   repo: string;
   path: string;
   src: string;
+  /** Display deck: overflowing slides split into parts (1a, 1b …). */
   deck: Deck;
+  /** Deck exactly as authored — use for source edits addressed by slide index. */
+  source: Deck;
   options: DeckOptions;
   look: Look;
   /** Slide under the editor caret. */
@@ -56,7 +60,7 @@ export function DeckProvider({ children }: { children: ReactNode }) {
       return engine.parse(text).slides.map((x) => ({ ...x, startLine: sl.startLine, titleLine: sl.startLine, imported: rel }));
     });
     const options = deckOptions(deck.meta);
-    return { deck, options, look: buildLook(options) };
+    return { deck: paginate(deck, options), source: deck, options, look: buildLook(options) };
   }, [engine, src, repo, path]);
 
   const value = useMemo<ActiveDeck>(

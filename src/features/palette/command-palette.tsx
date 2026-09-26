@@ -7,6 +7,7 @@ import { Icon } from "@/components/common/icon";
 import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandShortcut } from "@/components/ui/command";
 import { useDeckActions } from "@/hooks/use-deck-actions";
 import { useFileActions } from "@/hooks/use-file-actions";
+import { useSelectedRepos } from "@/hooks/use-selected-repos";
 import { useAi } from "@/stores/ai";
 import { useEditor } from "@/stores/editor";
 import { useUi } from "@/stores/ui";
@@ -23,10 +24,11 @@ interface Cmd {
 export function CommandPalette() {
   const open = useUi((s) => s.modal === "palette");
   const { closeModal, openModal, setView, set } = useUi();
+  const selectedIds = useSelectedRepos().ids.join("|");
   const fileKeys = useWorkspace((s) => {
     const known = new Set(Object.keys(s.files).filter((k) => k.endsWith(".md")));
     Object.entries(s.paths).forEach(([repo, ps]) => ps.forEach((p) => p.endsWith(".md") && known.add(`${repo}::${p}`)));
-    return [...known].join("\n");
+    return [...known].filter((k) => selectedIds.split("|").includes(k.split("::")[0])).join("\n");
   });
   const { options } = useDeck();
   const deck = useDeckActions();

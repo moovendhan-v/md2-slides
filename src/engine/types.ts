@@ -48,6 +48,10 @@ export interface Block {
   imported?: string;
   bare?: boolean;
   mermaid?: boolean;
+  /** Set on row chunks of a split block: the full original block (for editing). */
+  source?: Block;
+  /** First code line index of a split code chunk (keeps numbering/highlights). */
+  codeOffset?: number;
 }
 
 export interface Slide {
@@ -62,6 +66,13 @@ export interface Slide {
   dir: Record<string, string>;
   /** Set by the app when the slide was pulled in via `<!-- src: -->`. */
   imported?: string;
+  /** Pagination (set by `domain/deck/paginate`): authored slide index, part k of n. */
+  sourceIndex?: number;
+  sourceTotal?: number;
+  part?: number;
+  parts?: number;
+  /** First source line shown on a continuation part (caret → slide mapping). */
+  anchorLine?: number;
 }
 
 export interface Deck {

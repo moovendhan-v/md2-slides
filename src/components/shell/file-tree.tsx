@@ -6,9 +6,9 @@ import { buildTree, fileIcon, isMarkdown, type TreeNode } from "@/domain/workspa
 import { Icon } from "@/components/common/icon";
 import { useFileActions } from "@/hooks/use-file-actions";
 import { useRepoTree } from "@/hooks/use-queries";
+import { useSelectedRepos } from "@/hooks/use-selected-repos";
 import type { Repo } from "@/services/git/types";
 import { cn } from "@/lib/utils";
-import { pref, useSession } from "@/stores/session";
 import { useUi } from "@/stores/ui";
 import { fileKey, selectChanged, useWorkspace } from "@/stores/workspace";
 
@@ -103,19 +103,23 @@ function RepoRow({ repo, changed }: { repo: Repo; changed: string[] }) {
 }
 
 export function FileTree() {
-  const repos = useWorkspace((s) => s.repos);
+  const { repos, hasChosen } = useSelectedRepos();
   const files = useWorkspace((s) => s.files);
   const orig = useWorkspace((s) => s.orig);
   const changed = useMemo(() => selectChanged({ files, orig }), [files, orig]);
-  const prefs = useSession((s) => s.prefs);
-  if (!repos.length) return <p className="px-3 py-2 text-xs text-zinc-500">No repositories found on your GitHub account.</p>;
+  const all = useWorkspace((s) => s.repos.length);
+  if (!all) return <p className="px-3 py-2 text-xs text-zinc-500">No repositories found on your GitHub account.</p>;
+  if (!hasChosen)
+    return (
+      <button type="button" onClick={() => useUi.getState().openModal("repos")} className="mx-1 mt-1 flex w-[calc(100%-8px)] items-center gap-2 rounded-md border border-dashed border-zinc-700 px-3 py-2 text-xs text-zinc-300 hover:border-zinc-500">
+        <Icon name="plus" /> Choose repositories
+      </button>
+    );
   return (
     <div className="flex flex-col gap-0.5">
-      {repos
-        .filter((r) => pref(prefs, "repo:" + r.id, true))
-        .map((r) => (
-          <RepoRow key={r.id} repo={r} changed={changed} />
-        ))}
+      {repos.map((r) => (
+        <RepoRow key={r.id} repo={r} changed={changed} />
+      ))}
     </div>
   );
 }

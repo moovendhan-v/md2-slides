@@ -10,6 +10,7 @@ import { useDeck } from "@/app-shell/deck-context";
 import { EmptyState } from "@/components/common/empty-state";
 import { useFileActions } from "@/hooks/use-file-actions";
 import { useRepoTree } from "@/hooks/use-queries";
+import { useSelectedRepos } from "@/hooks/use-selected-repos";
 import { timeAgo } from "@/lib/time";
 import { useDeckPreviews } from "./use-deck-previews";
 import { cn } from "@/lib/utils";
@@ -51,7 +52,7 @@ export function RepoView() {
   const { repo: activeRepo } = useDeck();
   const repoView = useUi((s) => s.repoView) ?? activeRepo;
   const setView = useUi((s) => s.setView);
-  const repos = useWorkspace((s) => s.repos);
+  const { repos, hasChosen } = useSelectedRepos();
   const paths = useWorkspace((s) => s.paths);
   const files = useWorkspace((s) => s.files);
   const orig = useWorkspace((s) => s.orig);
@@ -83,7 +84,14 @@ export function RepoView() {
   const table = useTable({ features, columns, data: rows });
   const hidden = all.length - rows.length;
 
-  if (!repo) return <EmptyState icon="github-logo" title="No repositories yet" body="Create a repository on GitHub, then reload — Slidewise lists every repo your account can access." />;
+  if (!repo)
+    return (
+      <EmptyState icon="github-logo" title={hasChosen ? "Repository not available" : "Choose your repositories"} body="Pick the repositories that hold your decks. Only those are shown, and their files load when you open them.">
+        <Button className="bg-zinc-50 text-zinc-950 hover:bg-zinc-200" onClick={() => useUi.getState().openModal("repos")}>
+          Choose repositories
+        </Button>
+      </EmptyState>
+    );
 
   return (
     <div className="min-h-0 flex-1 overflow-auto">

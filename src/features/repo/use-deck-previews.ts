@@ -7,7 +7,7 @@ import { queryKeys } from "@/hooks/use-queries";
 import type { Repo } from "@/services/git/types";
 import { fileKey, useWorkspace } from "@/stores/workspace";
 
-const MAX_PREVIEWS = 40;
+const MAX_PREVIEWS = 12;
 
 /** Fetch the first Markdown files of a repo so the table can show titles and slide counts. */
 export function useDeckPreviews(repo: Repo | undefined, paths: string[]) {

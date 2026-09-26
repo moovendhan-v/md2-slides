@@ -29,6 +29,8 @@ export function useDeckActions() {
     const apply = (next: string) => ws().setSource(next);
     const editor = useEditor.getState;
     const slideAt = (i?: number) => active.deck.slides[i ?? active.current];
+    /** Display index (parts included) → authored slide index. */
+    const srcIndex = (i: number) => active.deck.slides[i]?.sourceIndex ?? i;
     const focus = (line: number) => setTimeout(() => editor().jumpTo(line), 30);
 
     return {
@@ -53,17 +55,19 @@ export function useDeckActions() {
         apply(s);
       },
       duplicateSlide: (i: number) => {
-        apply(duplicateSlide(src(), active.deck, i));
-        toast(`Slide ${i + 1} duplicated`);
+        const k = srcIndex(i);
+        apply(duplicateSlide(src(), active.source, k));
+        toast(`Slide ${k + 1} duplicated`);
       },
       deleteSlide: (i: number) => {
-        const next = deleteSlide(src(), active.deck, i);
+        const k = srcIndex(i);
+        const next = deleteSlide(src(), active.source, k);
         if (next === src()) return;
         apply(next);
-        toast(`Slide ${i + 1} deleted`);
+        toast(`Slide ${k + 1} deleted`);
       },
       insertSlide: (md: string) => {
-        const r = insertSlideAfter(src(), active.deck, active.current, md);
+        const r = insertSlideAfter(src(), active.source, srcIndex(active.current), md);
         apply(r.src);
         useUi.getState().closeModal();
         focus(r.focus);
@@ -84,7 +88,8 @@ export function useDeckActions() {
         const sl = active.deck.slides[i];
         if (sl) editor().jumpTo(slideFocusLine(sl));
       },
-      pickBlock: (b: Block) => {
+      pickBlock: (chunk: Block) => {
+        const b = chunk.source ?? chunk;
         editor().set({ pick: b.mermaid ? null : b });
         editor().jumpTo(b.line);
       },

@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useDeck } from "@/app-shell/deck-context";
+import { sourceCount } from "@/domain/deck/paginate";
 import { Icon } from "@/components/common/icon";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -64,7 +65,9 @@ export function EditorToolbar() {
       <Tool icon="download-simple" label=".md" tip="Download file" onClick={files.download} />
       <Tool icon="file-pdf" label="PDF" tip="Export PDF (one slide per page)" onClick={files.exportPdf} />
       <div className="flex-1" />
-      <span className="hidden px-2 font-mono text-xs text-zinc-500 md:inline">{deck.slides.length} slides</span>
+      <span className="hidden px-2 font-mono text-xs text-zinc-500 md:inline">
+        {sourceCount(deck)} slides{deck.slides.length > sourceCount(deck) ? ` · ${deck.slides.length} pages` : ""}
+      </span>
       {narrow ? (
         <div className="flex rounded-lg bg-zinc-900/60 p-0.5">
           <ViewToggle icon="code" label="Markdown" on={pane === "editor"} onClick={() => set({ pane: "editor" })} />

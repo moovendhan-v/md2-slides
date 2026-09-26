@@ -2,6 +2,7 @@
 
 import { Fragment, useMemo } from "react";
 import { thumbLook } from "@/domain/deck/look";
+import { slideNumber } from "@/domain/deck/paginate";
 import { useDeck } from "@/app-shell/deck-context";
 import { Icon } from "@/components/common/icon";
 import { SlideView } from "@/components/slide/slide-view";
@@ -47,7 +48,7 @@ export function SlideStrip() {
               <div className={cn("w-full rounded-md", i === current ? "ring-2 ring-blue-500" : "ring-1 ring-zinc-800")}>
                 <SlideView slide={sl} index={i} total={deck.slides.length} look={lk} />
               </div>
-              <span className={cn("font-mono text-[10px]", i === current ? "text-blue-400" : "text-zinc-600")}>{String(i + 1).padStart(2, "0")}</span>
+              <span className={cn("font-mono text-[10px]", i === current ? "text-blue-400" : "text-zinc-600")}>{slideNumber(sl, i)}</span>
             </button>
           </Fragment>
         );

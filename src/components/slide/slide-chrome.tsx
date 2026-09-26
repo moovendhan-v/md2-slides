@@ -1,7 +1,7 @@
 import type { Look } from "@/domain/deck/look";
 
 /** Footer, logo and slide counter drawn over every slide. */
-export function SlideChrome({ look, index, total }: { look: Look; index: number; total: number }) {
+export function SlideChrome({ look, label, total }: { look: Look; label: string; total: number }) {
   return (
     <>
       {look.footer && (
@@ -22,7 +22,7 @@ export function SlideChrome({ look, index, total }: { look: Look; index: number;
             padding: ".3cqw .9cqw", borderRadius: ".6cqw", boxShadow: `inset 0 0 0 1px ${look.rule}`,
           }}
         >
-          {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          {label} / {String(total).padStart(2, "0")}
         </div>
       )}
     </>

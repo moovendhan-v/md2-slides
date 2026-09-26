@@ -70,7 +70,8 @@ export function CodeBlock({ block }: { block: Block }) {
     <Frame look={look} header={header}>
       <div style={{ padding: "1.6cqw 0", fontFamily: look.mono, fontSize: look.codeSize, lineHeight: 1.65 }}>
         {(block.code ?? []).map((ln, k) => {
-          const on = hl.has(k + 1);
+          const n = (block.codeOffset ?? 0) + k + 1;
+          const on = hl.has(n);
           const isNew = block.magic && opts.prevCode && !opts.prevCode.has(ln.trim());
           return (
             <div
@@ -81,7 +82,7 @@ export function CodeBlock({ block }: { block: Block }) {
                 animation: isNew ? `sw-magic .6s cubic-bezier(.2,.7,.2,1) ${k * 25}ms both` : "none",
               }}
             >
-              <span style={{ width: "3cqw", flex: "none", color: look.muted, opacity: 0.6, userSelect: "none" }}>{k + 1}</span>
+              <span style={{ width: "3cqw", flex: "none", color: look.muted, opacity: 0.6, userSelect: "none" }}>{n}</span>
               <span style={{ whiteSpace: "pre", overflow: "hidden" }}>
                 {highlightCode(ln || " ", look).map((sg, i) => (
                   <span key={i} style={{ color: sg.c }}>
