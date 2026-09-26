@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>md2slides video stage</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="/node_modules/@phosphor-icons/web/src/regular/style.css" />
+<link rel="stylesheet" href="/node_modules/@phosphor-icons/web/src/fill/style.css" />
+<link rel="stylesheet" href="stage.css" />
+</head>
+<body>
+<div id="stage">
+  <div id="bg">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+    <div class="grid"></div>
+    <div class="vignette"></div>
+  </div>
+  <div id="layers"></div>
+  <div id="brand"><img src="/public/logo.svg" alt="" /> md2slides</div>
+  <div id="chapter"><span class="num"></span><span class="name"></span></div>
+  <div id="captions"><div class="pill"></div></div>
+  <div id="fade"></div>
+</div>
+<script src="scenes.js"></script>
+<script src="stage.js"></script>
+</body>
+</html>

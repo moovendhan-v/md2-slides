@@ -53,3 +53,7 @@ next-env.d.ts
 
 # MCP server build output
 /packages/mcp/dist/
+
+# Product video (video/README.md): caches and renders
+/video/.cache/
+/video/out/

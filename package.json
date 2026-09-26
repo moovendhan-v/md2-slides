@@ -19,7 +19,10 @@
     "predev": "node scripts/community.mjs && node scripts/build-player.mjs --dev",
     "prebuild": "node scripts/community.mjs --check && node scripts/build-player.mjs",
     "community": "node scripts/community.mjs",
-    "mcp:build": "node packages/mcp/build.mjs"
+    "mcp:build": "node packages/mcp/build.mjs",
+    "video:capture": "node video/capture.mjs",
+    "video:render": "node video/render.mjs && node video/render.mjs --vertical",
+    "video": "npm run video:capture && npm run video:render"
   },
   "dependencies": {
     "@phosphor-icons/core": "^2.1.1",
@@ -59,6 +62,7 @@
     "esbuild": "^0.28.2",
     "eslint": "^9",
     "eslint-config-next": "15.5.26",
+    "playwright": "^1.56.1",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^5.0.2",

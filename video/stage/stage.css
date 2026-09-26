@@ -1,0 +1,68 @@
+:root {
+  --blue: #3b82f6;
+  --blue-2: #60a5fa;
+  --violet: #a78bfa;
+  --ink: #fafafa;
+  --muted: #a1a1aa;
+  --dim: #52525b;
+  --panel: #0c0c0f;
+  --line: rgba(255, 255, 255, 0.08);
+  --mono: "Geist Mono", ui-monospace, monospace;
+  --sans: "Geist", system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0 }
+html, body { background: #000; overflow: hidden }
+#stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #05060a; font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: antialiased }
+.portrait #stage { width: 1080px; height: 1920px }
+
+/* Background: drifting colour, grid, vignette. */
+#bg { position: absolute; inset: 0 }
+.blob { position: absolute; width: 1100px; height: 1100px; border-radius: 50%; filter: blur(120px); opacity: .5 }
+.b1 { background: radial-gradient(circle, rgba(59, 130, 246, .55), transparent 65%) }
+.b2 { background: radial-gradient(circle, rgba(139, 92, 246, .42), transparent 65%) }
+.b3 { background: radial-gradient(circle, rgba(14, 165, 233, .3), transparent 65%) }
+.grid { position: absolute; inset: -80px; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse at 50% 45%, #000 20%, transparent 75%) }
+.vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(0,0,0,.65) 100%) }
+
+#layers { position: absolute; inset: 0 }
+.layer { position: absolute; inset: 0; display: none; will-change: transform, opacity, filter }
+
+/* App window for captured clips. */
+.cam { position: absolute; left: 0; top: 0; transform-origin: 0 0 }
+.win { position: relative; border-radius: 16px; overflow: hidden; background: #09090b; box-shadow: 0 0 0 1px rgba(255,255,255,.1), 0 50px 120px -20px rgba(0,0,0,.8), 0 30px 160px -40px rgba(59,130,246,.35) }
+.win .bar { height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 16px; background: #111114; border-bottom: 1px solid var(--line) }
+.win .bar i { width: 12px; height: 12px; border-radius: 50%; display: block }
+.win .url { margin: 0 auto; transform: translateX(-30px); display: flex; align-items: center; gap: 8px; height: 26px; padding: 0 14px; border-radius: 8px; background: #18181b; color: #a1a1aa; font: 500 13px var(--mono) }
+.win .screen { display: block; width: 100%; height: auto }
+
+/* Brand bug, chapter label, captions. */
+#brand { position: absolute; right: 64px; top: 52px; display: flex; align-items: center; gap: 10px; font: 700 22px var(--sans); letter-spacing: -.01em; opacity: 0 }
+#brand img { width: 30px; height: 30px }
+.portrait #brand { right: 50%; transform: translateX(50%); top: 70px }
+#chapter { position: absolute; left: 64px; top: 46px; display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 18px 0 8px; border-radius: 999px; background: rgba(12,12,15,.72); border: 1px solid var(--line); backdrop-filter: blur(14px); font: 600 19px var(--sans); opacity: 0 }
+#chapter .num { display: grid; place-items: center; height: 30px; min-width: 42px; padding: 0 8px; border-radius: 999px; background: rgba(59,130,246,.18); color: var(--blue-2); font: 600 15px var(--mono) }
+.portrait #chapter { left: 50%; top: 140px; transform: translateX(-50%) }
+#captions { position: absolute; left: 0; right: 0; bottom: 64px; display: flex; justify-content: center; pointer-events: none }
+#captions .pill { max-width: 1440px; padding: 16px 30px; border-radius: 20px; background: rgba(9,9,11,.7); border: 1px solid var(--line); backdrop-filter: blur(16px); font: 600 38px/1.28 var(--sans); letter-spacing: -.012em; text-align: center; opacity: 0 }
+#captions .w { opacity: .28; transition: none }
+#captions .w.on { opacity: 1 }
+#captions .em { color: var(--blue-2) }
+.portrait #captions { bottom: 230px; padding: 0 60px }
+.portrait #captions .pill { font-size: 50px; line-height: 1.24 }
+#fade { position: absolute; inset: 0; background: #000; pointer-events: none }
+
+/* ---------- Motion scenes (shared bits) ---------- */
+.center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center }
+.card { background: rgba(14,14,18,.92); border: 1px solid rgba(255,255,255,.09); border-radius: 18px; box-shadow: 0 40px 100px -30px rgba(0,0,0,.8) }
+.kicker { display: inline-flex; align-items: center; gap: 10px; height: 40px; padding: 0 16px 0 8px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.04); font: 600 18px var(--sans); color: #d4d4d8 }
+.kicker img { width: 26px; height: 26px }
+.grad { background: linear-gradient(92deg, #60a5fa, #a78bfa 70%); -webkit-background-clip: text; background-clip: text; color: transparent }
+.mono { font-family: var(--mono) }
+.md-h { color: #fafafa } .md-k { color: #c084fc } .md-v { color: #93c5fd } .md-d { color: #71717a } .md-y { color: #fbbf24 }
+.slideimg { display: block; border-radius: 14px; box-shadow: 0 0 0 1px rgba(255,255,255,.1), 0 40px 90px -30px rgba(0,0,0,.9) }
+.chip { display: inline-flex; align-items: center; gap: 10px; height: 46px; padding: 0 16px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.04); font: 500 19px var(--mono); color: #d4d4d8 }
+.ok { color: #4ade80 }
+.strike { position: absolute; left: -4%; right: -4%; top: 50%; height: 6px; border-radius: 3px; background: #ef4444; box-shadow: 0 0 24px rgba(239,68,68,.7); transform-origin: 0 50% }
+.term { font: 500 24px/1.6 var(--mono) }
+.cursor-fake { position: absolute; width: 30px; height: 30px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.5)) }
+.ripple { position: absolute; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; border: 3px solid rgba(96,165,250,.95); background: rgba(96,165,250,.18) }
