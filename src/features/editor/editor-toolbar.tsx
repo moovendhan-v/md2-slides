@@ -30,7 +30,7 @@ function Tool({ icon, label, tip, onClick, active, children }: { icon: string; l
 
 function ViewToggle({ icon, label, on, onClick }: { icon: string; label: string; on: boolean; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} className={cn("flex h-7 items-center gap-1.5 rounded-md px-2 text-xs", on ? "bg-zinc-800 text-zinc-50" : "text-zinc-500 hover:text-zinc-200")}>
+    <button type="button" title={label} aria-pressed={on} onClick={onClick} className={cn("flex h-7 items-center gap-1.5 rounded-md px-2 text-xs", on ? "bg-zinc-800 text-zinc-50" : "text-zinc-500 hover:text-zinc-200")}>
       <Icon name={icon} />
       <span className="hidden xl:inline">{label}</span>
     </button>
@@ -43,9 +43,15 @@ export function EditorToolbar() {
   const files = useFileActions();
   const narrow = useIsNarrow();
   const { previewOn, stripOn, customOpen, pane, set, openModal } = useUi();
-  const { insertOpen, syntaxOpen, set: setEditor } = useEditor();
+  const { insertOpen, syntaxOpen, sourceView, set: setEditor } = useEditor();
   return (
     <div className="flex h-11 shrink-0 items-center gap-0.5 overflow-x-auto border-b border-zinc-800 px-2">
+      {(!narrow || pane === "editor") && (
+        <div className="mr-1 flex rounded-lg bg-zinc-900/60 p-0.5" role="group" aria-label="Source view">
+          <ViewToggle icon="code" label="Raw" on={sourceView === "raw"} onClick={() => setEditor({ sourceView: "raw" })} />
+          <ViewToggle icon="squares-four" label="Components" on={sourceView === "blocks"} onClick={() => setEditor({ sourceView: "blocks", insertOpen: false })} />
+        </div>
+      )}
       <Tool
         icon="plus-square"
         label="Insert"

@@ -12,6 +12,8 @@ interface EditorState {
   snipHover: number;
   syntaxOpen: boolean;
   problemsOpen: boolean;
+  /** Source pane shows raw Markdown or the draggable component view. */
+  sourceView: "raw" | "blocks";
   transitionPick: { index: number; x: number; y: number } | null;
   /** Bump to replay animations in focus preview / motion tab. */
   focusSeed: number;
@@ -29,6 +31,7 @@ export const useEditor = create<EditorState>((set) => ({
   snipHover: 0,
   syntaxOpen: false,
   problemsOpen: false,
+  sourceView: "raw",
   transitionPick: null,
   focusSeed: 0,
   motionSeed: 0,
