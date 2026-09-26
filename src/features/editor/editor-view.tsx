@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { useFileActions } from "@/hooks/use-file-actions";
 import { useIsNarrow, useUi } from "@/stores/ui";
 import { useWorkspace } from "@/stores/workspace";
+import { useEditor } from "@/stores/editor";
 import { BlockPicker } from "./block-picker";
+import { BlocksView } from "./blocks/blocks-view";
 import { EditorToolbar } from "./editor-toolbar";
 import { InsertMenu } from "./insert-menu";
 import { MarkdownEditor } from "./markdown-editor";
@@ -22,6 +24,7 @@ export function EditorView() {
   const showEditor = !narrow || pane === "editor";
   const showPreview = narrow ? pane === "preview" : previewOn;
   const hasFile = useWorkspace((s) => !!s.activeKey);
+  const blocks = useEditor((s) => s.sourceView === "blocks");
   const { newDeck } = useFileActions();
   const setView = useUi((s) => s.setView);
   if (!hasFile)
@@ -39,7 +42,7 @@ export function EditorView() {
       <div className="relative flex min-h-0 flex-1">
         {showEditor && (
           <div className="relative flex min-w-0 flex-1 flex-col">
-            <MarkdownEditor />
+            {blocks ? <BlocksView /> : <MarkdownEditor />}
             <ProblemsBar />
             <SyntaxPanel />
           </div>
