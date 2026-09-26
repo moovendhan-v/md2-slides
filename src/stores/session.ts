@@ -1,16 +1,16 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { ExpiryKey } from "@/domain/share/payload";
 
+/** Share-link options (the password is never persisted). */
 export interface ShareSettings {
-  exp: "1h" | "24h" | "7d" | "talk";
-  access: "link" | "org" | "pass";
-  pw: string;
-  follow: boolean;
+  exp: ExpiryKey;
   notes: boolean;
-  dl: boolean;
-  qa: boolean;
-  tok: string;
+  download: boolean;
+  present: boolean;
 }
+
+const DEFAULT_SHARE: ShareSettings = { exp: "7d", notes: false, download: true, present: false };
 
 interface SessionState {
   /** User preferences (repo visibility, workflow toggles). */
@@ -34,14 +34,20 @@ export const useSession = create<SessionState>()(
     (set) => ({
       prefs: {},
       selectedRepos: {},
-      share: { exp: "24h", access: "link", pw: "", follow: true, notes: false, dl: true, qa: false, tok: Math.random().toString(36).slice(2, 8) },
+      share: DEFAULT_SHARE,
       commitMessage: "Update slides",
       set: (patch) => set(patch),
       togglePref: (key, fallback) => set((s) => ({ prefs: { ...s.prefs, [key]: !(s.prefs[key] ?? fallback) } })),
       setShare: (patch) => set((s) => ({ share: { ...s.share, ...patch } })),
       selectRepos: (login, ids) => set((s) => ({ selectedRepos: { ...s.selectedRepos, [login]: ids } })),
     }),
-    { name: "slidewise-prefs", partialize: (s) => ({ prefs: s.prefs, share: s.share, selectedRepos: s.selectedRepos }) },
+    {
+      name: "slidewise-prefs",
+      version: 1,
+      partialize: (s) => ({ prefs: s.prefs, share: s.share, selectedRepos: s.selectedRepos }),
+      // v0 stored settings for the old mock share dialog.
+      migrate: (state, version) => ({ ...(state as object), ...(version < 1 ? { share: DEFAULT_SHARE } : {}) }) as SessionState,
+    },
   ),
 );
 

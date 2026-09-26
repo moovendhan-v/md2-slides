@@ -92,6 +92,9 @@ export function EditorToolbar() {
           <ViewToggle icon="film-strip" label="Strip" on={stripOn} onClick={() => set({ stripOn: !stripOn })} />
         </div>
       )}
+      <Button variant="ghost" size="sm" className="h-8 gap-1.5 border border-zinc-800 text-[13px]" title="Share a view-only link" onClick={() => openModal("share")}>
+        <Icon name="share-network" /> <span className="hidden sm:inline">Share</span>
+      </Button>
       <Button variant="ghost" size="sm" className={cn("h-8 gap-1.5 border border-zinc-800 text-[13px]", customOpen && "bg-zinc-900")} onClick={() => set({ customOpen: !customOpen })}>
         <Icon name="sliders-horizontal" /> <span className="hidden sm:inline">Customize</span>
       </Button>

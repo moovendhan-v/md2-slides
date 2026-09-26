@@ -14,6 +14,7 @@ import { Presenter } from "@/features/present/presenter";
 import { ProfileView } from "@/features/profile/profile-view";
 import { RepoView } from "@/features/repo/repo-view";
 import { RepoPickerDialog } from "@/features/repos/repo-picker-dialog";
+import { ShareDialog } from "@/features/share/share-dialog";
 import { useSelectedRepos } from "@/hooks/use-selected-repos";
 import { StudioView } from "@/features/studio/studio-view";
 import { TemplatesView } from "@/features/templates/templates-view";
@@ -49,6 +50,7 @@ function Shell() {
       <AiDialog />
       <NewSlideDialog />
       <RepoPickerDialog />
+      <ShareDialog />
       {presenting && <Presenter />}
       {printing && <PrintRoot />}
     </div>

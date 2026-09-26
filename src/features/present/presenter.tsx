@@ -13,10 +13,17 @@ import { InkCanvas } from "./ink-canvas";
 import { OverviewGrid } from "./overview-grid";
 import { PresenterSide } from "./presenter-side";
 import { PresenterToolbar } from "./presenter-toolbar";
-import { ShareDialog } from "./share-dialog";
+
+/** What a read-only viewer (share link, HTML export) may use. */
+export interface PresenterMode {
+  notes: boolean;
+  share: boolean;
+  /** Up-next / notes column (off for the audience window when a speaker window is open). */
+  side?: boolean;
+}
 
 /** Full-screen presenter view: current slide, next slide, notes, timer, tools. */
-export function Presenter() {
+export function Presenter({ mode = { notes: true, share: true } }: { mode?: PresenterMode }) {
   const { deck, look, options } = useDeck();
   const p = usePresent();
   const [laserAt, setLaserAt] = useState<{ x: number; y: number } | null>(null);
@@ -33,7 +40,7 @@ export function Presenter() {
   const fit = p.zoom === "fit";
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black text-zinc-50">
-      <PresenterToolbar index={i} total={n} />
+      <PresenterToolbar index={i} total={n} share={mode.share} />
       <div className="flex min-h-0 flex-1 gap-4 px-4 pb-4">
         <div className={cn("relative flex min-w-0 flex-1 overflow-auto", fit ? "items-center justify-center" : "items-start justify-start")}>
           <div
@@ -56,7 +63,7 @@ export function Presenter() {
             {p.black && <div className="absolute inset-0 rounded-[inherit] bg-black" />}
           </div>
         </div>
-        <PresenterSide index={i} />
+        {mode.side !== false && <PresenterSide index={i} notes={mode.notes} />}
       </div>
       {p.strip && (
         <div className="flex h-28 shrink-0 gap-3 overflow-x-auto border-t border-zinc-900 px-4 py-2">
@@ -71,7 +78,6 @@ export function Presenter() {
         </div>
       )}
       {p.overview && <OverviewGrid current={i} />}
-      <ShareDialog />
     </div>
   );
 }

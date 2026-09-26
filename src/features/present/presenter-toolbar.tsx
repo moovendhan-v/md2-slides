@@ -5,7 +5,7 @@ import { useDeck } from "@/app-shell/deck-context";
 import { Icon } from "@/components/common/icon";
 import { clickCount } from "@/domain/deck/queries";
 import { slideNumber } from "@/domain/deck/paginate";
-import { presenterStep, toggleFullscreen } from "@/hooks/use-global-keys";
+import { presenterStep, toggleFullscreen } from "@/hooks/use-presenter-keys";
 import { cn } from "@/lib/utils";
 import { usePresent } from "@/stores/present";
 import { useUi } from "@/stores/ui";
@@ -45,7 +45,7 @@ function Tool({ icon, label, active, tip, onClick }: { icon: string; label: stri
   );
 }
 
-export function PresenterToolbar({ index, total }: { index: number; total: number }) {
+export function PresenterToolbar({ index, total, share = true }: { index: number; total: number; share?: boolean }) {
   const { deck, options } = useDeck();
   const p = usePresent();
   const timer = useTimer();
@@ -66,7 +66,7 @@ export function PresenterToolbar({ index, total }: { index: number; total: numbe
       <Tool icon="magnifying-glass-plus" label={p.zoom === "fit" ? "Fit" : p.zoom} tip="Z — zoom; scroll when larger" active={p.zoom !== "fit"} onClick={p.cycleZoom} />
       <Tool icon="film-strip" label="Slides" tip="T" active={p.strip} onClick={() => p.set({ strip: !p.strip })} />
       <Tool icon="grid-nine" label="Overview" tip="O" active={p.overview} onClick={() => p.set({ overview: !p.overview })} />
-      <Tool icon="share-network" label="Share" tip="Share live link" onClick={() => useUi.getState().openModal("share")} />
+      {share && <Tool icon="share-network" label="Share" tip="Share a view-only link" onClick={() => useUi.getState().openModal("share")} />}
       <Tool icon="corners-out" label="Full" tip="F" onClick={toggleFullscreen} />
       <button type="button" onClick={() => presenterStep(-1, deck.slides, options)} className="grid size-8 place-items-center rounded-md border border-zinc-800 hover:bg-zinc-900" aria-label="Previous">
         <Icon name="caret-left" />

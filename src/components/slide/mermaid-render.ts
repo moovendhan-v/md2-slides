@@ -6,6 +6,12 @@ let lib: Promise<Mermaid> | null = null;
 let queue: Promise<unknown> = Promise.resolve();
 let seq = 0;
 const cache = new Map<string, Promise<string>>();
+/** Pre-rendered SVG by source (HTML export / share links), used before the library. */
+const preset = new Map<string, string>();
+
+export function seedMermaid(svgs: Record<string, string> | undefined) {
+  for (const [code, svg] of Object.entries(svgs ?? {})) preset.set(code, svg);
+}
 
 /** Mermaid theme variables derived from the deck look, so diagrams match the slides. */
 function themeFor(look: Look) {
@@ -39,6 +45,8 @@ function themeFor(look: Look) {
  * source + theme, so the preview, strip and presenter share one render.
  */
 export function renderMermaid(code: string, look: Look): Promise<string> {
+  const ready = preset.get(code);
+  if (ready) return Promise.resolve(ready);
   const theme = themeFor(look);
   const key = JSON.stringify([code, theme]);
   const hit = cache.get(key);

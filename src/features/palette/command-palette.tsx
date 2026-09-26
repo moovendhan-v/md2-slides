@@ -46,6 +46,7 @@ export function CommandPalette() {
       { label: "Toggle glassmorphism", icon: "drop-half", run: () => { deck.setOption("glass", !options.glass); closeModal(); } },
       { label: "Toggle slide light / dark", icon: "circle-half", run: () => { deck.setOption("mode", options.mode === "light" ? "dark" : "light"); closeModal(); } },
       { label: "Present", icon: "play", run: () => deck.present(), hint: "⌘↵" },
+      { label: "Share view-only link", icon: "share-network", run: inEditor(() => openModal("share")) },
       { label: "Commit & push", icon: "git-commit", run: () => openModal("commit"), hint: "⌘S" },
       { label: "Format document", icon: "magic-wand", run: () => { deck.format(); closeModal(); } },
       { label: "Download .md", icon: "download-simple", run: file.download },
