@@ -13,6 +13,8 @@ import { PrintRoot } from "@/features/present/print-root";
 import { Presenter } from "@/features/present/presenter";
 import { ProfileView } from "@/features/profile/profile-view";
 import { RepoView } from "@/features/repo/repo-view";
+import { RepoPickerDialog } from "@/features/repos/repo-picker-dialog";
+import { useSelectedRepos } from "@/hooks/use-selected-repos";
 import { StudioView } from "@/features/studio/studio-view";
 import { TemplatesView } from "@/features/templates/templates-view";
 import { useGlobalKeys } from "@/hooks/use-global-keys";
@@ -46,6 +48,7 @@ function Shell() {
       <CommitDialog />
       <AiDialog />
       <NewSlideDialog />
+      <RepoPickerDialog />
       {presenting && <Presenter />}
       {printing && <PrintRoot />}
     </div>
@@ -54,10 +57,14 @@ function Shell() {
 
 export function Workspace() {
   const repos = useReposQuery(true);
+  const selected = useSelectedRepos();
   useEffect(() => {
+    if (!repos.data) return;
     const ui = useUi.getState();
-    if (repos.data?.length && !ui.repoView) ui.set({ repoView: repos.data[0].id });
-  }, [repos.data]);
+    // First visit: ask which repositories to use instead of loading everything.
+    if (!selected.hasChosen && repos.data.length) ui.openModal("repos");
+    else if (!ui.repoView || !selected.ids.includes(ui.repoView)) ui.set({ repoView: selected.ids[0] ?? null });
+  }, [repos.data, selected.hasChosen, selected.ids]);
   if (repos.isPending) return <BootScreen label="Loading your GitHub repositories…" />;
   if (repos.isError) return <BootScreen label={`Could not load repositories: ${repos.error.message}`} />;
   return (

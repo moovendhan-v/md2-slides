@@ -29,12 +29,12 @@ export const clickCount = (sl: Slide | undefined, o: DeckOptions) =>
 export function slideAtLine(deck: Deck, line: number): number {
   let k = 0;
   deck.slides.forEach((s, i) => {
-    if (s.startLine <= line) k = i;
+    if ((s.anchorLine ?? s.startLine) <= line) k = i;
   });
   return k;
 }
 
-export const slideFocusLine = (sl: Slide) => (sl.titleLine >= 0 ? sl.titleLine : sl.startLine);
+export const slideFocusLine = (sl: Slide) => sl.anchorLine ?? (sl.titleLine >= 0 ? sl.titleLine : sl.startLine);
 
 export const slideLabel = (sl: Slide, i: number) => sl.title || sl.kicker || sl.groups[0]?.[0]?.type || `Slide ${i + 1}`;
 

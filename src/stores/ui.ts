@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 export type View = "editor" | "studio" | "templates" | "repo" | "profile";
-export type Modal = "palette" | "commit" | "ai" | "newSlide" | "share" | null;
+export type Modal = "palette" | "commit" | "ai" | "newSlide" | "share" | "repos" | null;
 export type CustomTab = "style" | "canvas" | "type" | "slide" | "motion" | "deck";
 
 interface UiState {

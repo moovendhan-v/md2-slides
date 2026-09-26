@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { codeLines, clickCount } from "@/domain/deck/queries";
 import { thumbLook } from "@/domain/deck/look";
 import { transitionCss } from "@/domain/deck/slide-frame";
+import { slideNumber } from "@/domain/deck/paginate";
 import { useDeck } from "@/app-shell/deck-context";
 import { SlideView } from "@/components/slide/slide-view";
 import { cn } from "@/lib/utils";
@@ -64,7 +65,7 @@ export function Presenter() {
               <div className={cn("rounded-md", k === i ? "ring-2 ring-blue-500" : "ring-1 ring-zinc-800")}>
                 <SlideView slide={s} index={k} total={n} look={stripLook} />
               </div>
-              <span className="font-mono text-[10px] text-zinc-500">{String(k + 1).padStart(2, "0")}</span>
+              <span className="font-mono text-[10px] text-zinc-500">{slideNumber(s, k)}</span>
             </button>
           ))}
         </div>

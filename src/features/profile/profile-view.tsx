@@ -8,7 +8,8 @@ import { useMeQuery } from "@/hooks/use-queries";
 import { useSignOut } from "@/hooks/use-sign-out";
 import { timeAgo } from "@/lib/time";
 import { pref, useSession } from "@/stores/session";
-import { useWorkspace } from "@/stores/workspace";
+import { useSelectedRepos } from "@/hooks/use-selected-repos";
+import { useUi } from "@/stores/ui";
 
 const WORKFLOW: [string, string, string, string, boolean][] = [
   ["git-commit", "Commit on save (⌘S)", "Skip the dialog and push directly", "autoCommit", false],
@@ -31,7 +32,7 @@ function Card({ title, sub, children }: { title: string; sub: string; children: 
 
 export function ProfileView() {
   const { prefs, togglePref } = useSession();
-  const repos = useWorkspace((s) => s.repos);
+  const selected = useSelectedRepos().repos;
   const me = useMeQuery().data;
   const user = me?.user;
   const signOut = useSignOut();
@@ -74,10 +75,17 @@ export function ProfileView() {
             </Button>
           </div>
         </Card>
-        <Card title="Repository access" sub="Toggle which repos appear in the sidebar">
-          {repos.map((r) => (
-            <ToggleRow key={r.id} icon={r.private ? "lock-simple" : "book-bookmark"} label={r.id} sub={`${r.private ? "Private" : "Public"} · ${r.branch}`} checked={pref(prefs, "repo:" + r.id, true)} onChange={() => togglePref("repo:" + r.id, true)} />
+        <Card title="Repositories" sub="Only these appear in Slidewise">
+          {selected.map((r) => (
+            <div key={r.id} className="flex items-center gap-3 text-[13px]">
+              <Icon name={r.private ? "lock-simple" : "book-bookmark"} className="text-zinc-500" />
+              <span className="flex-1 truncate">{r.id}</span>
+              <span className="text-xs text-zinc-500">{r.branch}</span>
+            </div>
           ))}
+          <Button variant="outline" size="sm" className="self-start border-zinc-800" onClick={() => useUi.getState().openModal("repos")}>
+            Choose repositories
+          </Button>
         </Card>
         <Card title="Workflow" sub="How edits become commits">
           {WORKFLOW.map(([icon, label, sub, key, def]) => (

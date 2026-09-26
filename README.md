@@ -47,8 +47,9 @@ Environment variables (see `.env.example`):
 
 ## Features
 
-- **GitHub sign-in** (OAuth), live repository browser (lazy trees and files), per-file dirty state, commit dialog with line diffs — pushes a real commit or opens a pull request.
+- **GitHub sign-in** (OAuth), then pick the repositories to work with — only those are shown, and trees/files load on demand. Live repository browser, per-file dirty state, commit dialog with line diffs — pushes a real commit or opens a pull request.
 - **Editor**: colour-coded Markdown, `/` block inserter with live previews, ⌘K palette, problems panel, format, `.md`/PDF export.
+- **Auto-split**: a slide whose content would overflow continues on the next one, numbered 1a, 1b, 1c (display only — the Markdown is unchanged; opt out per slide with `<!-- split: false -->`). Long code, lists, tables and terminals are cut between rows.
 - **Live preview** (all slides or focus mode) — click any block to restyle it, transform it into another block type, or edit images.
 - **Customizer**: 4 palettes × dark/light, accents, 6 backgrounds, 5 font pairings, glass, radius, density, aspect ratio, per-slide layouts / colours / padding, 21 transitions and 8 block animations.
 - **Templates**: decks, single slides and community templates — searched and paged inside the Wasm store; save any deck as a template.

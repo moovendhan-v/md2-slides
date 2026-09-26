@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { slideLabel } from "@/domain/deck/queries";
 import { transitionCss } from "@/domain/deck/slide-frame";
+import { slideNumber } from "@/domain/deck/paginate";
 import { useDeck } from "@/app-shell/deck-context";
 import { Seg } from "@/components/common/controls";
 import { Icon } from "@/components/common/icon";
@@ -42,8 +43,9 @@ function AllSlides() {
       {deck.slides.map((sl, i) => (
         <div key={i} ref={(el) => void (refs.current[i] = el)} className="flex flex-col gap-2">
           <div className="flex items-center gap-2 text-xs">
-            <span className={cn("font-mono", i === current ? "text-blue-400" : "text-zinc-500")}>{String(i + 1).padStart(2, "0")}</span>
+            <span className={cn("font-mono", i === current ? "text-blue-400" : "text-zinc-500")}>{slideNumber(sl, i)}</span>
             <span className="flex-1 truncate text-zinc-300">{slideLabel(sl, i)}</span>
+            {(sl.parts ?? 1) > 1 && <span className="rounded bg-zinc-900 px-1.5 text-[10px] text-zinc-500" title="Content continues on the next slide automatically. Add <!-- split: false --> to keep it on one slide.">auto-split {(sl.part ?? 0) + 1}/{sl.parts}</span>}
             {sl.imported && <span className="rounded bg-zinc-900 px-1.5 text-[10px] text-zinc-500">⎘ {sl.imported}</span>}
             {sl.notes.trim() && (
               <span className="flex items-center gap-1 text-pink-400">
@@ -86,7 +88,7 @@ function FocusSlide() {
           <Icon name="caret-left" />
         </button>
         <span className="w-16 text-center font-mono">
-          {i + 1} / {deck.slides.length}
+          {slideNumber(sl, i)} / {String(sl.sourceTotal ?? deck.slides.length).padStart(2, "0")}
         </span>
         <button type="button" onClick={() => go(i + 1)} className="grid size-8 place-items-center rounded-md border border-zinc-800 hover:bg-zinc-900" aria-label="Next slide">
           <Icon name="caret-right" />

@@ -49,9 +49,14 @@ export function AppSidebar() {
         </nav>
         <div className="flex items-center justify-between px-5 pt-3 pb-1.5 text-[11px] tracking-wider text-zinc-500 uppercase">
           <span>Repositories</span>
-          <span className="flex items-center gap-1.5 normal-case tracking-normal text-green-400">
-            <span className="size-1.5 rounded-full bg-green-400" />
-            GitHub
+          <span className="flex items-center gap-3 normal-case tracking-normal">
+            <span className="flex items-center gap-1.5 text-green-400">
+              <span className="size-1.5 rounded-full bg-green-400" />
+              GitHub
+            </span>
+            <button type="button" title="Choose repositories" aria-label="Choose repositories" onClick={() => set({ modal: "repos" })} className="text-zinc-500 hover:text-zinc-100">
+              <Icon name="gear-six" />
+            </button>
           </span>
         </div>
         <ScrollArea className="min-h-0 flex-1 px-2.5">

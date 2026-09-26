@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useDeck } from "@/app-shell/deck-context";
 import { Icon } from "@/components/common/icon";
 import { clickCount } from "@/domain/deck/queries";
+import { slideNumber } from "@/domain/deck/paginate";
 import { presenterStep, toggleFullscreen } from "@/hooks/use-global-keys";
 import { cn } from "@/lib/utils";
 import { usePresent } from "@/stores/present";
@@ -55,7 +56,7 @@ export function PresenterToolbar({ index, total }: { index: number; total: numbe
         {timer.label}
       </span>
       <span className="text-xs whitespace-nowrap text-zinc-400">
-        Slide {index + 1} of {total}
+        Slide {slideNumber(deck.slides[index], index).replace(/^0/, "")} of {deck.slides[index]?.sourceTotal ?? total}
         {clicks ? ` · click ${p.click}/${clicks}` : ""}
       </span>
       <div className="flex-1" />

@@ -4,12 +4,14 @@ import { memo, useMemo } from "react";
 import type { Slide } from "@/engine/types";
 import type { Look } from "@/domain/deck/look";
 import { animCss, slideFrame } from "@/domain/deck/slide-frame";
+import { slideNumber } from "@/domain/deck/paginate";
 import { RichText } from "./rich-text";
 import { BlockEnvProvider, type SlideRenderOptions } from "./render-context";
 import { BlockGroups } from "./block-groups";
 import { MediaLayer } from "./media-layer";
 import { CustomLayout } from "./custom-layout";
 import { SlideChrome } from "./slide-chrome";
+import { useFitToSlide } from "./use-fit";
 
 interface Props {
   slide: Slide;
@@ -27,6 +29,7 @@ export const SlideView = memo(function SlideView({ slide, index, total, look, op
   const env = useMemo(() => ({ look: slide.dir.accent ? { ...look, accent: slide.dir.accent } : look, opts }), [look, opts, slide.dir.accent]);
   const hasBlocks = slide.groups.some((g) => g.length);
   const clicksOn = slide.dir.clicks ? slide.dir.clicks !== "false" : look.clicks;
+  const { ref, fit } = useFitToSlide([slide, look, f], f.zoom);
   return (
     <div style={{ containerType: "inline-size", width: "100%" }}>
       <div
@@ -41,8 +44,9 @@ export const SlideView = memo(function SlideView({ slide, index, total, look, op
         {f.customId && <CustomLayout id={f.customId} slide={slide} look={look} overrides={opts.layouts} />}
         <BlockEnvProvider value={env}>
           <div
+            ref={ref}
             style={{
-              position: "absolute", inset: 0, pointerEvents: "none", zoom: f.zoom, padding: f.pad, display: f.customId ? "none" : "flex", flexDirection: "column",
+              position: "absolute", inset: 0, pointerEvents: "none", zoom: f.zoom * fit, padding: f.pad, display: f.customId ? "none" : "flex", flexDirection: "column",
               justifyContent: f.justify, alignItems: f.align, textAlign: f.textAlign, gap: look.gap,
             }}
           >
@@ -79,7 +83,7 @@ export const SlideView = memo(function SlideView({ slide, index, total, look, op
             {hasBlocks && <BlockGroups slide={slide} anim={f.anim} stagger={f.stagger} clicksOn={clicksOn} />}
           </div>
         </BlockEnvProvider>
-        <SlideChrome look={look} index={index} total={total} />
+        <SlideChrome look={look} label={slideNumber(slide, index)} total={slide.sourceTotal ?? total} />
       </div>
     </div>
   );
