@@ -1,0 +1,82 @@
+{
+  "name": "slidewise",
+  "displayName": "Slidewise — Markdown Slides",
+  "description": "Open Markdown decks as slides: live preview, draggable components, customizer and presenter mode, powered by the Slidewise engine.",
+  "version": "0.1.0",
+  "publisher": "moovendhan-v",
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moovendhan-v/md2-slides.git",
+    "directory": "vscode-extension"
+  },
+  "bugs": "https://github.com/moovendhan-v/md2-slides/issues",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Visualization", "Other"],
+  "keywords": ["markdown", "slides", "presentation", "deck", "slidewise"],
+  "main": "./dist/extension.js",
+  "activationEvents": ["onLanguage:markdown"],
+  "contributes": {
+    "commands": [
+      { "command": "slidewise.openPreview", "title": "Open as Slides", "category": "Slidewise", "icon": "$(preview)" },
+      { "command": "slidewise.present", "title": "Present Slides", "category": "Slidewise", "icon": "$(play)" },
+      { "command": "slidewise.openInEditor", "title": "Reopen as Slides Editor", "category": "Slidewise" }
+    ],
+    "menus": {
+      "editor/title": [
+        { "command": "slidewise.openPreview", "when": "resourceLangId == markdown && activeEditor == workbench.editors.files.textFileEditor", "group": "navigation@10" }
+      ],
+      "editor/title/context": [
+        { "command": "slidewise.openPreview", "when": "resourceLangId == markdown" }
+      ],
+      "explorer/context": [
+        { "command": "slidewise.openPreview", "when": "resourceLangId == markdown", "group": "navigation@20" },
+        { "command": "slidewise.present", "when": "resourceLangId == markdown", "group": "navigation@21" }
+      ],
+      "commandPalette": [
+        { "command": "slidewise.openPreview", "when": "editorLangId == markdown" },
+        { "command": "slidewise.present", "when": "editorLangId == markdown" },
+        { "command": "slidewise.openInEditor", "when": "editorLangId == markdown" }
+      ]
+    },
+    "keybindings": [
+      { "command": "slidewise.openPreview", "key": "ctrl+k shift+s", "mac": "cmd+k shift+s", "when": "editorLangId == markdown" }
+    ],
+    "customEditors": [
+      {
+        "viewType": "slidewise.editor",
+        "displayName": "Slidewise Slides",
+        "selector": [{ "filenamePattern": "*.md" }],
+        "priority": "option"
+      }
+    ],
+    "configuration": {
+      "title": "Slidewise",
+      "properties": {
+        "slidewise.suggestOnOpen": {
+          "type": "string",
+          "enum": ["decks", "always", "never"],
+          "enumDescriptions": [
+            "Suggest for Markdown files that look like decks (front matter, --- slide breaks, ::: blocks)",
+            "Suggest for every Markdown file",
+            "Never suggest"
+          ],
+          "default": "decks",
+          "description": "Suggest opening Markdown files as slides when they are opened."
+        },
+        "slidewise.defaultView": {
+          "type": "string",
+          "enum": ["preview", "blocks"],
+          "enumDescriptions": ["Rendered slides", "Draggable component view"],
+          "default": "preview",
+          "description": "View the slides panel opens with."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "node scripts/build.mjs"
+  }
+}

@@ -59,6 +59,22 @@ Environment variables (see `.env.example`):
 
 The full Markdown syntax is in [`public/llms-full.txt`](public/llms-full.txt).
 
+## VS Code extension
+
+`vscode-extension/` packages the same app for VS Code. The webview bundles `src/embed/vscode/main.tsx`, which reuses the engine, preview, Components view, customizer and presenter from `src/`, and it is kept in sync with the open `.md` file. Opening a Markdown deck suggests "Open as Slides".
+
+| Command | |
+| --- | --- |
+| `./scripts/vscode-dev.sh [deck.md]` | Build and open an Extension Development Host for testing (or press F5 in VS Code) |
+| `./scripts/vscode-dev.sh --install` | Package a `.vsix` and install it into your VS Code |
+| `npm run vscode:test` | Headless integration test in a downloaded VS Code |
+| `./scripts/vscode-release.sh patch "notes"` | Bump the version, update CHANGELOG, commit and tag `vscode-vX.Y.Z` |
+
+Pushing a `vscode-v*` tag runs `.github/workflows/vscode-extension.yml`:
+- It builds, tests and packages the extension, then attaches the `.vsix` to a GitHub release.
+- It publishes to the VS Code Marketplace when the `VSCE_PAT` secret is set, and to Open VSX when `OVSX_PAT` is set.
+- The `publisher` in `vscode-extension/package.json` must match your Marketplace publisher ID.
+
 ## Architecture
 
 ```
