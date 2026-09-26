@@ -10,7 +10,11 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:engine": "cargo test --manifest-path crates/slide-engine/Cargo.toml",
-    "wasm:build": "./scripts/build-wasm.sh"
+    "wasm:build": "./scripts/build-wasm.sh",
+    "vscode:build": "node vscode-extension/scripts/build.mjs",
+    "vscode:dev-build": "node vscode-extension/scripts/build.mjs --dev",
+    "vscode:package": "cd vscode-extension && vsce package --no-dependencies --skip-license",
+    "vscode:test": "npm run vscode:build && node vscode-extension/test/run.mjs"
   },
   "dependencies": {
     "@phosphor-icons/web": "^2.1.2",
@@ -34,10 +38,15 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@tailwindcss/cli": "^4.3.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22.20.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/vscode": "1.90.0",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
     "eslint": "^9",
     "eslint-config-next": "15.5.26",
     "tailwindcss": "^4",

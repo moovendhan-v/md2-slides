@@ -42,3 +42,8 @@ next-env.d.ts
 
 # keep the template
 !.env.example
+
+# VS Code extension build output
+/vscode-extension/dist/
+*.vsix
+.vscode-test/
