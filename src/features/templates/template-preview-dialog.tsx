@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthorCredit } from "@/components/common/author-credit";
 import { toast } from "sonner";
 import type { TemplateRecord } from "@/engine/types";
 import { Icon } from "@/components/common/icon";
@@ -30,9 +31,10 @@ export function TemplatePreviewDialog({ template: t, onClose }: { template: Temp
       <DialogContent className="flex max-h-[88vh] flex-col border-zinc-800 bg-zinc-950 sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>{t.name}</DialogTitle>
-          <DialogDescription>
-            {t.cat} · by {t.author} · {parsed.deck.slides.length} slides
+          <DialogDescription className="flex flex-wrap items-center gap-1.5">
+            {t.cat} · by <AuthorCredit name={t.author} github={t.authorGithub} size={16} /> · {parsed.deck.slides.length} slides
           </DialogDescription>
+          {t.description && <p className="text-xs text-zinc-500">{t.description}</p>}
         </DialogHeader>
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pr-1">
           {parsed.deck.slides.map((sl, i) => (

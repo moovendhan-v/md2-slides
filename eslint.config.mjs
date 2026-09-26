@@ -24,6 +24,7 @@ const eslintConfig = [
       "crates/**",
       "vscode-extension/dist/**",
       "public/player/**",
+      "packages/*/dist/**",
       "**/.vscode-test/**",
     ],
   },

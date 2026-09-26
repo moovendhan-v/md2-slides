@@ -3,22 +3,31 @@
 import { Features } from "./features";
 import { LandingFooter } from "./footer";
 import { Hero } from "./hero";
-import { HowItWorks } from "./how-it-works";
+import { McpSection } from "./mcp-section";
 import { LandingNav } from "./nav";
+import { PainGrid, Workflow, WorksWith } from "./sections-a";
+import { CommunitySection, ExportStrip, Faq, FinalCta } from "./sections-b";
+import { SupportSection } from "./support-section";
 import { useSignedIn } from "./use-signed-in";
-import { VsCodeSection } from "./vscode-section";
 
 /** The public landing page at `/` (the editor lives at `/app`). */
 export function LandingPage() {
   const signedIn = useSignedIn();
   return (
-    <div className="min-h-dvh bg-zinc-950 text-zinc-50">
+    <div className="min-h-dvh bg-[#060608] text-zinc-50">
       <LandingNav signedIn={signedIn} />
       <main>
         <Hero signedIn={signedIn} />
+        <WorksWith />
+        <PainGrid />
+        <Workflow />
         <Features />
-        <HowItWorks />
-        <VsCodeSection />
+        <McpSection />
+        <ExportStrip />
+        <CommunitySection />
+        <SupportSection />
+        <Faq />
+        <FinalCta signedIn={signedIn} />
       </main>
       <LandingFooter />
     </div>

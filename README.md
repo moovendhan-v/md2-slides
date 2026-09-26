@@ -63,12 +63,33 @@ The full Markdown syntax is in [`public/llms-full.txt`](public/llms-full.txt).
 ## Landing page and brand
 
 - **Routes:** `/` is the landing page, `/app` is the editor (GitHub sign-in returns there), and `/v#…` is the share viewer.
-- **Hero:** a three.js scene (React Three Fiber + drei). The real rendered md2slides slides fan out, stack and present as you scroll, over a particle field with pointer parallax.
-  - It lazy-loads without SSR, so the page's first load stays small.
-  - Visitors with reduced motion, or browsers without WebGL, get a static CSS 3D fallback.
-- **Landing assets:** the slide textures in `public/landing/` and the "View a demo deck" link are generated from `src/features/landing/showcase.md` by `node scripts/landing-assets.mjs` (run it with the app running).
-- **Logo and icons:** the logo is `public/logo.svg`. `node scripts/brand-icons.mjs` renders the favicon set (`src/app/icon.svg`, `favicon.ico`, `apple-icon.png`, PWA icons) and the VS Code icon. The web manifest and social preview image are built by `src/app/manifest.ts` and `src/app/opengraph-image.tsx`.
-- **Renamed from Slidewise:** settings and saved templates stored under the old names migrate automatically.
+- **Audience and message:** the landing page is written for developers: the deck is a Markdown file in your repo, and updating it updates what the client sees.
+- **Live demo:** its hero is a real editor-plus-preview. The Markdown types itself and the md2slides engine re-renders the slide on every keystroke, with a static version for reduced motion.
+- **Sections:** the pain → fix grid, workflow, features, the MCP server, export, community templates, contribute and donate, and FAQ.
+- **Where things live:**
+  - All copy is in `src/features/landing/content.ts`.
+  - Donation links (GitHub Sponsors, Buy Me a Coffee via `NEXT_PUBLIC_BMC_HANDLE`, Open Collective) are in `src/lib/brand.ts`.
+  - The logo is `public/logo.svg`. `node scripts/brand-icons.mjs` regenerates the favicon set and the VS Code icon.
+  - `node scripts/landing-assets.mjs` regenerates the workflow slide images and the demo link from `src/features/landing/showcase.md`.
+
+## MCP server (`npx -y md2slides-mcp`)
+
+`packages/mcp` is an MCP server that lets Claude write decks into your repo:
+
+```bash
+claude mcp add md2slides -- npx -y md2slides-mcp
+```
+
+- **Tools:** `get_syntax`, `list_blocks`, `list_templates`, `validate_deck`, `create_deck`, `update_deck`, `read_deck`, `preview_link`, plus a `new_deck` prompt.
+- **How decks are written:** each deck is validated by the same Wasm engine, then written inside the workspace. It refuses paths outside the workspace and won't overwrite by accident. Claude gets back a `/v#…` preview link.
+- **To the dashboard:** push the file and it appears in the dashboard.
+- **Build and release:** `npm run mcp:build` builds it. Pushing an `mcp-v*` tag publishes to npm when the `NPM_TOKEN` secret is set. Details are in [packages/mcp/README.md](packages/mcp/README.md).
+
+## Community templates
+
+- **Adding one:** community templates live in `community/templates/<id>/` as `deck.md` plus `meta.json`, with the author's GitHub username.
+- **Validation:** `npm run community` validates them with the engine and regenerates `src/data/community.generated.json`. The build and a CI workflow check it's up to date.
+- **Credit:** in the app and on the landing page, each template shows its author's avatar, name and a link to their GitHub profile. A contributors wall lists everyone, including people in `community/CONTRIBUTORS.json`. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Share links (no server storage)
 

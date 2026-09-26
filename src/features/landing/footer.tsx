@@ -14,6 +14,10 @@ export function LandingFooter() {
         <div className="flex flex-wrap gap-5 text-[13px] text-zinc-400">
           <Link href="/app" className="hover:text-zinc-100">Open app</Link>
           <a href="/llms-full.txt" className="hover:text-zinc-100">Syntax reference</a>
+          <a href={`${BRAND.repo}/tree/main/packages/mcp`} className="hover:text-zinc-100">MCP server</a>
+          <a href={`${BRAND.repo}/tree/main/vscode-extension`} className="hover:text-zinc-100">VS Code</a>
+          <a href={`${BRAND.repo}/blob/main/CONTRIBUTING.md`} className="hover:text-zinc-100">Contribute</a>
+          <a href={BRAND.support.sponsors} className="hover:text-zinc-100">Sponsor</a>
           <a href={BRAND.repo} className="hover:text-zinc-100">GitHub</a>
         </div>
       </div>

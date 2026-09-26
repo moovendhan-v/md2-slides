@@ -16,14 +16,14 @@
     "vscode:package": "cd vscode-extension && vsce package --no-dependencies --skip-license",
     "vscode:test": "npm run vscode:build && node vscode-extension/test/run.mjs",
     "player:build": "node scripts/build-player.mjs",
-    "predev": "node scripts/build-player.mjs --dev",
-    "prebuild": "node scripts/build-player.mjs"
+    "predev": "node scripts/community.mjs && node scripts/build-player.mjs --dev",
+    "prebuild": "node scripts/community.mjs --check && node scripts/build-player.mjs",
+    "community": "node scripts/community.mjs",
+    "mcp:build": "node packages/mcp/build.mjs"
   },
   "dependencies": {
     "@phosphor-icons/core": "^2.1.1",
     "@phosphor-icons/web": "^2.1.2",
-    "@react-three/drei": "^10.7.9",
-    "@react-three/fiber": "^9.8.1",
     "@tanstack/react-query": "^5.103.3",
     "@tanstack/react-table": "^9.2.4",
     "class-variance-authority": "^0.7.1",
@@ -41,19 +41,18 @@
     "server-only": "^0.0.1",
     "shadcn": "^4.21.0",
     "sonner": "^2.0.8",
-    "three": "^0.186.1",
     "tw-animate-css": "^1.4.0",
     "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@modelcontextprotocol/sdk": "^1.30.1",
     "@tailwindcss/cli": "^4.3.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22.20.4",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/three": "^0.186.0",
     "@types/vscode": "1.90.0",
     "@vscode/test-electron": "^3.1.0",
     "@vscode/vsce": "^4.0.0",
@@ -62,6 +61,7 @@
     "eslint-config-next": "15.5.26",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^5.0.2"
+    "vitest": "^5.0.2",
+    "zod": "^4.6.5"
   }
 }

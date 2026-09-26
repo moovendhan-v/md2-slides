@@ -89,6 +89,9 @@ export interface TemplateRecord {
   name: string;
   cat: string;
   author: string;
+  /** GitHub username of a community author (avatar + profile link). */
+  authorGithub?: string;
+  description?: string;
   md: string;
   stars?: number;
   community?: boolean;
