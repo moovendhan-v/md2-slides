@@ -11,37 +11,79 @@ import { DEMO_SCRIPT } from "./content";
 import { lineOf } from "./typing";
 import { useTypingDemo } from "./use-typing-demo";
 
+/**
+ * Each line gets a unique key so React remounts it (re-runs the animation)
+ * whenever a new line appears. The animation is a blur+fade+slide-up "magic" pop.
+ */
+function EditorLine({
+  line,
+  lineNum,
+  isActive,
+  isNew,
+}: {
+  line: string;
+  lineNum: number;
+  isActive: boolean;
+  isNew: boolean;
+}) {
+  const highlighted = highlightMarkdown(line, false);
+  return (
+    <div
+      className={isActive ? "-mx-4 bg-white/[.04] px-4" : undefined}
+      style={
+        isNew
+          ? { animation: "demo-line-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both" }
+          : undefined
+      }
+    >
+      <span className="mr-4 inline-block w-5 text-right text-zinc-600 select-none">
+        {lineNum}
+      </span>
+      {highlighted.map((s, j) => (
+        <span key={j} style={{ color: s.c }}>
+          {s.t}
+        </span>
+      ))}
+      {isActive && (
+        <span className="ml-px inline-block h-[1.1em] w-[2px] translate-y-[3px] animate-pulse bg-blue-400" />
+      )}
+    </div>
+  );
+}
+
 function Editor({ text, caret }: { text: string; caret: number }) {
   const lines = text.split("\n");
   const caretLine = lineOf(text, caret);
-  const caretCol = caret - text.slice(0, caret).lastIndexOf("\n") - 1;
   const box = useRef<HTMLDivElement>(null);
-  // Keep the line being edited in view, like a real editor (jump when it leaves the middle band).
+  // Track which line indices have already appeared so we only animate new ones.
+  const seenCountRef = useRef(0);
+
+  // Auto-scroll to keep the latest line in view.
   useEffect(() => {
     const el = box.current;
     const row = el?.children[caretLine] as HTMLElement | undefined;
     if (!el || !row) return;
     const y = row.offsetTop - el.scrollTop;
-    if (y < el.clientHeight * 0.2 || y > el.clientHeight * 0.75) el.scrollTop = Math.max(0, row.offsetTop - el.clientHeight * 0.45);
+    if (y < el.clientHeight * 0.2 || y > el.clientHeight * 0.75)
+      el.scrollTop = Math.max(0, row.offsetTop - el.clientHeight * 0.45);
   }, [caretLine, text]);
+
+  const prevSeen = seenCountRef.current;
+  seenCountRef.current = lines.length;
+
   return (
-    <div ref={box} className="relative min-h-0 flex-1 overflow-hidden p-4 font-mono text-[12.5px] leading-[1.6]">
+    <div
+      ref={box}
+      className="relative min-h-0 flex-1 overflow-hidden p-4 font-mono text-[12.5px] leading-[1.6]"
+    >
       {lines.map((l, i) => (
-        <div key={i} className={i === caretLine ? "-mx-4 bg-white/[.04] px-4" : undefined}>
-          <span className="mr-4 inline-block w-5 text-right text-zinc-600 select-none">{i + 1}</span>
-          {highlightMarkdown(l.slice(0, i === caretLine ? caretCol : l.length), false).map((s, j) => (
-            <span key={j} style={{ color: s.c }}>
-              {s.t}
-            </span>
-          ))}
-          {i === caretLine && <span className="ml-px inline-block h-[1.1em] w-[2px] translate-y-[3px] animate-pulse bg-blue-400" />}
-          {i === caretLine &&
-            highlightMarkdown(l.slice(caretCol), false).map((s, j) => (
-              <span key={`r${j}`} style={{ color: s.c }}>
-                {s.t}
-              </span>
-            ))}
-        </div>
+        <EditorLine
+          key={`${i}-${l}`}
+          line={l}
+          lineNum={i + 1}
+          isActive={i === caretLine}
+          isNew={i >= prevSeen}
+        />
       ))}
     </div>
   );
@@ -57,17 +99,31 @@ function Preview({ text, caret }: { text: string; caret: number }) {
   const slide = parsed.deck.slides[i];
   return (
     <div className="flex flex-1 flex-col justify-center gap-3 p-4">
-      {slide ? <SlideView slide={slide} index={i} total={parsed.deck.slides.length} look={parsed.look} /> : <div className="aspect-video rounded-lg bg-zinc-900" />}
+      {/* key={i} remounts → re-runs the slide-in animation on slide change */}
+      <div
+        key={i}
+        style={{ animation: "demo-slide-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both" }}
+      >
+        {slide ? (
+          <SlideView slide={slide} index={i} total={parsed.deck.slides.length} look={parsed.look} />
+        ) : (
+          <div className="aspect-video rounded-lg bg-zinc-900" />
+        )}
+      </div>
       <div className="flex justify-center gap-1.5">
         {parsed.deck.slides.map((_, k) => (
-          <span key={k} className={k === i ? "h-1.5 w-5 rounded-full bg-blue-500" : "size-1.5 rounded-full bg-zinc-700"} />
+          <span
+            key={k}
+            className={k === i ? "h-1.5 w-5 rounded-full bg-blue-500" : "size-1.5 rounded-full bg-zinc-700"}
+            style={{ transition: "all 0.35s cubic-bezier(0.22, 1, 0.36, 1)" }}
+          />
         ))}
       </div>
     </div>
   );
 }
 
-/** Editor + preview frame: the Markdown types itself and the real engine re-renders the slide on every keystroke. */
+/** Editor + preview frame: lines materialise one-by-one and the real engine re-renders the slide live. */
 export function LiveDemo() {
   const frame = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
