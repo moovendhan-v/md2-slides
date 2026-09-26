@@ -50,3 +50,6 @@ next-env.d.ts
 
 # Standalone player for the HTML export (built by scripts/build-player.mjs)
 /public/player/
+
+# MCP server build output
+/packages/mcp/dist/

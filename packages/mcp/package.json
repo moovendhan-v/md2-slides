@@ -1,0 +1,16 @@
+{
+  "name": "md2slides-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for md2slides: let Claude (or any MCP client) write Markdown slide decks into your repo, validated by the md2slides engine.",
+  "keywords": ["mcp", "model-context-protocol", "claude", "markdown", "slides", "presentation", "md2slides"],
+  "type": "module",
+  "bin": { "md2slides-mcp": "dist/index.js" },
+  "files": ["dist", "README.md"],
+  "engines": { "node": ">=18.17" },
+  "repository": { "type": "git", "url": "https://github.com/moovendhan-v/md2-slides.git", "directory": "packages/mcp" },
+  "homepage": "https://github.com/moovendhan-v/md2-slides/tree/main/packages/mcp",
+  "license": "MIT",
+  "scripts": {
+    "prepublishOnly": "node build.mjs"
+  }
+}

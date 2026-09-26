@@ -12,6 +12,11 @@ pub struct Template {
     pub cat: String,
     #[serde(default)]
     pub author: String,
+    /// GitHub username of a community author (credited with avatar + profile link).
+    #[serde(default, rename = "authorGithub", skip_serializing_if = "Option::is_none")]
+    pub author_github: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     #[serde(default)]
     pub md: String,
     #[serde(default)]
@@ -59,7 +64,7 @@ struct Entry {
 
 impl Entry {
     fn new(t: Template) -> Self {
-        let haystack = format!("{} {} {}", t.name, t.cat, t.md).to_lowercase();
+        let haystack = format!("{} {} {} {} {}", t.name, t.cat, t.author, t.author_github.as_deref().unwrap_or(""), t.md).to_lowercase();
         Entry { t, haystack }
     }
 
@@ -200,6 +205,20 @@ mod tests {
         let f = Filter { q: Some("B".into()), source: Some("builtin".into()), ..Default::default() };
         assert_eq!(s.query(&f).total, 2);
         assert_eq!(s.categories("single"), vec!["Cards".to_string()]);
+    }
+
+    #[test]
+    fn keeps_and_searches_community_author() {
+        let mut s = Store::default();
+        let c: Template = serde_json::from_value(serde_json::json!({ "id": "c1", "name": "Incident", "author": "Ada", "authorGithub": "ada-l", "description": "Postmortem", "community": true })).unwrap();
+        s.upsert(c);
+        let json = serde_json::to_value(s.get("c1").unwrap()).unwrap();
+        assert_eq!(json["authorGithub"], "ada-l");
+        assert_eq!(json["description"], "Postmortem");
+        let f = Filter { q: Some("ada-l".into()), source: Some("community".into()), ..Default::default() };
+        assert_eq!(s.query(&f).total, 1);
+        let r = Store::restore(&s.snapshot()).unwrap();
+        assert_eq!(r.get("c1").unwrap().author_github.as_deref(), Some("ada-l"));
     }
 
     #[test]

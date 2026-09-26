@@ -1,0 +1,43 @@
+{
+  "templates": [
+    {
+      "id": "community-api-launch",
+      "name": "API launch",
+      "description": "Announce a developer API: what it does, a code sample, pricing and next steps.",
+      "cat": "Product",
+      "author": "Moovendhan V",
+      "authorGithub": "moovendhan-v",
+      "md": "<!-- layout: center -->\n^ Now in beta\n# The Payments API\nAccept payments with three lines of code.\n\n---\n\n## Why developers switch\n\n:::cards style=glass cols=3\n- lightning | Fast | Median response under 80 ms\n- shield-check | Safe | PCI handled for you\n- code | Typed | SDKs for TS, Go and Python\n:::\n\n---\n\n## Three lines\n\n```ts checkout.ts {2|3}\nimport { Payments } from \"@acme/payments\";\nconst pay = new Payments(process.env.ACME_KEY);\nawait pay.charge({ amount: 4200, currency: \"usd\" });\n```\n\n---\n\n## Pricing\n\n| Plan | Price | Includes |\n| --- | --- | --- |\n| Starter | Free | 1k requests / month |\n| Growth | 0.4% | Unlimited requests |\n| Scale | Custom | SLA and support |\n\n---\n\n## Get started\n\n> [!TIP] `npm i @acme/payments` and read the docs at acme.dev\n",
+      "stars": 0,
+      "community": true,
+      "look": {
+        "theme": "midnight",
+        "accent": "#a78bfa",
+        "bg": "mesh"
+      }
+    },
+    {
+      "id": "community-incident-review",
+      "name": "Incident review",
+      "description": "Blameless postmortem: timeline, impact, root cause and follow-ups.",
+      "cat": "Engineering",
+      "author": "Moovendhan V",
+      "authorGithub": "moovendhan-v",
+      "md": "<!-- layout: center -->\n^ Postmortem · INC-142\n# Checkout latency spike\nBlameless review · 42 minutes of degraded service\n\n---\n\n## Impact\n\n:::stats style=big\n- 42m | Degraded\n- 18% | Checkouts slowed\n- 0 | Data lost\n:::\n\n---\n\n## Timeline\n\n:::timeline style=v\n- 09:12 | p99 latency alert fires\n- 09:20 | Rollback of release 5.3.1\n- 09:34 | Cache warmed, latency normal\n- 09:54 | Incident closed\n:::\n\n---\n\n## Root cause\n\n```mermaid\nflowchart LR\n  A[Release 5.3.1] --> B[Cache key change]\n  B --> C[Cold cache]\n  C --> D[DB overload]\n```\n\n---\n\n## Follow-ups\n\n- [ ] Canary cache hit-rate before full rollout\n- [ ] Alert on cache miss ratio, not just latency\n- [ ] Runbook: warm cache after key changes\n",
+      "stars": 0,
+      "community": true,
+      "look": {
+        "theme": "zinc",
+        "accent": "#f87171"
+      }
+    }
+  ],
+  "contributors": [
+    {
+      "github": "moovendhan-v",
+      "name": "Moovendhan V",
+      "role": "Creator & maintainer",
+      "templates": 2
+    }
+  ]
+}

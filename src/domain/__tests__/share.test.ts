@@ -102,15 +102,31 @@ describe("storage migration after the rename", () => {
   });
 });
 
-describe("landing choreography", () => {
-  it("fans, stacks, then presents the first slide", async () => {
-    const { panelPose, captionIndex } = await import("@/features/landing/choreography");
-    const start = [0, 1, 2].map((i) => panelPose(i, 3, 0));
-    expect(new Set(start.map((p) => p.position[0].toFixed(2))).size).toBe(3);
-    const end = panelPose(0, 3, 1);
-    expect(end.rotation).toEqual([0, 0, 0]);
-    expect(end.scale).toBeGreaterThan(1);
-    expect(panelPose(1, 3, 1).opacity).toBeLessThan(0.3);
-    expect([0, 0.5, 0.9].map(captionIndex)).toEqual([0, 1, 2]);
+describe("author credit", () => {
+  it("builds GitHub profile and avatar URLs only for valid handles", async () => {
+    const { githubProfile } = await import("@/lib/github");
+    expect(githubProfile("moovendhan-v", 40)).toEqual({ url: "https://github.com/moovendhan-v", avatar: "https://github.com/moovendhan-v.png?size=40" });
+    expect(githubProfile("bad handle")).toBeUndefined();
+    expect(githubProfile("-leading")).toBeUndefined();
+    expect(githubProfile(undefined)).toBeUndefined();
+  });
+});
+
+describe("landing live-demo typing", () => {
+  it("edits toward the target like a person", async () => {
+    const { typingStep, lineOf } = await import("@/features/landing/typing");
+    const run = (from: string, to: string) => {
+      const seen = [from];
+      let s = { text: from, caret: 0 };
+      for (let i = 0; i < 200 && s.text !== to; i++) seen.push((s = typingStep(s.text, to)).text);
+      return seen;
+    };
+    expect(run("", "ab")).toEqual(["", "a", "ab"]);
+    const steps = run("theme: zinc\n# T", "theme: midnight\n# T");
+    expect(steps.at(-1)).toBe("theme: midnight\n# T");
+    expect(steps).toContain("theme: \n# T");
+    expect(steps.every((t) => t.endsWith("\n# T"))).toBe(true);
+    expect(typingStep("abc", "abc")).toEqual({ text: "abc", caret: 3 });
+    expect(lineOf("a\nb\nc", 3)).toBe(1);
   });
 });

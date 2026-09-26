@@ -1,0 +1,7 @@
+{
+  "name": "Incident review",
+  "description": "Blameless postmortem: timeline, impact, root cause and follow-ups.",
+  "category": "Engineering",
+  "author": { "github": "moovendhan-v", "name": "Moovendhan V" },
+  "look": { "theme": "zinc", "accent": "#f87171" }
+}

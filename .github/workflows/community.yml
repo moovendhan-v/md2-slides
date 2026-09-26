@@ -1,0 +1,16 @@
+name: Community templates
+
+on:
+  pull_request:
+    paths: ["community/**", "src/data/community.generated.json", "scripts/community.mjs"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate templates and check the generated catalog is committed
+        run: node scripts/community.mjs --check

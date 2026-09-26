@@ -5,6 +5,7 @@
 import type { TemplateRecord } from "@/engine/types";
 import aiPresets from "./ai-presets.json";
 import codeTemplates from "./code-templates.json";
+import community from "./community.generated.json";
 import snippets from "./snippets.json";
 import studioGuide from "./studio-guide.json";
 import templates from "./templates.json";
@@ -29,7 +30,17 @@ export interface CodeTemplate {
   sample: string;
 }
 
+export interface Contributor {
+  github: string;
+  name?: string;
+  role?: string;
+  templates: number;
+}
+
 export const SEED_TEMPLATES = templates as TemplateRecord[];
+/** Templates contributed via community/templates (validated by scripts/community.mjs). */
+export const COMMUNITY_TEMPLATES = community.templates as TemplateRecord[];
+export const CONTRIBUTORS = community.contributors as Contributor[];
 export const BLOCK_SNIPPETS = snippets as Snippet[];
 export const AI_PRESETS = aiPresets as AiPreset[];
 export const CODE_TEMPLATES = codeTemplates as CodeTemplate[];

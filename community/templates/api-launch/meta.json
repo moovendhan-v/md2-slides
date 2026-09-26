@@ -1,0 +1,7 @@
+{
+  "name": "API launch",
+  "description": "Announce a developer API: what it does, a code sample, pricing and next steps.",
+  "category": "Product",
+  "author": { "github": "moovendhan-v", "name": "Moovendhan V" },
+  "look": { "theme": "midnight", "accent": "#a78bfa", "bg": "mesh" }
+}
