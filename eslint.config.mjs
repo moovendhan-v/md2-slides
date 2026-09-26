@@ -23,6 +23,7 @@ const eslintConfig = [
       "src/engine/wasm/pkg/**",
       "crates/**",
       "vscode-extension/dist/**",
+      "public/player/**",
       "**/.vscode-test/**",
     ],
   },

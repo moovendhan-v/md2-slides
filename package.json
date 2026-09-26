@@ -14,7 +14,10 @@
     "vscode:build": "node vscode-extension/scripts/build.mjs",
     "vscode:dev-build": "node vscode-extension/scripts/build.mjs --dev",
     "vscode:package": "cd vscode-extension && vsce package --no-dependencies --skip-license",
-    "vscode:test": "npm run vscode:build && node vscode-extension/test/run.mjs"
+    "vscode:test": "npm run vscode:build && node vscode-extension/test/run.mjs",
+    "player:build": "node scripts/build-player.mjs",
+    "predev": "node scripts/build-player.mjs --dev",
+    "prebuild": "node scripts/build-player.mjs"
   },
   "dependencies": {
     "@phosphor-icons/core": "^2.1.1",
@@ -29,6 +32,7 @@
     "mermaid": "^12.0.0",
     "next": "15.5.26",
     "next-themes": "^0.4.6",
+    "qrcode": "^1.5.4",
     "radix-ui": "^1.6.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -43,6 +47,7 @@
     "@tailwindcss/cli": "^4.3.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22.20.4",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/vscode": "1.90.0",

@@ -47,3 +47,6 @@ next-env.d.ts
 /vscode-extension/dist/
 *.vsix
 .vscode-test/
+
+# Standalone player for the HTML export (built by scripts/build-player.mjs)
+/public/player/

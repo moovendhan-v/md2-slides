@@ -60,6 +60,30 @@ Environment variables (see `.env.example`):
 
 The full Markdown syntax is in [`public/llms-full.txt`](public/llms-full.txt).
 
+## Share links (no server storage)
+
+**Share** (editor toolbar, presenter, ⌘K) creates a view-only link that carries the deck itself:
+- The Markdown and any imported files are compressed into the URL fragment (`/v#…`). Browsers never send the fragment to the server, so nothing is uploaded, stored or logged.
+- **Password:** optional. The deck is encrypted in the browser (AES-GCM with a PBKDF2-derived key) and decrypted in the viewer's browser.
+- **Expiry:** 1 hour to 30 days, or never. The viewer enforces it. Add a password if the content must stay private after expiry.
+- **Viewer options:** show speaker notes, allow `.md` download, open straight into present mode.
+- **The `/v` viewer** is a static page:
+  - Read-only slides and the full presenter: transitions, reveals, code steps, overview, pen, laser, timer.
+  - `?slide=N` deep links.
+  - A speaker window kept in sync over `BroadcastChannel`.
+- **Link size:** typical decks produce links of a few KB. The dialog warns when a link gets long enough that chat apps may cut it off, and a QR code is available for rooms.
+- **Images:** images with relative repo paths are not included; the dialog lists them.
+
+## Export
+
+**Export** (editor toolbar or ⌘K) generates files in the browser:
+- **HTML presentation:** one offline `.html` file you can double-click to open.
+  - It contains the full presenter: transitions, reveals, code steps, overview, pen, laser, timer and speaker view.
+  - Mermaid diagrams are pre-rendered, and the file can optionally be password-encrypted.
+  - It inlines the standalone player built from `src/player` by `scripts/build-player.mjs`, which runs automatically before `dev` and `build`.
+- **PDF:** the browser's print dialog, one slide per page.
+- **Markdown:** the deck source.
+
 ## VS Code extension
 
 `vscode-extension/` packages the same app for VS Code. The webview bundles `src/embed/vscode/main.tsx`, which reuses the engine, preview, Components view, customizer and presenter from `src/`, and it is kept in sync with the open `.md` file. Opening a Markdown deck suggests "Open as Slides".
@@ -113,4 +137,3 @@ make it durable, save `store.snapshot()` bytes to Vercel Blob or KV in `src/serv
 - The GitHub token never reaches the browser: it lives in an encrypted, http-only, SameSite=Lax cookie and every GitHub call goes through `/api/github/*`. OAuth uses a one-time `state` cookie against CSRF.
 - The AI key stays on the server and is never sent to the browser or returned by `/api/ai/health`.
 - `/api/ai` is rate limited to 10 requests/min per IP per instance, and `/api/ai/health` to 12 checks/min.
-- Share links and viewer counts are UI-only for now.
