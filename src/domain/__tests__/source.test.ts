@@ -3,7 +3,8 @@ import type { Block, Deck, Slide } from "@/engine/types";
 import { setVariant, removeBlock, setImageArg } from "@/domain/source/blocks";
 import { setDirective, setLayout } from "@/domain/source/directives";
 import { writeMeta } from "@/domain/source/frontmatter";
-import { deleteSlide, duplicateSlide, formatSource, lineDiff } from "@/domain/source/slides";
+import { diffText } from "@/domain/source/diff";
+import { deleteSlide, duplicateSlide, formatSource } from "@/domain/source/slides";
 import { transformBlock } from "@/domain/source/transform";
 import { buildTree, isMarkdown } from "@/domain/workspace/tree";
 
@@ -61,7 +62,14 @@ describe("slides", () => {
 
   it("formats and diffs", () => {
     expect(formatSource("a  \n\n\n\nb")).toBe("a\n\nb\n");
-    expect(lineDiff("a\nb", "a\nc\nd")).toEqual({ add: 2, del: 1 });
+    const d = diffText("a\nb", "a\nc\nd");
+    expect([d.add, d.del]).toEqual([2, 1]);
+    expect(d.hunks[0].header).toBe("@@ -1,2 +1,3 @@");
+    expect(d.hunks[0].lines.map((l) => l.op + l.text)).toEqual(["ctxa", "delb", "addc", "addd"]);
+    const L = Array.from({ length: 20 }, (_, i) => `l${i}`);
+    const far = diffText(L.join("\n"), L.map((l, i) => (i === 2 || i === 17 ? l + "!" : l)).join("\n"));
+    expect(far.hunks.map((h) => h.header)).toEqual(["@@ -1,6 +1,6 @@", "@@ -15,6 +15,6 @@"]);
+    expect(diffText(undefined, "x\ny").hunks[0].header).toBe("@@ -0,0 +1,2 @@");
   });
 });
 
