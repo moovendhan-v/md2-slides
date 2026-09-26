@@ -43,7 +43,7 @@ export function AppHeader() {
       <button
         type="button"
         onClick={() => openModal("palette")}
-        className="hidden h-8 w-56 items-center gap-2 rounded-lg border border-zinc-800 px-3 text-[13px] text-zinc-500 hover:border-zinc-700 md:flex"
+        className="hidden h-8 w-60 items-center whitespace-nowrap gap-2 rounded-lg border border-zinc-800 px-3 text-[13px] text-zinc-500 hover:border-zinc-700 md:flex"
       >
         <Icon name="magnifying-glass" />
         <span className="flex-1 text-left">Search files & commands</span>

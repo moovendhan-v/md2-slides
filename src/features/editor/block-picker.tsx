@@ -50,7 +50,7 @@ export function BlockPicker() {
     <Dialog open onOpenChange={(o) => !o && close()}>
       <DialogContent className="max-h-[85vh] overflow-y-auto border-zinc-800 bg-zinc-950 sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-[15px] capitalize">
+          <DialogTitle className="flex items-center gap-2 text-[15px]">
             {pick.type} block <span className="font-mono text-xs font-normal text-zinc-500 normal-case">line {pick.line + 1}</span>
           </DialogTitle>
         </DialogHeader>

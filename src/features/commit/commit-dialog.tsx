@@ -1,17 +1,16 @@
 "use client";
 
 import { useMemo } from "react";
-import { toast } from "sonner";
-import { formatSource, lineDiff } from "@/domain/source/slides";
+import { lineDiff } from "@/domain/source/slides";
 import { Icon } from "@/components/common/icon";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useFileActions } from "@/hooks/use-file-actions";
-import { useCommitMutation } from "@/hooks/use-queries";
 import { pref, useSession } from "@/stores/session";
 import { useUi } from "@/stores/ui";
 import { selectChanged, splitKey, useWorkspace } from "@/stores/workspace";
+import { usePushChanges } from "./use-push-changes";
 
 /** Review changed files (with line diff counts) and push them as one commit per repo. */
 export function CommitDialog() {
@@ -19,33 +18,16 @@ export function CommitDialog() {
   const close = useUi((s) => s.closeModal);
   const files = useWorkspace((s) => s.files);
   const orig = useWorkspace((s) => s.orig);
-  const repos = useWorkspace((s) => s.repos);
   const { commitMessage, prefs, set } = useSession();
   const { openFile } = useFileActions();
-  const commit = useCommitMutation();
+  const { push: pushChanges, pending } = usePushChanges();
   const changes = useMemo(
     () => selectChanged({ files, orig }).map((k) => ({ key: k, ...splitKey(k), isNew: orig[k] == null, ...lineDiff(orig[k], files[k]) })),
     [files, orig],
   );
 
   const push = async () => {
-    if (!changes.length) return close();
-    const ws = useWorkspace.getState();
-    const fmt = pref(prefs, "fmtSave", true);
-    const asPullRequest = pref(prefs, "usePR", false);
-    const byRepo = Object.groupBy(changes, (c) => c.repo);
-    try {
-      for (const [repo, list = []] of Object.entries(byRepo)) {
-        const branch = repos.find((r) => r.id === repo)?.branch ?? "main";
-        const res = await commit.mutateAsync({ repo, branch, message: commitMessage, asPullRequest, changes: list.map((c) => ({ path: c.path, content: fmt ? formatSource(ws.files[c.key]) : ws.files[c.key] })) });
-        if (res.pullRequest) toast(`Opened pull request #${res.pullRequest} on ${repo}`);
-      }
-      ws.markPushed(changes.map((c) => c.key));
-      close();
-      toast(`Pushed ${changes.length} file${changes.length > 1 ? "s" : ""} — “${commitMessage}”`);
-    } catch (e) {
-      toast.error(`Push failed: ${(e as Error).message}`);
-    }
+    if (await pushChanges()) close();
   };
 
   return (
@@ -85,8 +67,8 @@ export function CommitDialog() {
           <Button variant="outline" className="border-zinc-800" onClick={close}>
             Cancel
           </Button>
-          <Button className="gap-1.5 bg-zinc-50 font-semibold text-zinc-950 hover:bg-zinc-200" disabled={commit.isPending} onClick={push}>
-            <Icon name={commit.isPending ? "circle-notch" : "arrow-up"} className={commit.isPending ? "animate-spin" : ""} />
+          <Button className="gap-1.5 bg-zinc-50 font-semibold text-zinc-950 hover:bg-zinc-200" disabled={pending} onClick={push}>
+            <Icon name={pending ? "circle-notch" : "arrow-up"} className={pending ? "animate-spin" : ""} />
             {pref(prefs, "usePR", false) ? "Open pull request" : "Push to GitHub"}
           </Button>
         </DialogFooter>

@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { BLOCK_SNIPPETS } from "@/data";
 import { useDeck } from "@/app-shell/deck-context";
 import { Icon } from "@/components/common/icon";
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandShortcut } from "@/components/ui/command";
+import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandShortcut } from "@/components/ui/command";
 import { useDeckActions } from "@/hooks/use-deck-actions";
 import { useFileActions } from "@/hooks/use-file-actions";
 import { useAi } from "@/stores/ai";
@@ -56,6 +56,7 @@ export function CommandPalette() {
 
   return (
     <CommandDialog open={open} onOpenChange={(o) => (o ? openModal("palette") : closeModal())} className="border-zinc-800 bg-zinc-950 sm:max-w-xl">
+      <Command className="bg-transparent">
       <CommandInput placeholder="Open a file or run a command…" />
       <CommandList className="max-h-[60vh]">
         <CommandEmpty>No matches.</CommandEmpty>
@@ -81,6 +82,7 @@ export function CommandPalette() {
           ))}
         </CommandGroup>
       </CommandList>
+      </Command>
     </CommandDialog>
   );
 }

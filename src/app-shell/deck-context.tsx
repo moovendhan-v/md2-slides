@@ -7,6 +7,8 @@ import { buildLook, deckOptions, type DeckOptions, type Look } from "@/domain/de
 import { resolveRelative, slideAtLine } from "@/domain/deck/queries";
 import { splitKey, useWorkspace } from "@/stores/workspace";
 import { useEditor } from "@/stores/editor";
+import { pref, useSession } from "@/stores/session";
+import { useDebounced } from "@/hooks/use-debounced";
 
 export interface ActiveDeck {
   key: string;
@@ -30,12 +32,16 @@ const Ctx = createContext<ActiveDeck | null>(null);
 export function DeckProvider({ children }: { children: ReactNode }) {
   const engine = useEngine();
   const key = useWorkspace((s) => s.activeKey);
-  const files = useWorkspace((s) => s.files);
-  const src = useDeferredValue(files[key] ?? "");
+  const live = useSession((s) => pref(s.prefs, "live", true));
+  // Live: re-parse every keystroke at low priority. Off: wait for a typing pause (large decks).
+  const raw = useWorkspace((s) => s.files[s.activeKey] ?? "");
+  const src = useDebounced(useDeferredValue(raw), live ? 0 : 600);
   const curLine = useEditor((s) => s.curLine);
   const { repo, path } = splitKey(key);
 
   const parsed = useMemo(() => {
+    // Other files are read at parse time (imports), so edits elsewhere never force a re-parse here.
+    const files = useWorkspace.getState().files;
     const read = (p: string) => files[`${repo}::${p.replace(/^\.?\//, "")}`];
     const deck = engine.parse(src, read);
     // `<!-- src: ./other.md -->` pulls another file's slides in place.
@@ -51,8 +57,7 @@ export function DeckProvider({ children }: { children: ReactNode }) {
     });
     const options = deckOptions(deck.meta);
     return { deck, options, look: buildLook(options) };
-    // `files` only matters for imports; re-parse when the source or file set changes.
-  }, [engine, src, files, repo, path]);
+  }, [engine, src, repo, path]);
 
   const value = useMemo<ActiveDeck>(
     () => ({ key, repo, path, src, ...parsed, current: slideAtLine(parsed.deck, curLine) }),

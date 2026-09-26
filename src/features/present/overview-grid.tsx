@@ -11,7 +11,7 @@ export function OverviewGrid({ current }: { current: number }) {
   const { deck, look } = useDeck();
   const p = usePresent();
   return (
-    <div className="absolute inset-0 z-10 flex flex-col bg-black/95 p-6">
+    <div className="absolute inset-0 z-10 flex flex-col bg-black p-6">
       <div className="mb-4 flex items-center justify-between">
         <span className="text-sm font-medium">Overview</span>
         <button type="button" onClick={() => p.set({ overview: false })} className="text-zinc-400 hover:text-zinc-100" aria-label="Close overview">

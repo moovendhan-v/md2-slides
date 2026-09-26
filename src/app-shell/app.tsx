@@ -15,10 +15,13 @@ function Gate() {
   const ready = useSyncExternalStore(subscribe, hydrated, () => false);
   const status = useSession((s) => s.status);
   useEffect(() => {
-    const onResize = () => useUi.getState().set({ width: window.innerWidth });
-    onResize();
+    const onResize = () => {
+      const ui = useUi.getState();
+      const w = window.innerWidth;
+      ui.set({ width: w, ...(w <= 760 && ui.width > 760 ? { sidebarOpen: false } : {}), ...(w < 1000 && ui.width >= 1000 ? { customOpen: false } : {}) });
+    };
     const w = window.innerWidth;
-    useUi.getState().set({ sidebarOpen: w > 760, customOpen: w > 1200 });
+    useUi.getState().set({ width: w, sidebarOpen: w > 760, customOpen: w > 1200 });
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);

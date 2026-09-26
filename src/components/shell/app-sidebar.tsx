@@ -39,8 +39,8 @@ export function AppSidebar() {
   const branch = repos.find((r) => r.id === repo)?.branch ?? "main";
   return (
     <>
-      {overlay && <div className="fixed inset-0 z-30 bg-black/50" onClick={() => set({ sidebarOpen: false })} />}
-      <aside className={cn("flex w-[260px] shrink-0 flex-col border-r border-zinc-800 bg-zinc-950", overlay && "fixed inset-y-0 left-0 z-40 shadow-2xl")}>
+      {overlay && <div className="fixed inset-x-0 top-[52px] bottom-0 z-30 bg-black/50" onClick={() => set({ sidebarOpen: false })} />}
+      <aside className={cn("flex w-[260px] shrink-0 flex-col border-r border-zinc-800 bg-zinc-950", overlay && "fixed top-[52px] bottom-0 left-0 z-40 shadow-2xl")}>
         <nav className="flex flex-col gap-0.5 p-2.5">
           {nav.map(([label, icon, v, count]) => (
             <NavItem key={v} label={label} icon={icon} count={count} active={view === v} onClick={() => setView(v)} />

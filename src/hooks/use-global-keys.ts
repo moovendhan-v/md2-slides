@@ -3,7 +3,9 @@
 import { useEffect } from "react";
 import { useDeck } from "@/app-shell/deck-context";
 import { clickCount } from "@/domain/deck/queries";
+import { usePushChanges } from "@/features/commit/use-push-changes";
 import { useEditor } from "@/stores/editor";
+import { pref, useSession } from "@/stores/session";
 import { usePresent } from "@/stores/present";
 import { useUi } from "@/stores/ui";
 
@@ -17,6 +19,7 @@ export function toggleFullscreen() {
 /** App-wide shortcuts: ⌘K palette, ⌘S commit, ⌘↵ present, presenter keys, Esc. */
 export function useGlobalKeys() {
   const { deck, options, current } = useDeck();
+  const { push } = usePushChanges();
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const mod = e.metaKey || e.ctrlKey;
@@ -29,6 +32,7 @@ export function useGlobalKeys() {
       }
       if (mod && k === "s") {
         e.preventDefault();
+        if (pref(useSession.getState().prefs, "autoCommit", false)) return void push();
         return ui.openModal("commit");
       }
       if (mod && e.key === "Enter") {
@@ -66,7 +70,7 @@ export function useGlobalKeys() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [deck, options, current]);
+  }, [deck, options, current, push]);
 }
 
 /** Step helper shared by the presenter's on-screen buttons. */
