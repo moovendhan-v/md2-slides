@@ -39,10 +39,8 @@ Environment variables (see `.env.example`):
 | --- | --- |
 | `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | GitHub OAuth App used for sign-in, reading repos and pushing commits. |
 | `SESSION_SECRET` | Encrypts the http-only session cookie that holds the GitHub token (AES-256-GCM). |
-| `AI_PROVIDER` | Primary AI provider: `cloudflare` or `gemini`. The other one is the automatic fallback. |
-| `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_AI_MODEL` | Cloudflare Workers AI. |
-| `GEMINI_API_KEY` / `GEMINI_MODEL` | Google Gemini (default `gemini-2.5-flash`). |
-| `DISCORD_WEBHOOK_URL` | Optional alerts: AI fallbacks/outages, OAuth failures, GitHub rate limits, pushes. No secrets or prompt text are sent. |
+| `AI_BASE_URL` / `AI_API_KEY` / `AI_MODEL` | The one AI endpoint, in the OpenAI-compatible format. It works with OpenAI, Gemini, Cloudflare Workers AI, OpenRouter, Groq, Ollama and others (examples in `.env.example`). `AI_PROVIDER_NAME` optionally sets the name shown in the UI. |
+| `DISCORD_WEBHOOK_URL` | Optional alerts: AI failures, OAuth failures, GitHub rate limits, pushes. No secrets or prompt text are sent. |
 | `NEXT_PUBLIC_TEMPLATE_SOURCE=remote` | Read/write templates through the Wasm-backed `/api/templates` function instead of the in-browser store. |
 
 ## Features
@@ -55,7 +53,10 @@ Environment variables (see `.env.example`):
 - **Templates**: decks, single slides and community templates — searched and paged inside the Wasm store; save any deck as a template.
 - **Template studio**: author HTML + Tailwind layouts with `{{slots}}`, live preview, validation, and publish as `<!-- layout: custom:id -->`.
 - **Presenter**: timer + limit, notes, next slide, pen, laser, blackout, zoom, overview, click-to-reveal, code step-through, share link settings.
-- **AI**: Cloudflare Workers AI and Gemini with automatic failover on errors, rate limits, timeouts or invalid output. Users can bring their own key — kept only in that tab's `sessionStorage`, sent per request, never stored or logged by the server. Output is validated by the Wasm parser.
+- **AI**:
+  - Uses one server-side, OpenAI-compatible endpoint (base URL, key and model come from env), so users never enter keys.
+  - The AI dialog pings the endpoint and shows whether it is reachable, along with the provider, model and latency. `GET /api/ai/health` returns the same check.
+  - Output is validated by the Wasm parser and retried once if it contains no slides.
 
 The full Markdown syntax is in [`public/llms-full.txt`](public/llms-full.txt).
 
@@ -84,7 +85,7 @@ src/
   domain/                   Pure TS: look/theme tokens, slide layout maths, source transforms, file tree
   data/                     Built-in catalog JSON (templates, snippets, AI prompt ideas, code layouts)
   services/                 Interfaces + implementations: AuthProvider/GitProvider (GitHub), TemplateRepository, AiDeckService
-  server/                   Server-only: env, encrypted session, GitHub client, AI providers + failover, Discord alerts, rate limit
+  server/                   Server-only: env, encrypted session, GitHub client, OpenAI-compatible AI client + ping, Discord alerts, rate limit
   stores/                   Zustand slices: workspace, ui, editor, present, session, ai, studio, layouts
   hooks/                    TanStack Query hooks, deck/file actions, global shortcuts
   components/slide/         SlideView + block registry (one component per block family)
@@ -110,5 +111,6 @@ make it durable, save `store.snapshot()` bytes to Vercel Blob or KV in `src/serv
 ### Security notes
 
 - The GitHub token never reaches the browser: it lives in an encrypted, http-only, SameSite=Lax cookie and every GitHub call goes through `/api/github/*`. OAuth uses a one-time `state` cookie against CSRF.
-- `/api/ai` is rate limited per IP (10/min per instance) when using the server's keys; BYOK requests are not limited by us.
+- The AI key stays on the server and is never sent to the browser or returned by `/api/ai/health`.
+- `/api/ai` is rate limited to 10 requests/min per IP per instance, and `/api/ai/health` to 12 checks/min.
 - Share links and viewer counts are UI-only for now.

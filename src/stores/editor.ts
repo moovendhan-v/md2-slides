@@ -14,7 +14,8 @@ interface EditorState {
   problemsOpen: boolean;
   /** Source pane shows raw Markdown or the draggable component view. */
   sourceView: "raw" | "blocks";
-  transitionPick: { index: number; x: number; y: number } | null;
+  /** Transition popover for slide `index`, anchored at x/y (below the chip, or to its right in the vertical strip). */
+  transitionPick: { index: number; x: number; y: number; side?: "below" | "right" } | null;
   /** Bump to replay animations in focus preview / motion tab. */
   focusSeed: number;
   motionSeed: number;

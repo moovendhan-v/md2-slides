@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { useAi, type AiTarget } from "@/stores/ai";
 import { useUi } from "@/stores/ui";
 import { AI_STEPS, useAiGenerate } from "./use-ai-generate";
-import { ByokPanel } from "./byok-panel";
+import { AiStatus } from "./ai-status";
 
 function Progress() {
   const { step, typed } = useAi();
@@ -75,7 +75,7 @@ export function AiDialog() {
           <DialogTitle className="flex items-center gap-2">
             <Icon name="sparkle" className="text-violet-400" /> Generate slides with AI
           </DialogTitle>
-          <DialogDescription>Cloudflare Workers AI and Gemini, with automatic failover. The model gets the full Slidewise syntax (llms-full.txt).</DialogDescription>
+          <DialogDescription>Uses the AI endpoint configured on the server. The model gets the full Slidewise syntax (llms-full.txt).</DialogDescription>
         </DialogHeader>
         {st.phase === "idle" && (
           <div className="flex flex-col gap-4">
@@ -96,7 +96,7 @@ export function AiDialog() {
                 </button>
               ))}
             </div>
-            <ByokPanel />
+            <AiStatus enabled={open} />
             {st.error && <p className="text-xs text-amber-400">{st.error}</p>}
             <Button className="gap-1.5 self-end bg-violet-500 font-semibold text-white hover:bg-violet-400" onClick={() => generate()}>
               <Icon name="sparkle" /> Generate

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Block, Deck, Slide } from "@/engine/types";
 import { deckOptions } from "@/domain/deck/look";
-import { paginate, slideNumber, sourceCount } from "@/domain/deck/paginate";
+import { paginate, partLetters, slideNumber, sourceCount } from "@/domain/deck/paginate";
 
 const o = deckOptions({});
 const para = (line: number, words = 40): Block => ({ type: "para", line, text: "lorem ipsum ".repeat(words) });
@@ -41,4 +41,19 @@ describe("paginate", () => {
     expect(paginate(deck(slide([long], { dir: { split: "false" } })), o).slides).toHaveLength(1);
     expect(paginate(deck(slide([long, [para(30)]])), o).slides).toHaveLength(1);
   });
+
+  it("numbers parts past z as aa, ab …", () => {
+    expect([0, 25, 26, 27, 51, 52].map(partLetters)).toEqual(["a", "z", "aa", "ab", "az", "ba"]);
+  });
+
+  it("moves a section that would be split to a fresh page", () => {
+    const h = (line: number): Block => ({ type: "heading", line, text: "Section" });
+    // A full-ish page, then a heading whose section fits a page on its own but not the remainder.
+    const d = paginate(deck(slide([[para(1, 40), h(3), para(4, 25), para(5, 25)]])), o);
+    const firstOf = (t: Block["type"]) => d.slides.findIndex((s) => s.groups[0].some((b) => b.type === t));
+    const sec = d.slides[firstOf("heading")].groups[0];
+    expect(sec[0].type).toBe("heading");
+    expect(sec.map((b) => b.line)).toEqual([3, 4, 5]);
+  });
 });
+

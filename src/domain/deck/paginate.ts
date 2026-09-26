@@ -16,7 +16,8 @@ const SAFETY = 0.97;
 const MIN_CHUNK_ROOM = 9;
 /** Blocks taller than this share of a page may be split across pages. */
 const BIG_BLOCK = 0.4;
-const LETTERS = "abcdefghijklmnopqrstuvwxyz";
+/** Pages at least this full start a new page for a section that won't fit, rather than splitting it. */
+const SECTION_FILL = 0.5;
 
 /** Blocks that can be cut between rows, and how. */
 const SPLITTABLE: Partial<Record<Block["type"], { count: (b: Block) => number; slice: (b: Block, from: number, to: number) => Block }>> = {
@@ -69,8 +70,20 @@ function pages(sl: Slide, o: DeckOptions, f: Frame): Block[][] {
     out.push([]);
     used = cont;
   };
+  const heights = blocks.map((b) => blockHeight(b, f.width, f));
+  /** Height of the section a heading opens: the heading and blocks up to the next heading. */
+  const sectionHeight = (i: number) => {
+    let h = heights[i];
+    for (let k = i + 1; k < blocks.length && blocks[k].type !== "heading"; k++) h += BLOCK_GAP + heights[k];
+    return h;
+  };
   blocks.forEach((b, i) => {
-    const h = blockHeight(b, f.width, f);
+    const h = heights[i];
+    // Start a section on a fresh page when it fits there but not in the rest of this one.
+    if (b.type === "heading" && out[out.length - 1].length && used > cap * SECTION_FILL) {
+      const sec = sectionHeight(i);
+      if (sec > room() && sec <= cap - cont) newPage();
+    }
     // Keep a heading with the block that follows it.
     const next = blocks[i + 1];
     if (b.type === "heading" && next && out[out.length - 1].length && h + BLOCK_GAP + Math.min(blockHeight(next, f.width, f), MIN_CHUNK_ROOM * 2) > room()) newPage();
@@ -115,10 +128,17 @@ export function paginate(deck: Deck, o: DeckOptions): Deck {
   return { ...deck, slides };
 }
 
+/** Part suffix: a…z, then aa, ab … (spreadsheet-style). */
+export function partLetters(k: number): string {
+  let s = "";
+  for (let n = k + 1; n > 0; n = Math.floor((n - 1) / 26)) s = String.fromCharCode(97 + ((n - 1) % 26)) + s;
+  return s;
+}
+
 /** "01", or "01a" / "01b" for continuation parts. */
 export function slideNumber(sl: Slide, i: number) {
   const n = String((sl.sourceIndex ?? i) + 1).padStart(2, "0");
-  return (sl.parts ?? 1) > 1 ? n + LETTERS[sl.part ?? 0] : n;
+  return (sl.parts ?? 1) > 1 ? n + partLetters(sl.part ?? 0) : n;
 }
 
 /** Number of authored slides (continuations excluded). */

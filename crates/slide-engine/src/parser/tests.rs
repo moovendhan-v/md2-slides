@@ -84,3 +84,15 @@ fn empty_slide_warns() {
     assert_eq!(d.slides.len(), 2);
     assert!(d.problems.iter().any(|x| x.msg == "Slide 2 is empty"));
 }
+
+#[test]
+fn soft_wrapped_lines_join_into_one_paragraph() {
+    let d = p("# T\nFirst body line\nstill body\n\nA para that\nwraps here\n- item\nafter list\nnote: n\nmore notes");
+    let s = &d.slides[0];
+    assert_eq!(s.body, "First body line still body");
+    let g = &s.groups[0];
+    assert_eq!(g[0].kind, "para");
+    assert_eq!(g[0].text.as_deref(), Some("A para that wraps here"));
+    assert_eq!(g[1].kind, "list");
+    assert_eq!(s.notes, "n\nmore notes");
+}

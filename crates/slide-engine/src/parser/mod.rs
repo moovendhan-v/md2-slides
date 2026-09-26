@@ -167,6 +167,24 @@ fn line(cx: &mut Ctx, i: usize, l: &str) -> usize {
     blocks::block(cx, i, l)
 }
 
+/// True when trimmed, non-empty `l` would be parsed as plain paragraph text
+/// (it starts no block, heading, directive, separator or notes).
+pub(super) fn is_plain_text(l: &str) -> bool {
+    !(l == "---"
+        || l == "|||"
+        || l.starts_with("<!--")
+        || l.starts_with(":::")
+        || l.starts_with("```")
+        || l.starts_with('>')
+        || l.starts_with('|')
+        || l.starts_with("![")
+        || (l.len() >= 5 && l[..5].eq_ignore_ascii_case("note:"))
+        || l.strip_prefix('^').is_some_and(|r| r.starts_with(char::is_whitespace))
+        || text::heading(l, 1, 6).is_some()
+        || text::list_marker(l)
+        || code::import_line(l).is_some())
+}
+
 fn finish(meta: BTreeMap<String, String>, mut cx: Ctx) -> Deck {
     let mut extra = Vec::new();
     for (k, s) in cx.slides.iter().enumerate() {

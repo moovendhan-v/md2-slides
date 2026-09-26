@@ -56,7 +56,18 @@ pub fn block(cx: &mut Ctx, i: usize, l: &str) -> usize {
     if list_marker(l) {
         return list(cx, i, l);
     }
-    let text = cx.sub(l, i);
+    // Consecutive text lines form one paragraph (Markdown soft line breaks).
+    let mut end = i;
+    let mut joined = l.to_string();
+    while let Some(next) = cx.lines.get(end + 1).map(|n| n.trim()) {
+        if next.is_empty() || !super::is_plain_text(next) {
+            break;
+        }
+        joined.push(' ');
+        joined.push_str(next);
+        end += 1;
+    }
+    let text = cx.sub(&joined, i);
     let s = cx.cur();
     if s.body.is_empty() && s.groups.len() == 1 && s.groups[0].is_empty() {
         s.body = text;
@@ -65,7 +76,7 @@ pub fn block(cx: &mut Ctx, i: usize, l: &str) -> usize {
         b.text = Some(text);
         cx.push(b);
     }
-    i
+    end
 }
 
 fn fenced(cx: &mut Ctx, start: usize, kind: String, arg_str: &str) -> usize {

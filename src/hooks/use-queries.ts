@@ -14,6 +14,7 @@ export const queryKeys = {
   file: (repo: string, path: string, ref: string) => ["file", repo, path, ref] as const,
   templates: (f: TemplateFilter) => ["templates", f] as const,
   templatesAll: ["templates"] as const,
+  aiHealth: ["ai-health"] as const,
 };
 
 export function useMeQuery() {
@@ -58,6 +59,12 @@ export async function ensureFile(qc: QueryClient, git: GitProvider, repo: Repo, 
 export function useTemplatesQuery(filter: TemplateFilter) {
   const { templates } = useServices();
   return useQuery({ queryKey: queryKeys.templates(filter), queryFn: () => templates.query(filter), placeholderData: keepPreviousData });
+}
+
+/** Ping the server's AI endpoint (cached for a minute; `refetch` re-checks). */
+export function useAiHealthQuery(enabled: boolean) {
+  const { ai } = useServices();
+  return useQuery({ queryKey: queryKeys.aiHealth, queryFn: () => ai.health(), enabled, staleTime: 60_000, retry: false });
 }
 
 export function useSaveTemplate() {
