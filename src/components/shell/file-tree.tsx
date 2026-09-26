@@ -76,7 +76,8 @@ function RepoRow({ repo, changed }: { repo: Repo; changed: string[] }) {
   const toggle = useWorkspace((s) => s.toggleExpanded);
   const { view, repoView, setView } = useUi();
   const tree = useRepoTree(repo, open);
-  const nodes = useMemo(() => buildTree(paths ?? []), [paths]);
+  // Decks only: Markdown files, and just the folders that contain them.
+  const nodes = useMemo(() => buildTree((paths ?? []).filter(isMarkdown)), [paths]);
   const act = view === "repo" && repoView === repo.id;
   return (
     <div>
@@ -97,6 +98,7 @@ function RepoRow({ repo, changed }: { repo: Repo; changed: string[] }) {
       </Row>
       {open && tree.isPending && <p className="py-1 pl-8 text-xs text-zinc-500">Loading files…</p>}
       {open && tree.isError && <p className="py-1 pl-8 text-xs text-red-400">{tree.error.message}</p>}
+      {open && tree.isSuccess && !nodes.length && <p className="py-1 pl-8 text-xs text-zinc-500">No Markdown files</p>}
       {open && <Nodes repo={repo.id} nodes={nodes} depth={0} changed={changed} />}
     </div>
   );
