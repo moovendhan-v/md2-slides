@@ -80,7 +80,7 @@ export function ShareDialog() {
         <p className={cn("text-xs", link?.health === "ok" ? "text-zinc-500" : link?.health === "long" ? "text-amber-400" : "text-red-400")}>
           {kb} KB ·{" "}
           {link?.health === "too-long"
-            ? "too long for a link. Download as HTML instead (coming in Export)."
+            ? "too long for a link. Use Export → HTML presentation and send the file instead."
             : link?.health === "long"
               ? "long link: fine in browsers and email, but some chat apps may cut it off."
               : "safe to paste anywhere."}

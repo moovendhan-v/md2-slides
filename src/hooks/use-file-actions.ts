@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { toast } from "sonner";
+import { printSlides } from "@/features/export/basic-exporters";
 import type { TemplateRecord } from "@/engine/types";
 import { buildFrontMatter, stripFrontMatter } from "@/domain/source/frontmatter";
 import { useDeck } from "@/app-shell/deck-context";
@@ -75,13 +76,7 @@ export function useFileActions() {
         ui().closeModal();
         toast(`Downloaded ${a.download}`);
       },
-      exportPdf: () => {
-        ui().set({ printing: true, modal: null });
-        setTimeout(() => {
-          window.print();
-          setTimeout(() => ui().set({ printing: false }), 400);
-        }, 700);
-      },
+      exportPdf: () => void printSlides(),
       changedKeys: () => selectChanged(useWorkspace.getState()),
     };
   }, [active, saveTemplate, qc, git]);

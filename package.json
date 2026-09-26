@@ -14,7 +14,10 @@
     "vscode:build": "node vscode-extension/scripts/build.mjs",
     "vscode:dev-build": "node vscode-extension/scripts/build.mjs --dev",
     "vscode:package": "cd vscode-extension && vsce package --no-dependencies --skip-license",
-    "vscode:test": "npm run vscode:build && node vscode-extension/test/run.mjs"
+    "vscode:test": "npm run vscode:build && node vscode-extension/test/run.mjs",
+    "player:build": "node scripts/build-player.mjs",
+    "predev": "node scripts/build-player.mjs --dev",
+    "prebuild": "node scripts/build-player.mjs"
   },
   "dependencies": {
     "@phosphor-icons/core": "^2.1.1",

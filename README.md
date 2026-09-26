@@ -74,6 +74,16 @@ The full Markdown syntax is in [`public/llms-full.txt`](public/llms-full.txt).
 - **Link size:** typical decks produce links of a few KB. The dialog warns when a link gets long enough that chat apps may cut it off, and a QR code is available for rooms.
 - **Images:** images with relative repo paths are not included; the dialog lists them.
 
+## Export
+
+**Export** (editor toolbar or ⌘K) generates files in the browser:
+- **HTML presentation:** one offline `.html` file you can double-click to open.
+  - It contains the full presenter: transitions, reveals, code steps, overview, pen, laser, timer and speaker view.
+  - Mermaid diagrams are pre-rendered, and the file can optionally be password-encrypted.
+  - It inlines the standalone player built from `src/player` by `scripts/build-player.mjs`, which runs automatically before `dev` and `build`.
+- **PDF:** the browser's print dialog, one slide per page.
+- **Markdown:** the deck source.
+
 ## VS Code extension
 
 `vscode-extension/` packages the same app for VS Code. The webview bundles `src/embed/vscode/main.tsx`, which reuses the engine, preview, Components view, customizer and presenter from `src/`, and it is kept in sync with the open `.md` file. Opening a Markdown deck suggests "Open as Slides".

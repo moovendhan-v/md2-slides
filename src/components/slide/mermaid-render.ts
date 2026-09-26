@@ -63,3 +63,17 @@ export function renderMermaid(code: string, look: Look): Promise<string> {
   job.catch(() => cache.delete(key));
   return job;
 }
+
+/** Render every Mermaid block in `slides` to SVG, keyed by source (for offline exports). */
+export async function prerenderMermaid(slides: { groups: { mermaid?: boolean; code?: string[] }[][] }[], look: Look): Promise<Record<string, string>> {
+  const codes = new Set(slides.flatMap((s) => s.groups.flat().filter((b) => b.mermaid).map((b) => (b.code ?? []).join("\n"))));
+  const out: Record<string, string> = {};
+  for (const code of codes) {
+    try {
+      out[code] = await renderMermaid(code, look);
+    } catch {
+      // Invalid diagrams keep showing their error in the export, as in the editor.
+    }
+  }
+  return out;
+}

@@ -8,7 +8,6 @@ import { IconPicker } from "@/components/common/icon-picker";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useDeckActions } from "@/hooks/use-deck-actions";
-import { useFileActions } from "@/hooks/use-file-actions";
 import { cn } from "@/lib/utils";
 import { useAi } from "@/stores/ai";
 import { useEditor } from "@/stores/editor";
@@ -41,7 +40,6 @@ function ViewToggle({ icon, label, on, onClick }: { icon: string; label: string;
 export function EditorToolbar() {
   const { deck } = useDeck();
   const actions = useDeckActions();
-  const files = useFileActions();
   const narrow = useIsNarrow();
   const { previewOn, stripOn, customOpen, pane, set, openModal } = useUi();
   const { insertOpen, syntaxOpen, sourceView, set: setEditor } = useEditor();
@@ -75,8 +73,7 @@ export function EditorToolbar() {
       <Tool icon="plus" label="Slide" tip="Add slide after current" onClick={() => openModal("newSlide")} />
       <Tool icon="magic-wand" label="Format" tip="Clean whitespace" onClick={actions.format} />
       <Tool icon="book-open" label="Syntax" tip="Syntax reference" active={syntaxOpen} onClick={() => setEditor({ syntaxOpen: !syntaxOpen, insertOpen: false })} />
-      <Tool icon="download-simple" label=".md" tip="Download file" onClick={files.download} />
-      <Tool icon="file-pdf" label="PDF" tip="Export PDF (one slide per page)" onClick={files.exportPdf} />
+      <Tool icon="export" label="Export" tip="Export as HTML presentation, PDF or Markdown" onClick={() => openModal("export")} />
       <div className="flex-1" />
       <span className="hidden px-2 font-mono text-xs text-zinc-500 md:inline">
         {sourceCount(deck)} slides{deck.slides.length > sourceCount(deck) ? ` · ${deck.slides.length} pages` : ""}

@@ -62,3 +62,16 @@ describe("share payload helpers", () => {
     expect(relativeImages("![a](./img/a.png) ![b](https://x.io/b.png) ![c](data:image/png;base64,x) ![d](img/a.png){w=50}")).toEqual(["./img/a.png", "img/a.png"]);
   });
 });
+
+describe("standalone HTML export", () => {
+  it("inlines parts safely", async () => {
+    const { standaloneHtml, bytesToBase64 } = await import("@/domain/export/standalone-html");
+    expect(bytesToBase64(new Uint8Array([104, 105]))).toBe("aGk=");
+    const html = standaloneHtml({ title: "Q3 <review>", js: 'x("</script>")', css: ["a{}</style>"], wasmBase64: "AAA", encoded: "abc_-" });
+    expect(html).toContain("<title>Q3 &lt;review&gt;</title>");
+    expect(html).toContain('x("<\\/script>")');
+    expect(html).toContain("a{}<\\/style>");
+    expect(html).toContain('window.__SLIDEWISE_DECK__="abc_-"');
+    expect(html.match(/<script>/g)).toHaveLength(2);
+  });
+});
