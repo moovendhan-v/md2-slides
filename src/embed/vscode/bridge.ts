@@ -10,7 +10,7 @@ declare global {
 
 // `acquireVsCodeApi` may be called only once per webview.
 const api: VsCodeApi =
-  typeof acquireVsCodeApi === "function" ? acquireVsCodeApi() : { postMessage: (m) => console.debug("[slidewise → host]", m) };
+  typeof acquireVsCodeApi === "function" ? acquireVsCodeApi() : { postMessage: (m) => console.debug("[md2slides → host]", m) };
 
 export const post = (message: WebviewMessage) => api.postMessage(message);
 

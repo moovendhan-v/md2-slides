@@ -32,7 +32,7 @@ function PlayerShell({ payload, speaker }: { payload: SharePayload; speaker: boo
   const { deck, look } = useDeck();
   const presenting = usePresent((s) => s.active);
   const [audience, setAudience] = useState(false);
-  const channel = useMemo(() => `slidewise:${payload.name}:${payload.created}`, [payload]);
+  const channel = useMemo(() => `md2slides:${payload.name}:${payload.created}`, [payload]);
   useViewportWidth();
   usePresenterKeys();
   useSlideSync(channel);
@@ -58,7 +58,7 @@ function PlayerShell({ payload, speaker }: { payload: SharePayload; speaker: boo
   const openSpeaker = () => {
     const url = new URL(location.href);
     url.searchParams.set("speaker", "1");
-    window.open(url, "slidewise-speaker", "width=1200,height=760");
+    window.open(url, "md2slides-speaker", "width=1200,height=760");
     setAudience(true);
     if (!usePresent.getState().active) usePresent.getState().start(0);
   };
@@ -105,7 +105,7 @@ function PlayerShell({ payload, speaker }: { payload: SharePayload; speaker: boo
           </section>
         ))}
         <footer className="py-6 text-center text-xs text-zinc-600">
-          Made with Slidewise · this deck lives only in the link, nothing is stored on a server
+          Made with md2slides · this deck lives only in the link, nothing is stored on a server
         </footer>
       </main>
       {presenting && <Presenter mode={{ notes: payload.opts.notes && (speaker || !audience), share: false, side: speaker || !audience }} />}

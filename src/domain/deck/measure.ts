@@ -63,7 +63,7 @@ const ESTIMATE: Record<Block["type"], Estimator> = {
   },
   timeline: (b) => (b.args?.style === "v" ? rows(b) * 4.6 : 9),
   terminal: (b) => 6 + rows(b) * 1.45 * 1.7,
-  // Mermaid diagrams are capped at 30cqw tall (globals.css `.sw-mermaid`).
+  // Mermaid diagrams are capped at 30cqw tall (globals.css `.m2s-mermaid`).
   code: (b) => (b.mermaid ? 30 : (b.args?.style === "bare" ? 3.2 : 6.2) + (b.code?.length ?? 0) * codeLine),
   table: (b, w) => {
     const cols = Math.max(1, b.head?.length ?? 1);

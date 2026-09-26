@@ -1,5 +1,5 @@
 /**
- * Messages between the VS Code extension host and the Slidewise webview.
+ * Messages between the VS Code extension host and the md2slides webview.
  * Shared by both sides (`vscode-extension/src` imports this file).
  */
 

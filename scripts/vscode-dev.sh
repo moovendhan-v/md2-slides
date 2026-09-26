@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build the Slidewise VS Code extension from this repo and open it in VS Code for testing.
+# Build the md2slides VS Code extension from this repo and open it in VS Code for testing.
 #
 #   ./scripts/vscode-dev.sh              build, then launch an Extension Development Host on the sample deck
 #   ./scripts/vscode-dev.sh path/to.md   …opening your own deck (its folder becomes the workspace)

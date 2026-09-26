@@ -125,7 +125,7 @@ export function slideFrame(sl: Slide, idx: number, look: Look, animate: boolean)
 
 /** CSS animation value for the i-th animated element of a slide. */
 export const animCss = (name: string, i: number, stagger: number) =>
-  !name || name === "none" ? "none" : `sw-${name} .6s cubic-bezier(.2,.7,.2,1) ${i * stagger}ms both`;
+  !name || name === "none" ? "none" : `m2s-${name} .6s cubic-bezier(.2,.7,.2,1) ${i * stagger}ms both`;
 
 /** CSS animation for a slide transition. */
 export const transitionCss = (name: string | undefined, dur = ".6s") =>

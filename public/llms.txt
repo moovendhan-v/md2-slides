@@ -1,4 +1,4 @@
-# Slidewise
+# md2slides
 
 > Markdown slide decks synced to GitHub. One .md file = one deck.
 

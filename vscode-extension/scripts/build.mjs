@@ -2,7 +2,7 @@
 /**
  * Builds the VS Code extension from the same sources as the web app:
  *   dist/extension.js      extension host (vscode-extension/src)
- *   dist/webview/main.js   the Slidewise UI (src/embed/vscode → src/**), plus lazy chunks/
+ *   dist/webview/main.js   the md2slides UI (src/embed/vscode → src/**), plus lazy chunks/
  *   dist/webview/app.css   Tailwind, compiled from src/app/globals.css
  *   dist/webview/*.wasm    the prebuilt slide engine (public/wasm)
  * Usage: node vscode-extension/scripts/build.mjs [--dev]
@@ -43,4 +43,4 @@ buildTailwind(join(out, "webview/app.css"), dev);
 for (const f of readdirSync(join(out, "webview"))) if (/\.(ttf|woff|svg|eot)$/.test(f)) rmSync(join(out, "webview", f));
 
 copyFileSync(WASM, join(out, "webview/slide_engine_bg.wasm"));
-console.log(`Slidewise extension built in ${Date.now() - t0} ms → ${out}`);
+console.log(`md2slides extension built in ${Date.now() - t0} ms → ${out}`);

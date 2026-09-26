@@ -1,7 +1,7 @@
 {
   "name": "slidewise",
-  "displayName": "Slidewise \u2014 Markdown Slides",
-  "description": "Open Markdown decks as slides: live preview, draggable components, customizer and presenter mode, powered by the Slidewise engine.",
+  "displayName": "md2slides \u2014 Markdown Slides",
+  "description": "Open Markdown decks as slides: live preview, draggable components, customizer and presenter mode, powered by the md2slides engine.",
   "version": "0.1.0",
   "publisher": "moovendhan-v",
   "icon": "media/icon.png",
@@ -23,6 +23,7 @@
     "slides",
     "presentation",
     "deck",
+    "md2slides",
     "slidewise"
   ],
   "main": "./dist/extension.js",
@@ -34,35 +35,35 @@
       {
         "command": "slidewise.openPreview",
         "title": "Open as Slides",
-        "category": "Slidewise",
+        "category": "md2slides",
         "icon": "$(preview)"
       },
       {
         "command": "slidewise.present",
         "title": "Present Slides",
-        "category": "Slidewise",
+        "category": "md2slides",
         "icon": "$(play)"
       },
       {
         "command": "slidewise.openInEditor",
         "title": "Reopen as Slides Editor",
-        "category": "Slidewise"
+        "category": "md2slides"
       },
       {
         "command": "slidewise.insertSlide",
         "title": "Insert Slide\u2026",
-        "category": "Slidewise",
+        "category": "md2slides",
         "icon": "$(add)"
       },
       {
         "command": "slidewise.insertBlock",
         "title": "Insert Block\u2026",
-        "category": "Slidewise"
+        "category": "md2slides"
       },
       {
         "command": "slidewise.insertIcon",
         "title": "Insert Icon\u2026",
-        "category": "Slidewise"
+        "category": "md2slides"
       }
     ],
     "menus": {
@@ -126,22 +127,22 @@
         {
           "command": "slidewise.insertSlide",
           "when": "editorLangId == markdown",
-          "group": "slidewise@1"
+          "group": "md2slides@1"
         },
         {
           "command": "slidewise.insertBlock",
           "when": "editorLangId == markdown",
-          "group": "slidewise@2"
+          "group": "md2slides@2"
         },
         {
           "command": "slidewise.insertIcon",
           "when": "editorLangId == markdown",
-          "group": "slidewise@3"
+          "group": "md2slides@3"
         },
         {
           "command": "slidewise.openPreview",
           "when": "editorLangId == markdown",
-          "group": "slidewise@4"
+          "group": "md2slides@4"
         }
       ]
     },
@@ -156,7 +157,7 @@
     "customEditors": [
       {
         "viewType": "slidewise.editor",
-        "displayName": "Slidewise Slides",
+        "displayName": "md2slides Slides",
         "selector": [
           {
             "filenamePattern": "*.md"
@@ -166,7 +167,7 @@
       }
     ],
     "configuration": {
-      "title": "Slidewise",
+      "title": "md2slides",
       "properties": {
         "slidewise.suggestOnOpen": {
           "type": "string",

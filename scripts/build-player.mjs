@@ -18,4 +18,4 @@ rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 await bundleUi({ entry: "src/player/main.tsx", outdir: out, entryNames: "player", format: "iife", fonts: "inline", stubs: { mermaid: join(root, "src/player/mermaid-stub.ts") }, dev });
 buildTailwind(join(out, "app.css"), dev);
-console.log(`Slidewise player built in ${Date.now() - t0} ms → public/player`);
+console.log(`md2slides player built in ${Date.now() - t0} ms → public/player`);

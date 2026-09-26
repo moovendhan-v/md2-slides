@@ -39,7 +39,7 @@ jobs:
           [ "vscode-v$v" = "${GITHUB_REF_NAME}" ] || { echo "Tag ${GITHUB_REF_NAME} does not match version $v"; exit 1; }
       - uses: actions/upload-artifact@v4
         with:
-          name: slidewise-vsix
+          name: md2slides-vsix
           path: vscode-extension/*.vsix
 
       - name: Publish to the VS Code Marketplace

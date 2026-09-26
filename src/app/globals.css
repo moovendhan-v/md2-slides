@@ -156,7 +156,7 @@
 }
 
 /* Mermaid diagrams scale with the slide (they are sized in px by Mermaid). */
-.sw-mermaid svg {
+.m2s-mermaid svg {
   width: 100%;
   max-width: 100% !important;
   height: auto;

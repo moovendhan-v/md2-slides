@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="md2slides">
+  <rect width="64" height="64" rx="14" fill="#09090b"/>
+  <rect x="0.5" y="0.5" width="63" height="63" rx="13.5" fill="none" stroke="#27272a"/>
+  <rect x="17" y="12" width="37" height="26" rx="5" fill="#3f3f46"/>
+  <rect x="10" y="19" width="40" height="28" rx="5" fill="#fafafa"/>
+  <path d="M17 40V27l6 6 6-6v13" fill="none" stroke="#09090b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M40 27v12m-5-5 5 5 5-5" fill="none" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

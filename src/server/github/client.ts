@@ -39,7 +39,7 @@ export class GitHubClient {
         authorization: `Bearer ${this.token}`,
         accept: init.raw ? "application/vnd.github.raw+json" : "application/vnd.github+json",
         "x-github-api-version": "2022-11-28",
-        "user-agent": "slidewise",
+        "user-agent": "md2slides",
         ...(init.body ? { "content-type": "application/json" } : {}),
       },
       cache: "no-store",
@@ -90,13 +90,13 @@ export class GitHubClient {
 
   /** Commit onto a new branch and open a pull request against `base`. */
   async pullRequest(repo: string, base: string, message: string, changes: FileChange[]) {
-    const head = `slidewise/${Date.now().toString(36)}`;
+    const head = `md2slides/${Date.now().toString(36)}`;
     const ref = await this.req<{ object: { sha: string } }>(`/repos/${repo}/git/ref/heads/${encodeURIComponent(base)}`);
     await this.req(`/repos/${repo}/git/refs`, { method: "POST", body: JSON.stringify({ ref: `refs/heads/${head}`, sha: ref.object.sha }) });
     const commit = await this.commit(repo, head, message, changes);
     const pr = await this.req<{ number: number; html_url: string }>(`/repos/${repo}/pulls`, {
       method: "POST",
-      body: JSON.stringify({ title: message, head, base, body: "Opened from Slidewise." }),
+      body: JSON.stringify({ title: message, head, base, body: "Opened from md2slides." }),
     });
     return { sha: commit.sha, url: pr.html_url, pullRequest: pr.number };
   }

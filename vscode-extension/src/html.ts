@@ -6,7 +6,7 @@ const FONTS =
 const nonce = () => Array.from({ length: 32 }, () => Math.floor(Math.random() * 36).toString(36)).join("");
 
 /**
- * Webview document for the bundled Slidewise app. `<base>` points at the
+ * Webview document for the bundled md2slides app. `<base>` points at the
  * deck's folder so relative image paths in the Markdown resolve.
  */
 export function webviewHtml(webview: vscode.Webview, extensionUri: vscode.Uri, document: vscode.TextDocument): string {
@@ -33,11 +33,11 @@ export function webviewHtml(webview: vscode.Webview, extensionUri: vscode.Uri, d
   <link rel="stylesheet" href="${FONTS}" />
   <link rel="stylesheet" href="${asset("app.css")}" />
   <link rel="stylesheet" href="${asset("main.css")}" />
-  <title>Slidewise</title>
+  <title>md2slides</title>
 </head>
 <body class="bg-zinc-950 text-[13px] text-zinc-50 antialiased">
   <div id="root"></div>
-  <script nonce="${n}">window.__SLIDEWISE_WASM__ = ${JSON.stringify(asset("slide_engine_bg.wasm"))};</script>
+  <script nonce="${n}">window.__MD2SLIDES_WASM__ = ${JSON.stringify(asset("slide_engine_bg.wasm"))};</script>
   <script type="module" nonce="${n}" src="${asset("main.js")}"></script>
 </body>
 </html>`;

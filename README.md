@@ -1,4 +1,4 @@
-# Slidewise
+# md2slides
 
 Markdown slide decks synced to GitHub. One `.md` file = one deck. Write Markdown, restyle any block
 visually, present with a full presenter view, and push changes as commits.
@@ -11,7 +11,7 @@ Built with **Next.js (App Router)**, **shadcn/ui**, **Zustand**, **TanStack Quer
 ```bash
 cp .env.example .env.local   # fill in GitHub OAuth + AI keys (never commit .env.local)
 npm install
-npm run dev                  # http://localhost:3000
+npm run dev                  # http://localhost:3000 (landing) · /app (editor)
 ```
 
 **GitHub OAuth App:** set the *Authorization callback URL* to `<your app URL>/api/auth/github/callback`
@@ -59,6 +59,16 @@ Environment variables (see `.env.example`):
   - Output is validated by the Wasm parser and retried once if it contains no slides.
 
 The full Markdown syntax is in [`public/llms-full.txt`](public/llms-full.txt).
+
+## Landing page and brand
+
+- **Routes:** `/` is the landing page, `/app` is the editor (GitHub sign-in returns there), and `/v#…` is the share viewer.
+- **Hero:** a three.js scene (React Three Fiber + drei). The real rendered md2slides slides fan out, stack and present as you scroll, over a particle field with pointer parallax.
+  - It lazy-loads without SSR, so the page's first load stays small.
+  - Visitors with reduced motion, or browsers without WebGL, get a static CSS 3D fallback.
+- **Landing assets:** the slide textures in `public/landing/` and the "View a demo deck" link are generated from `src/features/landing/showcase.md` by `node scripts/landing-assets.mjs` (run it with the app running).
+- **Logo and icons:** the logo is `public/logo.svg`. `node scripts/brand-icons.mjs` renders the favicon set (`src/app/icon.svg`, `favicon.ico`, `apple-icon.png`, PWA icons) and the VS Code icon. The web manifest and social preview image are built by `src/app/manifest.ts` and `src/app/opengraph-image.tsx`.
+- **Renamed from Slidewise:** settings and saved templates stored under the old names migrate automatically.
 
 ## Share links (no server storage)
 

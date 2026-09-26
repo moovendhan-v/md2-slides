@@ -1,4 +1,5 @@
-import { get, set } from "idb-keyval";
+import { del, get, set } from "idb-keyval";
+import { migrateAsync } from "@/lib/storage";
 import type { SlideEngine } from "@/engine/engine";
 import { HttpTemplateRepository } from "./http-repository";
 import type { TemplateRepository } from "./types";
@@ -6,10 +7,12 @@ import { WasmTemplateRepository, type SnapshotStorage } from "./wasm-repository"
 
 export type { TemplateRepository } from "./types";
 
-const KEY = "slidewise:templates:v1";
+const KEY = "md2slides:templates:v1";
+/** Snapshot key used before the rename. */
+const LEGACY_KEY = "slidewise:templates:v1";
 
 export const indexedDbStorage: SnapshotStorage = {
-  load: () => get<Uint8Array>(KEY),
+  load: () => migrateAsync<Uint8Array>(KEY, LEGACY_KEY, { get, set, del }),
   save: (bytes) => set(KEY, bytes),
 };
 

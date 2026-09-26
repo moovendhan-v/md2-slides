@@ -6,15 +6,10 @@ import { Kbd } from "@/components/common/controls";
 import { Button } from "@/components/ui/button";
 import { useUi } from "@/stores/ui";
 import { selectChanged, useWorkspace } from "@/stores/workspace";
+import Link from "next/link";
+import { Logo } from "@/components/brand/logo";
+import { BRAND } from "@/lib/brand";
 import { UserMenu } from "./user-menu";
-
-export function BrandMark({ size = 26 }: { size?: number }) {
-  return (
-    <span className="grid shrink-0 place-items-center rounded-md bg-zinc-50 text-zinc-950" style={{ width: size, height: size }}>
-      <Icon name="presentation" style={{ fontSize: size * 0.6 }} />
-    </span>
-  );
-}
 
 export function AppHeader() {
   const { repo: activeRepo, path } = useDeck();
@@ -30,8 +25,9 @@ export function AppHeader() {
         <Icon name="sidebar-simple" className="text-lg" />
       </Button>
       <div className="flex min-w-0 items-center gap-2 text-[13px]">
-        <BrandMark />
-        <span className="font-semibold text-zinc-50">Slidewise</span>
+        <Link href="/" title={`${BRAND.name} home`} className="flex items-center">
+          <Logo size={26} wordmark />
+        </Link>
         <span className="text-zinc-600">/</span>
         <span className="truncate text-zinc-400">{repo}</span>
         {view === "editor" && path && (
