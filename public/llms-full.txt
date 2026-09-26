@@ -1,0 +1,229 @@
+# Slidewise Markdown — llms-full.txt
+
+> Slidewise turns one Markdown file into a slide deck. This file teaches an LLM the complete syntax. Output ONLY the Markdown file — no prose, no code fences around the whole deck.
+
+## File structure
+
+1. Optional front-matter at the very top, between two `---` lines, `key: value` per line.
+2. Slides separated by a line containing only `---`.
+3. Inside a slide: optional directive comment, kicker, title, then blocks.
+
+```
+---
+title: Deck title
+theme: zinc            # zinc | slate | stone | night
+mode: dark             # dark | light   (slides only)
+accent: #60a5fa        # any hex
+bg: mesh               # solid | gradient | mesh | grid | dots | spotlight
+font: geist            # geist | grotesk | plex | editorial | mono
+glass: true            # frosted cards
+radius: 12             # 0–30
+density: normal        # compact | normal | roomy
+aspect: 16:9           # 16:9 | 4:3 | 1:1
+titleScale: 1          # 0.6–1.8
+bodyScale: 1           # 0.7–1.6
+transition: fade       # see Motion
+animate: fade-up       # see Motion
+stagger: 90            # ms between block animations
+footer: Acme · Confidential
+nums: true             # slide numbers
+bar: false             # accent bar on top
+version: 4.2           # any other key becomes a variable → ${version}
+---
+```
+
+## Slide text
+
+- `^ Kicker` — small uppercase eyebrow above the title.
+- `# Title` — the slide title (first `#` or `##` in the slide).
+- `### Heading` — sub-heading block inside the slide.
+- A plain line right after the title becomes the subtitle/body; later plain lines are paragraphs.
+- `${name}` — inserts a front-matter variable.
+- `Note: …` — speaker notes; everything after it until the next `---` is notes.
+- `|||` on its own line — column break. Blocks after it go in the next column (max 3).
+
+## Slide directives
+
+One HTML comment line at the top of a slide, `key: value` pairs separated by `;`:
+
+```
+<!-- layout: center -->
+<!-- bg: #0b1120; color: #fafafa; titleColor: #60a5fa; accent: #f472b6 -->
+<!-- bg: https://example.com/photo.jpg; align: center; pad: 4 6; titleSize: 6 -->
+<!-- transition: cube; animate: pop; stagger: 150 -->
+```
+
+- layout: left | center | statement
+- bg: hex, CSS gradient, or image URL (darkened automatically)
+- color / titleColor / accent: hex
+- align: left | center | right
+- pad: "vertical horizontal" in cqw (e.g. `4 6`)
+- titleSize: number in cqw (2–10)
+
+## Blocks
+
+### Lists
+```
+- Bullet
+- [x] Done item      (checklist)
+- [ ] Todo item
+1. Numbered
+```
+Style a list with a fence: `:::list style=dot|check|number|boxed` … `:::`
+
+### Cards
+```
+:::cards style=grid cols=3
+- icon | Title | Description
+:::
+```
+style: grid | glass | outline | numbered | iconLeft | accent. cols: 1–4.
+icon: any Phosphor icon name without `ph-` (lightning, rocket, lock, users, chart-line-up, git-branch, database, globe, shield-check, code, sparkle, bug, check, warning, clock, target, heart, paint-brush…).
+
+### Stats
+```
+:::stats style=boxed
+- 42% | Label | +5%
+:::
+```
+style: boxed | plain | bar | big. Third cell (delta) is optional.
+
+### Diagrams
+```
+:::flow style=pipeline
+- icon | Step | detail
+:::
+```
+style: pipeline (left→right boxes with arrows) | steps (numbered) | stack (layers).
+
+### Timeline
+```
+:::timeline style=h
+- Q1 | Shipped thing
+- Q3 | Planned thing?
+:::
+```
+style: h | v. A trailing `?` marks a future/unfinished item.
+
+### Code
+````
+```ts file.ts {2,4-5}
+const a = 1
+```
+````
+Language, optional filename, optional highlighted lines in `{}`. Add `nochrome` after the filename to hide the header.
+
+### Terminal
+```
+:::terminal zsh
+$ command
+output line
+:::
+```
+
+### Table
+```
+| Col | Col |
+|---|---|
+| a | **bold** |
+```
+
+### Callout
+`> [!NOTE] text` — NOTE | TIP | WARNING | DANGER | SUCCESS
+
+### Quote
+```
+> The quote text.
+— Author
+```
+
+### Image
+`![alt](url){w=60 h=30 fit=contain r=0 pos=top filter=grayscale ar=4:3}` — empty url shows a placeholder. All attributes optional.
+
+### Chart
+```
+:::chart style=column 2.8M
+- Label | 42
+:::
+```
+style: column | bar | line | donut | pie | rings. Text after the style (e.g. `2.8M`) is the donut centre label. Rings read values as percent.
+
+### Gallery
+```
+:::gallery style=grid
+- https://…/a.jpg | Caption
+- | Placeholder caption
+:::
+```
+style: grid | strip | circles | mosaic.
+
+### More diagrams
+`:::flow` also accepts style=hub (first row is the centre), cycle, funnel, pyramid.
+
+### Mermaid (lite)
+A ```mermaid fence with `graph LR` and `A[Client] --> B[API] --> C[DB]` edges becomes a native pipeline; a node with 3+ outgoing edges becomes a hub diagram.
+
+### Code walkthroughs
+- Click steps: ```ts file.ts {2|3-4|all} — each `|` group is one click while presenting; other lines dim.
+- Magic move: add `magic` after the filename on consecutive slides — lines that are new vs the previous slide animate in.
+- Import from repo: `<<< @/src/file.ts#L3-12 {2|4} magic` pulls lines from the connected repository.
+
+### Inline formatting
+`**bold**`, `*italic*`, `` `code` ``, `==highlight==`, `~~strike~~`, `[link](url)`, `:icon-name:` (Phosphor) work in titles, bullets, cards, paragraphs and callouts.
+
+## Custom layouts (HTML + Tailwind)
+Use `<!-- layout: custom:<id> -->` to render a slide with a community/code template. The slide Markdown fills its slots: title, kicker, body, image (from `image:` directive or first image), code (first code block) and items (rows of the first block: icon | title | text).
+Built-in ids: hero-split, bento, metric-wall.
+
+## Media layouts
+`<!-- layout: image-right; image: https://…/photo.jpg -->` — image-left | image-right | image-full | image-top | diagonal | circle | arch. Empty image = placeholder.
+
+## Presenting
+- `clicks: true` (front-matter or slide directive) reveals blocks one per → press.
+- `<!-- zoom: 0.8 -->` scales dense slides.
+- `<!-- src: ./appendix.md -->` imports another file's slides (relative to this file).
+- `logo: ACME` front-matter adds a brand mark top-right.
+- Presenter keys: → next/reveal, O overview grid, D pen, C clear, L laser, B blackout, F fullscreen, Z zoom, T strip.
+- Export: toolbar PDF button prints one slide per page.
+
+## Motion
+
+transition (between slides): none, fade, slide, slide-right, slide-up, slide-down, push, zoom, zoom-out, flip, flip-x, cube, swing, rotate, skew, drop, blur, wipe, wipe-up, iris, glitch.
+
+animate (blocks entering): none, fade, fade-up, fade-down, zoom-in, slide-left, blur-in, pop.
+
+## Writing rules for good decks
+
+- One idea per slide. Titles are short claims (≤ 8 words), not topics.
+- Max ~3 blocks per slide; prefer one strong block.
+- 3–4 cards or stats per row; bullets ≤ 5, each ≤ 10 words.
+- Open with a title slide (kicker + title + one-line subtitle, `<!-- layout: center -->`), close with a quote or statement slide.
+- Use variables for repeated facts (product name, version).
+- Add `Note:` speaker notes on content slides.
+- Never invent block types or styles not listed here.
+
+## Example
+
+```
+---
+title: Launch
+product: Relay
+bg: mesh
+transition: zoom
+---
+<!-- layout: center -->
+^ Introducing
+# ${product}
+Presentations as code.
+---
+# Why teams switch
+:::cards style=accent
+- git-diff | Reviewable | Every change is a PR
+- code | Developer-first | Markdown and variables
+- paint-brush | Themeable | One file, any brand
+:::
+Note: Pause after the first card.
+---
+> Make the change easy, then make the easy change.
+— Kent Beck
+```
