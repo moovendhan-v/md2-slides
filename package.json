@@ -13,7 +13,6 @@
     "wasm:build": "./scripts/build-wasm.sh"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.128.0",
     "@phosphor-icons/web": "^2.1.2",
     "@tanstack/react-query": "^5.103.3",
     "@tanstack/react-table": "^9.2.4",

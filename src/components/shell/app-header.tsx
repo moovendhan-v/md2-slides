@@ -17,7 +17,9 @@ export function BrandMark({ size = 26 }: { size?: number }) {
 }
 
 export function AppHeader() {
-  const { repo, path } = useDeck();
+  const { repo: activeRepo, path } = useDeck();
+  const repoView = useUi((s) => s.repoView);
+  const repo = activeRepo || repoView || "";
   const view = useUi((s) => s.view);
   const set = useUi((s) => s.set);
   const openModal = useUi((s) => s.openModal);
@@ -32,7 +34,7 @@ export function AppHeader() {
         <span className="font-semibold text-zinc-50">Slidewise</span>
         <span className="text-zinc-600">/</span>
         <span className="truncate text-zinc-400">{repo}</span>
-        {view === "editor" && (
+        {view === "editor" && path && (
           <>
             <span className="hidden text-zinc-600 sm:inline">/</span>
             <span className="hidden truncate text-zinc-100 sm:inline">{path}</span>

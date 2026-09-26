@@ -7,7 +7,11 @@ import { Icon } from "@/components/common/icon";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useDeck } from "@/app-shell/deck-context";
+import { EmptyState } from "@/components/common/empty-state";
 import { useFileActions } from "@/hooks/use-file-actions";
+import { useRepoTree } from "@/hooks/use-queries";
+import { timeAgo } from "@/lib/time";
+import { useDeckPreviews } from "./use-deck-previews";
 import { cn } from "@/lib/utils";
 import { useUi } from "@/stores/ui";
 import { fileKey, useWorkspace } from "@/stores/workspace";
@@ -53,28 +57,33 @@ export function RepoView() {
   const orig = useWorkspace((s) => s.orig);
   const { openFile, newDeck } = useFileActions();
   const repo = repos.find((r) => r.id === repoView) ?? repos[0];
-  const all = useMemo(() => paths[repo.id] ?? [], [paths, repo.id]);
+  const tree = useRepoTree(repo);
+  const all = useMemo(() => (repo ? paths[repo.id] ?? [] : []), [paths, repo]);
+  useDeckPreviews(repo, all);
 
   const rows = useMemo<DeckRow[]>(
     () =>
-      all
+      !repo ? [] : all
         .filter((p) => p.endsWith(".md"))
         .map((p) => {
           const key = fileKey(repo.id, p);
+          const loaded = files[key] != null;
           const deck = engine.parse(files[key] ?? "");
           return {
             key,
             dir: p.includes("/") ? p.slice(0, p.lastIndexOf("/") + 1) : "",
             name: p.split("/").pop() ?? p,
-            title: deck.meta.title || deck.slides[0]?.title || "—",
-            slides: deck.slides.length,
+            title: loaded ? deck.meta.title || deck.slides[0]?.title || "Untitled" : "…",
+            slides: loaded ? deck.slides.length : 0,
             status: orig[key] == null ? "New" : files[key] !== orig[key] ? "Modified" : "Synced",
           };
         }),
-    [all, repo.id, files, orig, engine],
+    [all, repo, files, orig, engine],
   );
   const table = useTable({ features, columns, data: rows });
   const hidden = all.length - rows.length;
+
+  if (!repo) return <EmptyState icon="github-logo" title="No repositories yet" body="Create a repository on GitHub, then reload — Slidewise lists every repo your account can access." />;
 
   return (
     <div className="min-h-0 flex-1 overflow-auto">
@@ -88,7 +97,7 @@ export function RepoView() {
             </span>
             <h1 className="text-2xl font-semibold tracking-tight">{repo.id.split("/")[1]}</h1>
             <p className="text-[13px] text-zinc-500">
-              {rows.length} Markdown decks · branch {repo.branch} · updated {repo.updated}
+              {tree.isPending ? "Loading files…" : `${rows.length} Markdown decks`} · branch {repo.branch} · pushed {timeAgo(repo.pushedAt)}
             </p>
           </div>
           <div className="flex gap-2">
@@ -116,7 +125,7 @@ export function RepoView() {
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} className="h-11 cursor-pointer border-zinc-800 hover:bg-zinc-900/60" onClick={() => openFile(row.original.key)}>
+                <TableRow key={row.id} className="h-11 cursor-pointer border-zinc-800 hover:bg-zinc-900/60" onClick={() => void openFile(row.original.key)}>
                   {row.getAllCells().map((c) => (
                     <TableCell key={c.id} className="text-[13px]">
                       <table.FlexRender cell={c} />
@@ -127,6 +136,10 @@ export function RepoView() {
             </TableBody>
           </Table>
         </div>
+        {tree.isError && <p className="text-xs text-red-400">Could not load files: {tree.error.message}</p>}
+        {!tree.isPending && !rows.length && !tree.isError && (
+          <EmptyState icon="file-md" title="No Markdown decks in this repo" body="Create one with “New deck” or start from a template — it's committed on your next push." />
+        )}
         {hidden > 0 && (
           <p className="flex items-center gap-2 text-xs text-zinc-500">
             <Icon name="info" /> {hidden} non-Markdown file{hidden > 1 ? "s" : ""} hidden (assets, config)

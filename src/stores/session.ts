@@ -1,8 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type AuthStatus = "signin" | "consent" | "loading" | "in";
-
 export interface ShareSettings {
   exp: "1h" | "24h" | "7d" | "talk";
   access: "link" | "org" | "pass";
@@ -15,10 +13,6 @@ export interface ShareSettings {
 }
 
 interface SessionState {
-  status: AuthStatus;
-  mode: "in" | "up";
-  scope: "all" | "selected";
-  picked: Record<string, boolean>;
   /** User preferences (repo visibility, workflow toggles). */
   prefs: Record<string, boolean>;
   share: ShareSettings;
@@ -28,22 +22,21 @@ interface SessionState {
   setShare: (patch: Partial<ShareSettings>) => void;
 }
 
-/** Signed-in session, preferences and share settings (persisted per browser). */
+/**
+ * Per-browser preferences. Authentication itself lives in the server's
+ * encrypted httpOnly cookie and is read through `useMeQuery`.
+ */
 export const useSession = create<SessionState>()(
   persist(
     (set) => ({
-      status: "signin",
-      mode: "in",
-      scope: "selected",
-      picked: {},
       prefs: {},
-      share: { exp: "24h", access: "link", pw: "", follow: true, notes: false, dl: true, qa: false, tok: "k7x2qa" },
+      share: { exp: "24h", access: "link", pw: "", follow: true, notes: false, dl: true, qa: false, tok: Math.random().toString(36).slice(2, 8) },
       commitMessage: "Update slides",
       set: (patch) => set(patch),
       togglePref: (key, fallback) => set((s) => ({ prefs: { ...s.prefs, [key]: !(s.prefs[key] ?? fallback) } })),
       setShare: (patch) => set((s) => ({ share: { ...s.share, ...patch } })),
     }),
-    { name: "slidewise-session", partialize: (s) => ({ status: s.status === "in" ? "in" : "signin", prefs: s.prefs, share: s.share, scope: s.scope, picked: s.picked }) },
+    { name: "slidewise-prefs", partialize: (s) => ({ prefs: s.prefs, share: s.share }) },
   ),
 );
 

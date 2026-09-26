@@ -37,7 +37,8 @@ export function useGlobalKeys() {
       }
       if (mod && e.key === "Enter") {
         e.preventDefault();
-        return p.start(current);
+        if (deck.slides.length) p.start(current);
+        return;
       }
       if (e.key === "Escape") {
         if (ui.modal) return; // dialogs close themselves

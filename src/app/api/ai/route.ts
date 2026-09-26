@@ -1,55 +1,91 @@
-import Anthropic from "@anthropic-ai/sdk";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
 import { getServerEngine } from "@/engine/server";
+import { env } from "@/server/env";
+import { generateWithFailover, providerChain, type ProviderCreds } from "@/server/ai/router";
+import type { ProviderName } from "@/server/ai/types";
+import { clientIp, rateLimit } from "@/server/rate-limit";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
 
-const MODEL = process.env.SLIDEWISE_AI_MODEL || "claude-opus-5";
+interface Body {
+  prompt?: string;
+  slides?: number;
+  /** Preferred provider (defaults to AI_PROVIDER). */
+  provider?: ProviderName;
+  /** Bring-your-own keys: used for this request only — never stored, logged or returned. */
+  byok?: { cloudflare?: { accountId?: string; apiToken?: string; model?: string }; gemini?: { apiKey?: string; model?: string } };
+}
 
 let spec: string | null = null;
 const loadSpec = async () => (spec ??= await fs.readFile(path.join(process.cwd(), "public", "llms-full.txt"), "utf8"));
+const noStore = { "cache-control": "no-store" };
+const fail = (msg: string, status: number, extra: Record<string, unknown> = {}) => NextResponse.json({ error: msg, ...extra }, { status, headers: noStore });
 
-const stripFence = (s: string) => s.replace(/^```(markdown|md)?\s*\n/, "").replace(/\n```\s*$/, "").trim() + "\n";
+/** Strip chat chatter / code fences so only the deck Markdown remains. */
+function extractDeck(text: string) {
+  let md = text.trim();
+  const fence = md.match(/```(?:markdown|md)?\s*\n([\s\S]*?)\n```/);
+  if (fence) md = fence[1];
+  const fm = md.indexOf("---");
+  if (fm > 0 && md.slice(0, fm).trim().split("\n").length <= 3) md = md.slice(fm);
+  return md.trim() + "\n";
+}
+
+function resolveCreds(b: Body): { creds: ProviderCreds; byok: boolean } {
+  const cf = b.byok?.cloudflare;
+  const gm = b.byok?.gemini;
+  const envCf = env.cloudflare();
+  const envGm = env.gemini();
+  const cfByok = !!(cf?.accountId && cf.apiToken);
+  const gmByok = !!gm?.apiKey;
+  return {
+    byok: cfByok || gmByok,
+    creds: {
+      cloudflare: cfByok ? { accountId: cf!.accountId!, apiToken: cf!.apiToken!, model: cf!.model || envCf.model } : envCf,
+      gemini: gmByok ? { apiKey: gm!.apiKey!, model: gm!.model || envGm.model } : envGm,
+    },
+  };
+}
 
 /**
- * POST { prompt, slides } → { markdown, problems }. Uses the Slidewise syntax
- * spec (llms-full.txt) as the system prompt, then validates the draft with the
- * Wasm parser. Returns 503 when no Anthropic credentials are configured so the
- * client can fall back to ready-made examples.
+ * POST { prompt, slides, provider?, byok? } → { markdown, problems, provider, attempts }.
+ * Tries the primary provider, then fails over to the other on rate limits,
+ * errors, timeouts or output that does not parse into slides.
  */
 export async function POST(req: Request) {
-  const body = (await req.json().catch(() => null)) as { prompt?: string; slides?: number } | null;
-  const prompt = body?.prompt?.trim();
-  if (!prompt) return new NextResponse("prompt is required", { status: 400 });
-  if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) return new NextResponse("AI is not configured", { status: 503 });
-
-  const client = new Anthropic();
-  try {
-    const res = await client.beta.messages.create({
-      model: MODEL,
-      max_tokens: 16000,
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
-      system: `You write slide decks in Slidewise Markdown. Follow this specification exactly:\n\n${await loadSpec()}`,
-      messages: [
-        {
-          role: "user",
-          content: `Write a deck of about ${body?.slides ?? 6} slides for this request:\n${prompt}\n\nReturn ONLY the Markdown file, starting with the front-matter --- line.`,
-        },
-      ],
-    });
-    if (res.stop_reason === "refusal") return new NextResponse("The request was declined", { status: 422 });
-    const text = res.content.map((b) => (b.type === "text" ? b.text : "")).join("");
-    const markdown = stripFence(text);
-    const { problems } = getServerEngine().parse(markdown);
-    return NextResponse.json({ markdown, problems, model: res.model });
-  } catch (e) {
-    if (e instanceof Anthropic.RateLimitError) return new NextResponse("Rate limited — try again shortly", { status: 429 });
-    if (e instanceof Anthropic.AuthenticationError) return new NextResponse("AI credentials are invalid", { status: 503 });
-    if (e instanceof Anthropic.APIError) return new NextResponse(e.message, { status: 502 });
-    throw e;
+  const b = (await req.json().catch(() => null)) as Body | null;
+  const prompt = b?.prompt?.trim();
+  if (!b || !prompt) return fail("prompt is required", 400);
+  if (prompt.length > 4000) return fail("prompt is too long (max 4000 characters)", 400);
+  const { creds, byok } = resolveCreds(b);
+  if (!byok) {
+    const wait = rateLimit(`ai:${clientIp(req)}`, 10, 60_000);
+    if (wait) return fail(`Too many generations — try again in ${wait}s, or add your own API key`, 429, { retryAfter: wait });
   }
+  const primary: ProviderName = b.provider === "gemini" || b.provider === "cloudflare" ? b.provider : env.aiProvider();
+  const chain = providerChain(primary, creds);
+  if (!chain.length) return fail("AI is not configured — add an API key", 503);
+
+  const engine = getServerEngine();
+  const slides = Math.min(20, Math.max(2, Number(b.slides) || 6));
+  const result = await generateWithFailover(
+    chain,
+    {
+      system: `You write slide decks in Slidewise Markdown. Follow this specification exactly:\n\n${await loadSpec()}`,
+      user: `Write a deck of about ${slides} slides for this request:\n${prompt}\n\nReturn ONLY the Markdown file, starting with the front-matter --- line. No explanations, no code fences.`,
+      maxTokens: 3000,
+    },
+    { timeoutMs: 60_000, byok, validate: (t) => (engine.parse(extractDeck(t)).slides.length ? null : "Output contained no slides") },
+  );
+  if (!result.text) {
+    const limited = result.attempts.some((a) => a.status === 429);
+    return fail(limited ? "All AI providers are rate limited right now — try again shortly or use your own key" : "AI generation failed on every provider", limited ? 429 : 502, {
+      attempts: result.attempts,
+    });
+  }
+  const markdown = extractDeck(result.text);
+  return NextResponse.json({ markdown, problems: engine.parse(markdown).problems, provider: result.provider, attempts: result.attempts }, { headers: noStore });
 }

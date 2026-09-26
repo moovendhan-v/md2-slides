@@ -19,10 +19,7 @@ import { useGlobalKeys } from "@/hooks/use-global-keys";
 import { useReposQuery } from "@/hooks/use-queries";
 import { usePresent } from "@/stores/present";
 import { useUi, type View } from "@/stores/ui";
-import { fileKey, useWorkspace } from "@/stores/workspace";
 import { DeckProvider } from "./deck-context";
-
-const INITIAL = { repo: "acme/platform-decks", path: "decks/q3-review.md" };
 
 /** View registry: adding a screen means adding one entry here. */
 const VIEWS: Record<View, () => React.ReactNode> = {
@@ -56,18 +53,13 @@ function Shell() {
 }
 
 export function Workspace() {
-  const ready = useWorkspace((s) => s.ready);
-  const repos = useReposQuery(!ready);
+  const repos = useReposQuery(true);
   useEffect(() => {
-    if (repos.data && !useWorkspace.getState().ready) {
-      const first = repos.data.find((r) => r.id === INITIAL.repo) ?? repos.data[0];
-      const path = first.files.some((f) => f.path === INITIAL.path) ? INITIAL.path : first.files.find((f) => f.path.endsWith(".md"))?.path ?? "";
-      useWorkspace.getState().hydrate(repos.data, fileKey(first.id, path));
-      useUi.getState().set({ repoView: first.id });
-    }
+    const ui = useUi.getState();
+    if (repos.data?.length && !ui.repoView) ui.set({ repoView: repos.data[0].id });
   }, [repos.data]);
-  if (repos.isError) return <BootScreen label={`Could not load repositories: ${(repos.error as Error).message}`} />;
-  if (!ready) return <BootScreen label="Loading repositories…" />;
+  if (repos.isPending) return <BootScreen label="Loading your GitHub repositories…" />;
+  if (repos.isError) return <BootScreen label={`Could not load repositories: ${repos.error.message}`} />;
   return (
     <DeckProvider>
       <Shell />

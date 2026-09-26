@@ -9,9 +9,13 @@ Built with **Next.js (App Router)**, **shadcn/ui**, **Zustand**, **TanStack Quer
 ## Quick start
 
 ```bash
+cp .env.example .env.local   # fill in GitHub OAuth + AI keys (never commit .env.local)
 npm install
-npm run dev          # http://localhost:3000
+npm run dev                  # http://localhost:3000
 ```
+
+**GitHub OAuth App:** set the *Authorization callback URL* to `<your app URL>/api/auth/github/callback`
+(e.g. `http://localhost:3000/api/auth/github/callback` locally, and your Vercel domain in production).
 
 The compiled engine (`public/wasm/slide_engine_bg.wasm` + `src/engine/wasm/pkg/`) is committed, so
 no Rust toolchain is needed to run or deploy. To change the engine:
@@ -29,24 +33,28 @@ npm run wasm:build   # rebuilds the .wasm and JS bindings
 | `npm run test:engine` | Rust unit tests for the parser, template store and slot renderer |
 | `npm run build` | Production build |
 
-Optional environment variables:
+Environment variables (see `.env.example`):
 
 | Variable | Purpose |
 | --- | --- |
-| `ANTHROPIC_API_KEY` | Enables real AI deck generation in `/api/ai`. Without it the dialog falls back to the closest ready-made deck. |
-| `SLIDEWISE_AI_MODEL` | Override the model (default `claude-opus-5`). Requests enable server-side refusal fallbacks. |
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | GitHub OAuth App used for sign-in, reading repos and pushing commits. |
+| `SESSION_SECRET` | Encrypts the http-only session cookie that holds the GitHub token (AES-256-GCM). |
+| `AI_PROVIDER` | Primary AI provider: `cloudflare` or `gemini`. The other one is the automatic fallback. |
+| `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_AI_MODEL` | Cloudflare Workers AI. |
+| `GEMINI_API_KEY` / `GEMINI_MODEL` | Google Gemini (default `gemini-2.5-flash`). |
+| `DISCORD_WEBHOOK_URL` | Optional alerts: AI fallbacks/outages, OAuth failures, GitHub rate limits, pushes. No secrets or prompt text are sent. |
 | `NEXT_PUBLIC_TEMPLATE_SOURCE=remote` | Read/write templates through the Wasm-backed `/api/templates` function instead of the in-browser store. |
 
 ## Features
 
-- **GitHub sign-in & consent** flow, repository browser with per-file dirty state, commit dialog with line diffs (push or open a PR).
+- **GitHub sign-in** (OAuth), live repository browser (lazy trees and files), per-file dirty state, commit dialog with line diffs — pushes a real commit or opens a pull request.
 - **Editor**: colour-coded Markdown, `/` block inserter with live previews, ⌘K palette, problems panel, format, `.md`/PDF export.
 - **Live preview** (all slides or focus mode) — click any block to restyle it, transform it into another block type, or edit images.
 - **Customizer**: 4 palettes × dark/light, accents, 6 backgrounds, 5 font pairings, glass, radius, density, aspect ratio, per-slide layouts / colours / padding, 21 transitions and 8 block animations.
 - **Templates**: decks, single slides and community templates — searched and paged inside the Wasm store; save any deck as a template.
 - **Template studio**: author HTML + Tailwind layouts with `{{slots}}`, live preview, validation, and publish as `<!-- layout: custom:id -->`.
 - **Presenter**: timer + limit, notes, next slide, pen, laser, blackout, zoom, overview, click-to-reveal, code step-through, share link settings.
-- **AI**: generate a deck from a prompt using `public/llms-full.txt` as the model's syntax spec; output is validated by the Wasm parser.
+- **AI**: Cloudflare Workers AI and Gemini with automatic failover on errors, rate limits, timeouts or invalid output. Users can bring their own key — kept only in that tab's `sessionStorage`, sent per request, never stored or logged by the server. Output is validated by the Wasm parser.
 
 The full Markdown syntax is in [`public/llms-full.txt`](public/llms-full.txt).
 
@@ -57,14 +65,15 @@ crates/slide-engine/        Rust → Wasm: parser, TemplateStore (search, paging
 src/
   engine/                   Typed facade over the Wasm bindings (browser loader, server loader, React provider)
   domain/                   Pure TS: look/theme tokens, slide layout maths, source transforms, file tree
-  data/                     Seed JSON (demo repos, templates, snippets, AI presets, code layouts)
-  services/                 Interfaces + implementations: GitProvider, TemplateRepository, AiDeckService
+  data/                     Built-in catalog JSON (templates, snippets, AI prompt ideas, code layouts)
+  services/                 Interfaces + implementations: AuthProvider/GitProvider (GitHub), TemplateRepository, AiDeckService
+  server/                   Server-only: env, encrypted session, GitHub client, AI providers + failover, Discord alerts, rate limit
   stores/                   Zustand slices: workspace, ui, editor, present, session, ai, studio, layouts
   hooks/                    TanStack Query hooks, deck/file actions, global shortcuts
   components/slide/         SlideView + block registry (one component per block family)
   components/shell/         Header, sidebar, file tree
   features/                 One folder per screen: auth, repo, editor, customize, templates, studio, present, ai, commit, palette, profile
-  app/api/                  Vercel Functions running the same Wasm: /api/templates, /api/parse, /api/ai
+  app/api/                  auth/github/{login,callback}, auth/{me,logout}, github/{repos,tree,file,commit}, ai, templates, parse
 ```
 
 **Why WebAssembly.** Parsing runs on every keystroke and template search runs on every filter change,
@@ -81,7 +90,8 @@ make it durable, save `store.snapshot()` bytes to Vercel Blob or KV in `src/serv
 - *Dependency inversion:* UI depends on the `GitProvider`, `TemplateRepository` and `AiDeckService` interfaces. `app-shell/services.tsx` is the only place concrete classes are chosen.
 - *DRY:* every document edit is a pure function in `domain/source`, shared by the toolbar, palette, preview and customizer through `useDeckActions`.
 
-### What is demo vs real
+### Security notes
 
-- GitHub access uses `DemoGitProvider` (seed repos in `src/data/repos.json`). Implement `GitProvider` against the GitHub REST API and register it in `app-shell/services.tsx` to go live.
-- Share links and viewer counts are UI-only.
+- The GitHub token never reaches the browser: it lives in an encrypted, http-only, SameSite=Lax cookie and every GitHub call goes through `/api/github/*`. OAuth uses a one-time `state` cookie against CSRF.
+- `/api/ai` is rate limited per IP (10/min per instance) when using the server's keys; BYOK requests are not limited by us.
+- Share links and viewer counts are UI-only for now.

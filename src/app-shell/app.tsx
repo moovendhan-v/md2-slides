@@ -1,19 +1,14 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect } from "react";
 import { AuthScreen } from "@/features/auth/auth-screen";
 import { BootScreen } from "@/components/shell/boot-screen";
-import { useSession } from "@/stores/session";
+import { useMeQuery } from "@/hooks/use-queries";
 import { useUi } from "@/stores/ui";
 import { Providers } from "./providers";
 import { Workspace } from "./workspace";
 
-const subscribe = (cb: () => void) => useSession.persist.onFinishHydration(cb);
-const hydrated = () => useSession.persist.hasHydrated();
-
-function Gate() {
-  const ready = useSyncExternalStore(subscribe, hydrated, () => false);
-  const status = useSession((s) => s.status);
+function useViewportWidth() {
   useEffect(() => {
     const onResize = () => {
       const ui = useUi.getState();
@@ -25,8 +20,14 @@ function Gate() {
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
-  if (!ready) return <BootScreen label="Restoring session…" />;
-  return status === "in" ? <Workspace /> : <AuthScreen />;
+}
+
+function Gate() {
+  useViewportWidth();
+  const me = useMeQuery();
+  if (me.isPending) return <BootScreen label="Checking your GitHub session…" />;
+  if (me.isError) return <BootScreen label={`Could not reach the server: ${me.error.message}`} />;
+  return me.data.user ? <Workspace /> : <AuthScreen />;
 }
 
 /** Client application root (mounted by `src/app/page.tsx`). */
