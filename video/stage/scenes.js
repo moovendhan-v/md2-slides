@@ -56,9 +56,9 @@
       const P = c.portrait;
       layer.innerHTML = `
         <div class="hk-wrap" style="position:absolute;inset:0">
-          <div class="hk-left" style="position:absolute;${P ? "left:80px;right:80px;top:300px;text-align:center" : "left:130px;top:250px;width:900px"}">
+          <div class="hk-left" style="position:absolute;${P ? "left:60px;right:60px;top:250px;text-align:center" : "left:130px;top:250px;width:900px"}">
             <div class="kicker hk-kick"><img src="${c.logo}"/>md2slides</div>
-            <h1 class="hk-h" style="margin-top:34px;font:800 ${P ? 92 : 70}px/1.05 var(--sans);letter-spacing:-.035em">
+            <h1 class="hk-h" style="margin-top:34px;font:800 ${P ? 74 : 70}px/1.05 var(--sans);letter-spacing:-.035em">
               ${"What if your slides were"
                 .split(" ")
                 .map((w) => `<span class="hw" style="display:inline-block;margin-right:.24em">${w}</span>`)
@@ -67,14 +67,14 @@
             </h1>
             <p class="hk-sub" style="margin-top:28px;font:500 ${P ? 36 : 30}px/1.4 var(--sans);color:#a1a1aa">Living right next to your code.</p>
           </div>
-          <div class="hk-right" style="position:absolute;${P ? "left:90px;right:90px;top:960px;height:760px" : "left:1060px;top:190px;width:760px;height:700px"}">
+          <div class="hk-right" style="position:absolute;${P ? "left:90px;right:90px;top:860px;height:700px" : "left:1060px;top:190px;width:760px;height:700px"}">
             <div class="card hk-ed" style="position:absolute;left:0;top:0;width:${P ? 900 : 540}px;padding:0 0 22px">
               <div style="display:flex;align-items:center;gap:10px;height:48px;padding:0 18px;border-bottom:1px solid var(--line);font:500 17px var(--mono);color:#a1a1aa"><i class="ph ph-file-md" style="color:#60a5fa;font-size:22px"></i>decks/acme-q3.md</div>
-              <div class="hk-code mono" style="padding:18px 22px 0;font-size:${P ? 25 : 21}px;line-height:1.65;min-height:${P ? 300 : 250}px"></div>
+              <div class="hk-code mono" style="padding:18px 22px 0;font-size:${P ? 23 : 21}px;line-height:1.6;min-height:${P ? 230 : 250}px"></div>
             </div>
-            <div class="hk-arrow" style="position:absolute;${P ? "left:430px;top:420px" : "left:420px;top:330px"};font-size:46px;color:#60a5fa"><i class="ph ph-arrow-${P ? "down" : "down-right"}"></i></div>
-            <img class="slideimg hk-slide" src="${c.stills.acme[1]}" style="position:absolute;${P ? "left:40px;top:500px;width:820px" : "left:200px;top:390px;width:560px"}"/>
-            <div class="hk-tree" style="position:absolute;${P ? "left:0;top:-120px" : "left:0;top:-96px"};display:flex;gap:10px"></div>
+            <div class="hk-arrow" style="position:absolute;${P ? "left:430px;top:330px" : "left:420px;top:330px"};font-size:46px;color:#60a5fa"><i class="ph ph-arrow-${P ? "down" : "down-right"}"></i></div>
+            <img class="slideimg hk-slide" src="${c.stills.acme[1]}" style="position:absolute;${P ? "left:140px;top:380px;width:620px" : "left:200px;top:390px;width:560px"}"/>
+            <div class="hk-tree" style="position:absolute;${P ? "left:0;top:-80px" : "left:0;top:-96px"};display:flex;gap:10px"></div>
           </div>
         </div>`;
       const tree = layer.querySelector(".hk-tree");
@@ -275,7 +275,7 @@
           <div class="mc-tools" style="display:flex;flex-direction:column;gap:12px;margin-top:22px"></div>
           <div class="mc-done" style="margin-top:18px;font:500 ${P ? 24 : 21}px/1.45 var(--sans);color:#d4d4d8">Done. 3 slides, 0 problems. Commit and push, and it shows up in your dashboard.</div>
         </div>
-        <div class="mc-slides" style="position:absolute;${P ? "left:60px;right:60px;top:1350px" : "left:120px;top:560px;width:860px"};height:340px"></div>
+        <div class="mc-slides" style="position:absolute;${P ? "left:60px;right:60px;top:1270px" : "left:120px;top:560px;width:860px"};height:340px"></div>
       </div>`;
       const tools = layer.querySelector(".mc-tools");
       [
@@ -287,7 +287,7 @@
       );
       const slides = layer.querySelector(".mc-slides");
       c.stills.launch.forEach((u) => slides.appendChild(html(`<img class="slideimg" src="${u}" style="position:absolute;left:0;top:0;width:${P ? 480 : 420}px"/>`)));
-      slides.appendChild(html(`<div class="chip mc-file" style="position:absolute;${P ? "left:0;top:300px" : "left:0;top:-70px"};border-color:rgba(74,222,128,.4);color:#bbf7d0"><i class="ph ph-file-md"></i>decks/launch-plan.md · written by Claude</div>`));
+      slides.appendChild(html(`<div class="chip mc-file" style="position:absolute;${P ? "left:0;top:-66px" : "left:0;top:-70px"};border-color:rgba(74,222,128,.4);color:#bbf7d0"><i class="ph ph-file-md"></i>decks/launch-plan.md · written by Claude</div>`));
       return {
         term: layer.querySelector(".mc-term"),
         lines: layer.querySelector(".mc-lines"),

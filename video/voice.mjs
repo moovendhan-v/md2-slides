@@ -22,7 +22,7 @@ const SPOKEN = [
   [/\bGitHub\b/g, "Git Hub"],
 ];
 
-export const spoken = (text) => SPOKEN.reduce((t, [re, s]) => t.replace(re, s), text);
+export const spoken = (text) => SPOKEN.reduce((t, [re, s]) => t.replace(re, s), text.replace(/\*/g, ""));
 
 /** Duration of a PCM WAV file in seconds. */
 export function wavSeconds(file) {

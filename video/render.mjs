@@ -114,7 +114,7 @@ async function frames(data, file) {
 }
 
 function audio(data, voice, sfx, name) {
-  const dir = join(CACHE, "audio");
+  const dir = join(CACHE, "audio", name); // per output, so renders can run side by side
   const cta = data.scenes.find((s) => s.id === "cta");
   execFileSync("python3", [join(HERE, "music.py"), "--duration", String(data.total), "--cta", String(cta ? cta.start : data.total - 4), "--out", dir], { stdio: "inherit" });
   const plan = { duration: data.total, voice: data.scenes.map((s) => ({ file: voice[s.id].file, t: s.voStart })), sfx, sfxDir: dir, out: dir };

@@ -11,7 +11,7 @@ export const SCENES = [
   {
     id: "hook",
     visual: { motion: "hook" },
-    vo: "What if your slides were just a Markdown file, living right next to your code?",
+    vo: "What if your slides were just a *Markdown file*, living right next to your code?",
     tail: 1.2,
   },
   {
@@ -24,14 +24,14 @@ export const SCENES = [
     id: "live",
     chapter: "Live preview",
     visual: { clip: "live" },
-    vo: "Meet md2slides. Write Markdown on the left, and a real engine, compiled from Rust to WebAssembly, redraws every slide as you type.",
+    vo: "Meet md2slides. Write Markdown on the left, and a real engine, compiled from Rust to WebAssembly, *redraws every slide* as you type.",
     tail: 1,
   },
   {
     id: "restyle",
     chapter: "Designed for you",
     visual: { clip: "restyle" },
-    vo: "Click any block to restyle it, or switch the whole theme. It looks designed, and the Markdown stays clean.",
+    vo: "*Click any block* to restyle it, or switch the whole theme. It looks designed, and the Markdown stays clean.",
     tail: 0.8,
   },
   {
@@ -45,7 +45,7 @@ export const SCENES = [
     id: "slash",
     chapter: "Slash menu",
     visual: { clip: "slash" },
-    vo: "Press slash to search blocks, Mermaid diagrams and thousands of icons.",
+    vo: "Press the *slash key*, then search blocks, Mermaid diagrams and thousands of icons.",
     tail: 1,
   },
   {
@@ -59,7 +59,7 @@ export const SCENES = [
     id: "share",
     chapter: "Share & present",
     visual: { clip: "share" },
-    vo: "Share a link and the whole deck travels inside the URL, optionally encrypted. No server stores a thing.",
+    vo: "Share a link and the whole deck travels inside the URL, optionally encrypted. *No server stores a thing*.",
     tail: 1,
   },
   {
@@ -73,7 +73,7 @@ export const SCENES = [
     id: "mcp",
     chapter: "Claude + MCP",
     visual: { motion: "mcp" },
-    vo: "Or let Claude write it. Add the md2slides MCP server with one npx command. Claude writes a validated deck straight into your repo.",
+    vo: "Or let Claude write it. Add the md2slides MCP server with *one npx command*. Claude writes a validated deck straight into your repo.",
     tail: 1,
   },
   {
@@ -87,13 +87,13 @@ export const SCENES = [
     id: "community",
     chapter: "Open source",
     visual: { clip: "community" },
-    vo: "md2slides is free and open source. Contribute templates with your name on them, or sponsor the project.",
+    vo: "Best of all, md2slides is *free and open source*. Contribute templates with your name on them, or sponsor the project.",
     tail: 0.8,
   },
   {
     id: "cta",
     visual: { motion: "cta" },
-    vo: "md2slides. Update the file, and your slides follow.",
+    vo: "md2slides. *Update the file*, and your slides follow.",
     tail: 2.6,
   },
 ];

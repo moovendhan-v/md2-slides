@@ -47,7 +47,7 @@ html, body { background: #000; overflow: hidden }
 #captions .w { opacity: .28; transition: none }
 #captions .w.on { opacity: 1 }
 #captions .em { color: var(--blue-2) }
-.portrait #captions { bottom: 230px; padding: 0 60px }
+.portrait #captions { bottom: 140px; padding: 0 60px }
 .portrait #captions .pill { font-size: 50px; line-height: 1.24 }
 #fade { position: absolute; inset: 0; background: #000; pointer-events: none }
 
