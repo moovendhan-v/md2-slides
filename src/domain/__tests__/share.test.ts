@@ -130,3 +130,15 @@ describe("landing live-demo typing", () => {
     expect(lineOf("a\nb\nc", 3)).toBe(1);
   });
 });
+
+describe("landing live-demo pacing", () => {
+  it("finds the lines an edit changed and paces keys like a person", async () => {
+    const { changedLines, keyDelay } = await import("@/features/landing/typing");
+    expect(changedLines("a\nb\n", "a\nb\n")).toBeNull();
+    expect(changedLines("a\ntheme: zinc\nc\n", "a\ntheme: midnight\nc\n")).toEqual([1, 1]);
+    expect(changedLines("a\n", "a\n\n---\n\n## R\n")).toEqual([1, 4]);
+    expect(keyDelay("a", 0)).toBe(50);
+    expect(keyDelay("\n", 0)).toBeGreaterThan(300);
+    expect(keyDelay(",", 1)).toBeGreaterThan(keyDelay("a", 1));
+  });
+});

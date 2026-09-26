@@ -1,43 +1,64 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { typingStep, type TypingState } from "./typing";
+import { changedLines, keyDelay, typingStep, type TypingState } from "./typing";
+
+export type TypingPhase = "typing" | "deleting" | "holding";
+
+export interface TypingDemo extends TypingState {
+  step: number;
+  phase: TypingPhase;
+  /** Lines just finished by the last edit, for the highlight flash (`id` changes per edit). */
+  flash: { from: number; to: number; id: number } | null;
+}
+
+const START = 900;
+const HOLD = 3000;
+const RESTART = 5000;
+const DELETE = 28;
 
 /**
- * Types through `script` (each entry is the whole file after one edit), pausing
- * between edits, and loops. Runs only while `active`; `still` shows the final
- * version without animation (reduced motion).
+ * Plays `script` as a sequence of edits at a readable, human pace: type each
+ * version, hold so the preview can be read, then move on (loops). The state
+ * machine lives in the effect so timers are scheduled exactly once per tick.
  */
-export function useTypingDemo(script: string[], active: boolean, still: boolean): TypingState & { step: number } {
+export function useTypingDemo(script: string[], active: boolean, still: boolean): TypingDemo {
   const final = script.at(-1)!;
-  const [state, setState] = useState<TypingState & { step: number }>({ text: still ? final : "", caret: still ? final.length : 0, step: 0 });
-
+  const [state, setState] = useState<TypingDemo>({ text: still ? final : "", caret: still ? final.length : 0, step: 0, phase: "typing", flash: null });
   useEffect(() => {
     if (still) {
-      // Finished deck, caret at the end so the preview shows the last slide.
-      setState({ text: final, caret: final.length, step: script.length - 1 });
+      setState({ text: final, caret: final.length, step: script.length - 1, phase: "holding", flash: null });
       return;
     }
     if (!active) return;
+    let s: TypingDemo = { text: "", caret: 0, step: 0, phase: "typing", flash: null };
+    let edits = 0;
     let timer: ReturnType<typeof setTimeout>;
     const tick = () => {
-      setState((s) => {
-        const target = script[s.step];
-        if (s.text === target) {
-          // Hold on the finished edit, then move on (restart after the last one).
-          const next = (s.step + 1) % script.length;
-          timer = setTimeout(tick, next === 0 ? 3200 : 1400);
-          return next === 0 ? { text: "", caret: 0, step: 0 } : { ...s, step: next };
-        }
-        const next = typingStep(s.text, target, 1);
-        const deleting = next.text.length < s.text.length;
-        timer = setTimeout(tick, deleting ? 12 : 20 + Math.random() * 28);
-        return { ...(deleting ? typingStep(s.text, target, 2) : next), step: s.step };
-      });
+      const target = script[s.step];
+      let wait: number;
+      if (s.text !== target) {
+        const moved = typingStep(s.text, target, 1);
+        const deleting = moved.text.length < s.text.length;
+        wait = deleting ? DELETE : keyDelay(moved.text[moved.caret - 1]);
+        s = { ...s, ...moved, phase: deleting ? "deleting" : "typing" };
+      } else if (s.phase !== "holding") {
+        // Edit finished: flash the changed lines and hold so the slide can be read.
+        const r = changedLines(s.step === 0 ? "" : script[s.step - 1], target);
+        wait = s.step === script.length - 1 ? RESTART : HOLD;
+        s = { ...s, phase: "holding", flash: r ? { from: r[0], to: r[1], id: ++edits } : null };
+      } else {
+        const next = (s.step + 1) % script.length;
+        wait = 0;
+        s = next === 0 ? { text: "", caret: 0, step: 0, phase: "typing", flash: null } : { ...s, step: next, phase: "typing", flash: null };
+      }
+      setState(s);
+      timer = setTimeout(tick, wait);
     };
-    timer = setTimeout(tick, 400);
+    // Resume from what is on screen when scrolled back into view.
+    setState((cur) => (s = cur));
+    timer = setTimeout(tick, START);
     return () => clearTimeout(timer);
   }, [script, final, active, still]);
-
   return state;
 }
