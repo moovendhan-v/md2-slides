@@ -35,7 +35,7 @@ export function StudioView() {
     const md = st.sample.replace(/layout:\s*custom:[\w-]+/, `layout: custom:${config.id}`);
     const meta = { id: config.id, name: config.name || config.id, category: config.category || "Custom", author: config.author || "You" };
     await save.mutateAsync({ id: `code-${meta.id}`, name: meta.name, cat: meta.category, author: meta.author, md, stars: 0, community: true, single: true, code: true, look: {}, html: st.html, config: meta });
-    toast(pr ? `Opened PR: templates/${config.id}/{template.html, config.json} → slidewise/community-templates` : `Saved “${meta.name}” — use <!-- layout: custom:${config.id} -->`);
+    toast(pr ? `Opened PR: templates/${config.id}/{template.html, config.json} → md2slides/community-templates` : `Saved “${meta.name}” — use <!-- layout: custom:${config.id} -->`);
   };
 
   return (

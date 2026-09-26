@@ -79,7 +79,7 @@ export function CodeBlock({ block }: { block: Block }) {
               style={{
                 display: "flex", padding: "0 2.2cqw", background: on ? look.chip : "transparent", boxShadow: on ? `inset .3cqw 0 0 ${look.accent}` : "none",
                 opacity: dim && !on ? 0.32 : 1, transition: "opacity .3s, background .3s",
-                animation: isNew ? `sw-magic .6s cubic-bezier(.2,.7,.2,1) ${k * 25}ms both` : "none",
+                animation: isNew ? `m2s-magic .6s cubic-bezier(.2,.7,.2,1) ${k * 25}ms both` : "none",
               }}
             >
               <span style={{ width: "3cqw", flex: "none", color: look.muted, opacity: 0.6, userSelect: "none" }}>{n}</span>

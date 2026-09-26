@@ -1,6 +1,6 @@
-# Slidewise — Markdown Slides for VS Code
+# md2slides — Markdown Slides for VS Code
 
-Open any Markdown deck as slides without leaving the editor. The extension runs the same engine and UI as the [Slidewise web app](https://github.com/moovendhan-v/md2-slides): the Rust/Wasm parser, slide renderer, Components view, customizer and presenter.
+Open any Markdown deck as slides without leaving the editor. The extension runs the same engine and UI as the [md2slides web app](https://github.com/moovendhan-v/md2-slides): the Rust/Wasm parser, slide renderer, Components view, customizer and presenter.
 
 ## Features
 
@@ -13,7 +13,7 @@ Open any Markdown deck as slides without leaving the editor. The extension runs 
 - **Components view.** Every slide is a card listing its components. Drag slides or components to reorder them, and double-click a component to edit its raw Markdown.
 - **Customize.** Theme, palette, fonts, layout and motion, saved to the deck's front matter.
 - **Present.** Full presenter mode with timer, pen, laser, blackout, overview and speaker notes.
-- **Open With… → Slidewise Slides.** Use the slides as the editor for a `.md` file.
+- **Open With… → md2slides Slides.** Use the slides as the editor for a `.md` file.
 - **Relative images.** Paths such as `![](./img/chart.png)` resolve against the deck's folder.
 
 ## Settings

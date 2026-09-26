@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { bindWebview } from "./bind";
 
-/** "Open With… → Slidewise": the deck as slides in place of the text editor. */
+/** "Open With… → md2slides": the deck as slides in place of the text editor. */
 export class SlideEditorProvider implements vscode.CustomTextEditorProvider {
   static readonly viewType = "slidewise.editor";
 

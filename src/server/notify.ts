@@ -12,7 +12,7 @@ export function notify(level: Level, title: string, fields: Record<string, strin
   const url = env.discordWebhook();
   if (!url) return;
   const body = {
-    username: "Slidewise",
+    username: "md2slides",
     embeds: [
       {
         title,

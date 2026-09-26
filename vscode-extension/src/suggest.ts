@@ -13,7 +13,7 @@ export function registerSuggestions(context: vscode.ExtensionContext, open: (d: 
   const asked = new Set<string>();
   const status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
   status.text = "$(preview) Slides";
-  status.tooltip = "Open this Markdown file as slides (Slidewise)";
+  status.tooltip = "Open this Markdown file as slides (md2slides)";
   status.command = "slidewise.openPreview";
 
   const check = async (editor: vscode.TextEditor | undefined) => {

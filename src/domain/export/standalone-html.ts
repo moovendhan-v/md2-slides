@@ -32,14 +32,14 @@ export function standaloneHtml(p: StandaloneParts): string {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="generator" content="Slidewise" />
+<meta name="generator" content="md2slides" />
 <title>${escapeHtml(p.title)}</title>
 <link rel="stylesheet" href="${fonts}" />
 ${p.css.map((c) => `<style>${inlineSafe(c, "style")}</style>`).join("\n")}
 </head>
 <body class="bg-zinc-950 text-[13px] text-zinc-50 antialiased">
 <div id="root"></div>
-<script>window.__SLIDEWISE_WASM__="data:application/wasm;base64,${p.wasmBase64}";window.__SLIDEWISE_DECK__="${p.encoded}";</script>
+<script>window.__MD2SLIDES_WASM__="data:application/wasm;base64,${p.wasmBase64}";window.__MD2SLIDES_DECK__="${p.encoded}";</script>
 <script>${inlineSafe(p.js, "script")}</script>
 </body>
 </html>

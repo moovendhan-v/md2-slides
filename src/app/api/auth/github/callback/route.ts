@@ -9,7 +9,8 @@ export const runtime = "nodejs";
 /** Exchange the OAuth code for a token (server-side, secret never leaves the server). */
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  const home = (err?: string) => NextResponse.redirect(new URL(err ? `/?auth_error=${encodeURIComponent(err)}` : "/", url.origin));
+  // Back to the editor (the landing page lives at `/`).
+  const home = (err?: string) => NextResponse.redirect(new URL(err ? `/app?auth_error=${encodeURIComponent(err)}` : "/app", url.origin));
   if (url.searchParams.get("error")) return home(url.searchParams.get("error_description") || "Authorization was cancelled");
   if (!(await consumeState(url.searchParams.get("state")))) return home("Sign-in expired or was tampered with — try again");
   const code = url.searchParams.get("code");

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { ExpiryKey } from "@/domain/share/payload";
+import { migrateLocalStorageKey } from "@/lib/storage";
 
 /** Share-link options (the password is never persisted). */
 export interface ShareSettings {
@@ -9,6 +10,9 @@ export interface ShareSettings {
   download: boolean;
   present: boolean;
 }
+
+// Keep preferences from before the rename (Slidewise → md2slides); runs before the store hydrates.
+migrateLocalStorageKey("slidewise-prefs", "md2slides-prefs");
 
 const DEFAULT_SHARE: ShareSettings = { exp: "7d", notes: false, download: true, present: false };
 
@@ -42,7 +46,7 @@ export const useSession = create<SessionState>()(
       selectRepos: (login, ids) => set((s) => ({ selectedRepos: { ...s.selectedRepos, [login]: ids } })),
     }),
     {
-      name: "slidewise-prefs",
+      name: "md2slides-prefs",
       version: 1,
       partialize: (s) => ({ prefs: s.prefs, share: s.share, selectedRepos: s.selectedRepos }),
       // v0 stored settings for the old mock share dialog.

@@ -36,7 +36,7 @@ export function MermaidBlock({ block }: { block: Block }) {
   if (!state.svg) return <div style={{ height: "18cqw", display: "grid", placeItems: "center", color: look.muted, fontSize: "1.3cqw" }}>Rendering diagram…</div>;
   return (
     <div
-      className="sw-mermaid"
+      className="m2s-mermaid"
       role="img"
       aria-label="Diagram"
       style={{ display: "flex", justifyContent: "center", width: "100%" }}

@@ -1,5 +1,5 @@
 /**
- * Shared builders for packaging the Slidewise UI outside Next.js
+ * Shared builders for packaging the md2slides UI outside Next.js
  * (the VS Code webview and the standalone player used by the HTML export).
  */
 import { execFileSync } from "node:child_process";

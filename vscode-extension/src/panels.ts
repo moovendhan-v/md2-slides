@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import type { HostMessage } from "../../src/embed/vscode/protocol";
 import { bindWebview } from "./bind";
 
-/** One Slidewise side panel per Markdown file, reused when opened again. */
+/** One md2slides side panel per Markdown file, reused when opened again. */
 export class SlidePanels implements vscode.Disposable {
   private readonly panels = new Map<string, vscode.WebviewPanel>();
 

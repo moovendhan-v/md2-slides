@@ -66,7 +66,7 @@ export function ProfileView() {
           <div className="flex items-center gap-3 text-[13px]">
             <Icon name="arrows-clockwise" className="text-lg" />
             <span className="flex-1">
-              App access <span className="text-xs text-zinc-500">· review or revoke Slidewise on GitHub</span>
+              App access <span className="text-xs text-zinc-500">· review or revoke md2slides on GitHub</span>
             </span>
             <Button variant="outline" size="sm" className="border-zinc-800" asChild>
               <a href={me?.manageUrl} target="_blank" rel="noreferrer">
@@ -75,7 +75,7 @@ export function ProfileView() {
             </Button>
           </div>
         </Card>
-        <Card title="Repositories" sub="Only these appear in Slidewise">
+        <Card title="Repositories" sub="Only these appear in md2slides">
           {selected.map((r) => (
             <div key={r.id} className="flex items-center gap-3 text-[13px]">
               <Icon name={r.private ? "lock-simple" : "book-bookmark"} className="text-zinc-500" />

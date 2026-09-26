@@ -63,7 +63,7 @@ export async function decodeShare(encoded: string, password?: string): Promise<S
   } catch {
     throw new ShareDecodeError("This link is damaged or incomplete.", "corrupt");
   }
-  if (bytes[0] !== VERSION) throw new ShareDecodeError("This link was made by a newer version of Slidewise.", "version");
+  if (bytes[0] !== VERSION) throw new ShareDecodeError("This link was made by a newer version of md2slides.", "version");
   let packed = bytes.subarray(2);
   if (bytes[1] === ENCRYPTED) {
     if (!password) throw new ShareDecodeError("This deck is password protected.", "password");

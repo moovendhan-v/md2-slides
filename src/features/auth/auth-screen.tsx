@@ -1,6 +1,6 @@
 "use client";
 
-import { BrandMark } from "@/components/shell/app-header";
+import { Logo } from "@/components/brand/logo";
 import { SignInPanel } from "./sign-in-panel";
 
 /** Split-screen GitHub sign-in: hero on the left, sign-in on the right. */
@@ -12,8 +12,7 @@ export function AuthScreen() {
         style={{ background: "radial-gradient(60% 50% at 20% 10%, rgba(59,130,246,.14), transparent 70%), radial-gradient(50% 40% at 90% 100%, rgba(139,92,246,.12), transparent 70%), #09090b" }}
       >
         <div className="flex items-center gap-2 text-[13px] font-semibold">
-          <BrandMark />
-          Slidewise
+          <Logo size={26} wordmark />
         </div>
         <div className="flex max-w-md flex-col gap-4">
           <h1 className="text-[44px] leading-[1.02] font-semibold tracking-[-0.035em] text-balance">Your decks are Markdown. Your history is Git.</h1>

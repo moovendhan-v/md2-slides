@@ -1,9 +1,9 @@
 ---
-title: Slidewise in VS Code
+title: md2slides in VS Code
 theme: zinc
 ---
 
-^ Slidewise
+^ md2slides
 # Markdown slides, right in VS Code
 Edit on the left, see slides on the right.
 

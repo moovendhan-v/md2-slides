@@ -1,6 +1,6 @@
-# Slidewise Markdown — llms-full.txt
+# md2slides Markdown — llms-full.txt
 
-> Slidewise turns one Markdown file into a slide deck. This file teaches an LLM the complete syntax. Output ONLY the Markdown file — no prose, no code fences around the whole deck.
+> md2slides turns one Markdown file into a slide deck. This file teaches an LLM the complete syntax. Output ONLY the Markdown file — no prose, no code fences around the whole deck.
 
 ## File structure
 

@@ -55,7 +55,7 @@ export function renderMermaid(code: string, look: Look): Promise<string> {
   const job = queue.then(async () => {
     const mermaid = await lib!;
     mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: "base", themeVariables: theme, flowchart: { htmlLabels: false }, fontFamily: look.font });
-    const { svg } = await mermaid.render(`sw-mermaid-${++seq}`, code);
+    const { svg } = await mermaid.render(`m2s-mermaid-${++seq}`, code);
     return svg;
   });
   queue = job.catch(() => undefined);

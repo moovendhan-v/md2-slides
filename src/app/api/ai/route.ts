@@ -51,7 +51,7 @@ export async function POST(req: Request) {
   const engine = getServerEngine();
   const slides = Math.min(20, Math.max(2, Number(b.slides) || 6));
   const chat = {
-    system: `You write slide decks in Slidewise Markdown. Follow this specification exactly:\n\n${await loadSpec()}`,
+    system: `You write slide decks in md2slides Markdown. Follow this specification exactly:\n\n${await loadSpec()}`,
     user: `Write a deck of about ${slides} slides for this request:\n${prompt}\n\nReturn ONLY the Markdown file, starting with the front-matter --- line. No explanations, no code fences.`,
     maxTokens: 3000,
   };

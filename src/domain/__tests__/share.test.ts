@@ -71,7 +71,46 @@ describe("standalone HTML export", () => {
     expect(html).toContain("<title>Q3 &lt;review&gt;</title>");
     expect(html).toContain('x("<\\/script>")');
     expect(html).toContain("a{}<\\/style>");
-    expect(html).toContain('window.__SLIDEWISE_DECK__="abc_-"');
+    expect(html).toContain('window.__MD2SLIDES_DECK__="abc_-"');
     expect(html.match(/<script>/g)).toHaveLength(2);
+  });
+});
+
+describe("storage migration after the rename", () => {
+  it("moves a localStorage key once", async () => {
+    const { migrateLocalStorageKey } = await import("@/lib/storage");
+    const m = new Map<string, string>([["slidewise-prefs", '{"a":1}']]);
+    const store = { getItem: (k: string) => m.get(k) ?? null, setItem: (k: string, v: string) => void m.set(k, v), removeItem: (k: string) => void m.delete(k) };
+    migrateLocalStorageKey("slidewise-prefs", "md2slides-prefs", store);
+    expect([...m.entries()]).toEqual([["md2slides-prefs", '{"a":1}']]);
+    migrateLocalStorageKey("slidewise-prefs", "md2slides-prefs", store);
+    expect(m.get("md2slides-prefs")).toBe('{"a":1}');
+    // an existing new value wins
+    m.set("slidewise-prefs", "old");
+    migrateLocalStorageKey("slidewise-prefs", "md2slides-prefs", store);
+    expect(m.get("md2slides-prefs")).toBe('{"a":1}');
+    expect(m.has("slidewise-prefs")).toBe(false);
+  });
+
+  it("moves an async (IndexedDB) value on first read", async () => {
+    const { migrateAsync } = await import("@/lib/storage");
+    const db = new Map<string, number>([["old", 7]]);
+    const io = { get: async (k: string) => db.get(k), set: async (k: string, v: number) => void db.set(k, v), del: async (k: string) => void db.delete(k) };
+    expect(await migrateAsync("new", "old", io)).toBe(7);
+    expect([...db.keys()]).toEqual(["new"]);
+    expect(await migrateAsync("new", "old", io)).toBe(7);
+  });
+});
+
+describe("landing choreography", () => {
+  it("fans, stacks, then presents the first slide", async () => {
+    const { panelPose, captionIndex } = await import("@/features/landing/choreography");
+    const start = [0, 1, 2].map((i) => panelPose(i, 3, 0));
+    expect(new Set(start.map((p) => p.position[0].toFixed(2))).size).toBe(3);
+    const end = panelPose(0, 3, 1);
+    expect(end.rotation).toEqual([0, 0, 0]);
+    expect(end.scale).toBeGreaterThan(1);
+    expect(panelPose(1, 3, 1).opacity).toBeLessThan(0.3);
+    expect([0, 0.5, 0.9].map(captionIndex)).toEqual([0, 1, 2]);
   });
 });

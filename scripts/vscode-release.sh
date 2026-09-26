@@ -27,7 +27,7 @@ mv "$EXT/CHANGELOG.tmp" "$EXT/CHANGELOG.md"
 
 git add "$EXT/package.json" "$EXT/CHANGELOG.md"
 git commit -m "Release VS Code extension $VERSION"
-git tag -a "$TAG" -m "Slidewise VS Code extension $VERSION"
+git tag -a "$TAG" -m "md2slides VS Code extension $VERSION"
 echo "✓ Tagged $TAG"
 
 read -r -p "Push the commit and tag now to publish? [y/N] " yn

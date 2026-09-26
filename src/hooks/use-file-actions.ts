@@ -64,7 +64,7 @@ export function useFileActions() {
         const t: TemplateRecord = { id: `mine-${Date.now()}`, name: m.title || active.path.split("/").pop() || "My deck", cat: "Engineering", author: "You", md: stripFrontMatter(active.src), stars: 0, community: true, look };
         await saveTemplate.mutateAsync(t);
         ui().set({ view: "templates", modal: null });
-        toast(publish ? "Saved & opened a pull request on slidewise/community-templates" : "Saved to Community as a template");
+        toast(publish ? "Saved & opened a pull request on md2slides/community-templates" : "Saved to Community as a template");
       },
       download: () => {
         const blob = new Blob([active.src], { type: "text/markdown" });

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { ShareViewer } from "./viewer";
 
 export const metadata: Metadata = {
-  title: "Shared deck · Slidewise",
-  description: "A view-only Slidewise deck. The slides travel inside the link; nothing is stored on a server.",
+  title: "Shared deck · md2slides",
+  description: "A view-only md2slides deck. The slides travel inside the link; nothing is stored on a server.",
   robots: { index: false, follow: false },
 };
 

@@ -39,7 +39,7 @@ async function insertText(document: vscode.TextDocument, fallback: vscode.Positi
 }
 
 /**
- * Connect a webview to a Markdown document: render the Slidewise app, keep
+ * Connect a webview to a Markdown document: render the md2slides app, keep
  * both sides in sync (the document is the source of truth), and follow the
  * text cursor. Shared by the side panel and the custom editor.
  */

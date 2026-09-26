@@ -12,7 +12,7 @@ import { useSession } from "@/stores/session";
 import { useUi } from "@/stores/ui";
 import { useWorkspace } from "@/stores/workspace";
 
-/** Choose which repositories Slidewise shows. Nothing else is loaded. */
+/** Choose which repositories md2slides shows. Nothing else is loaded. */
 export function RepoPickerDialog() {
   const open = useUi((s) => s.modal === "repos");
   const close = useUi((s) => s.closeModal);
@@ -45,7 +45,7 @@ export function RepoPickerDialog() {
       <DialogContent className="flex max-h-[85vh] flex-col border-zinc-800 bg-zinc-950 sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Choose repositories</DialogTitle>
-          <DialogDescription>Only the repositories you select appear in Slidewise. Files load when you open a repository.</DialogDescription>
+          <DialogDescription>Only the repositories you select appear in md2slides. Files load when you open a repository.</DialogDescription>
         </DialogHeader>
         <div className="relative">
           <Icon name="magnifying-glass" className="absolute top-1/2 left-3 -translate-y-1/2 text-zinc-500" />

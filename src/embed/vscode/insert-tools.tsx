@@ -13,7 +13,7 @@ const tool = "flex h-8 items-center gap-1.5 rounded-md px-2 text-[13px] text-zin
  * Insert with previews from the VS Code slides panel: a new slide from the
  * layout gallery, a block from the snippet inserter, or an icon from the
  * catalog. Inserts land at the text editor's cursor. The same actions run
- * from VS Code commands (Slidewise: Insert Slide / Block / Icon).
+ * from VS Code commands (md2slides: Insert Slide / Block / Icon).
  */
 export function InsertTools() {
   const blockBtn = useRef<HTMLButtonElement>(null);

@@ -2,8 +2,8 @@
 
 import { createEngine, type SlideEngine } from "./engine";
 
-/** Hosts that serve assets elsewhere (the VS Code webview) set `window.__SLIDEWISE_WASM__`. */
-export const WASM_URL = (globalThis as { __SLIDEWISE_WASM__?: string }).__SLIDEWISE_WASM__ ?? "/wasm/slide_engine_bg.wasm";
+/** Hosts that serve assets elsewhere (the VS Code webview) set `window.__MD2SLIDES_WASM__`. */
+export const WASM_URL = (globalThis as { __MD2SLIDES_WASM__?: string }).__MD2SLIDES_WASM__ ?? "/wasm/slide_engine_bg.wasm";
 
 let pending: Promise<SlideEngine> | null = null;
 

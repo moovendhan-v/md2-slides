@@ -1,12 +1,12 @@
 /* Block entrance animations (`animate:`) — restarted by remounting via React keys. */
-@keyframes sw-fade { from { opacity: 0 } }
-@keyframes sw-fade-up { from { opacity: 0; transform: translateY(3cqw) } }
-@keyframes sw-fade-down { from { opacity: 0; transform: translateY(-3cqw) } }
-@keyframes sw-zoom-in { from { opacity: 0; transform: scale(.88) } }
-@keyframes sw-slide-left { from { opacity: 0; transform: translateX(5cqw) } }
-@keyframes sw-blur-in { from { opacity: 0; filter: blur(1cqw) } }
-@keyframes sw-pop { 0% { opacity: 0; transform: scale(.6) } 70% { opacity: 1; transform: scale(1.05) } 100% { transform: none } }
-@keyframes sw-magic { from { opacity: 0; transform: translateX(-1.5cqw); background: rgba(96, 165, 250, .25) } }
+@keyframes m2s-fade { from { opacity: 0 } }
+@keyframes m2s-fade-up { from { opacity: 0; transform: translateY(3cqw) } }
+@keyframes m2s-fade-down { from { opacity: 0; transform: translateY(-3cqw) } }
+@keyframes m2s-zoom-in { from { opacity: 0; transform: scale(.88) } }
+@keyframes m2s-slide-left { from { opacity: 0; transform: translateX(5cqw) } }
+@keyframes m2s-blur-in { from { opacity: 0; filter: blur(1cqw) } }
+@keyframes m2s-pop { 0% { opacity: 0; transform: scale(.6) } 70% { opacity: 1; transform: scale(1.05) } 100% { transform: none } }
+@keyframes m2s-magic { from { opacity: 0; transform: translateX(-1.5cqw); background: rgba(96, 165, 250, .25) } }
 
 /* Slide transitions (`transition:`). */
 @keyframes tr-fade { from { opacity: 0 } }

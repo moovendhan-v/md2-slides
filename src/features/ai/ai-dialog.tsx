@@ -75,7 +75,7 @@ export function AiDialog() {
           <DialogTitle className="flex items-center gap-2">
             <Icon name="sparkle" className="text-violet-400" /> Generate slides with AI
           </DialogTitle>
-          <DialogDescription>Uses the AI endpoint configured on the server. The model gets the full Slidewise syntax (llms-full.txt).</DialogDescription>
+          <DialogDescription>Uses the AI endpoint configured on the server. The model gets the full md2slides syntax (llms-full.txt).</DialogDescription>
         </DialogHeader>
         {st.phase === "idle" && (
           <div className="flex flex-col gap-4">

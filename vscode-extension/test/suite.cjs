@@ -35,5 +35,5 @@ exports.run = async function run() {
 
   await vscode.commands.executeCommand("slidewise.openInEditor", file);
   await until(() => tabs().some((t) => t.input instanceof vscode.TabInputCustom && t.input.viewType === "slidewise.editor"), "the custom slides editor");
-  console.log("Slidewise VS Code integration tests passed");
+  console.log("md2slides VS Code integration tests passed");
 };
