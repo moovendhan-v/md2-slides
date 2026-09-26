@@ -1,4 +1,5 @@
 import "server-only";
+import type { AiConfig } from "./ai/types";
 
 /** Typed access to server-only environment variables. */
 function required(name: string): string {
@@ -11,12 +12,17 @@ export const env = {
   githubClientId: () => required("GITHUB_CLIENT_ID"),
   githubClientSecret: () => required("GITHUB_CLIENT_SECRET"),
   sessionSecret: () => required("SESSION_SECRET"),
-  aiProvider: () => (process.env.AI_PROVIDER === "gemini" ? "gemini" : "cloudflare") as "gemini" | "cloudflare",
-  gemini: () => ({ apiKey: process.env.GEMINI_API_KEY ?? "", model: process.env.GEMINI_MODEL || "gemini-2.5-flash" }),
-  cloudflare: () => ({
-    accountId: process.env.CLOUDFLARE_ACCOUNT_ID ?? "",
-    apiToken: process.env.CLOUDFLARE_API_TOKEN ?? "",
-    model: process.env.CLOUDFLARE_AI_MODEL || "@cf/meta/llama-3.1-8b-instruct",
-  }),
+  /** The one AI endpoint (OpenAI-compatible). `null` when not configured. */
+  ai: (): AiConfig | null => {
+    const baseUrl = process.env.AI_BASE_URL ?? "";
+    const apiKey = process.env.AI_API_KEY ?? "";
+    const model = process.env.AI_MODEL ?? "";
+    if (!baseUrl || !apiKey || !model) return null;
+    let host = baseUrl;
+    try {
+      host = new URL(baseUrl).host;
+    } catch {}
+    return { baseUrl, apiKey, model, label: process.env.AI_PROVIDER_NAME || host };
+  },
   discordWebhook: () => process.env.DISCORD_WEBHOOK_URL ?? "",
 };

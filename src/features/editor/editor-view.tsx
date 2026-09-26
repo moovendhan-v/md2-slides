@@ -40,6 +40,7 @@ export function EditorView() {
     <div className="flex min-h-0 flex-1 flex-col">
       <EditorToolbar />
       <div className="relative flex min-h-0 flex-1">
+        {stripOn && !narrow && <SlideStrip orientation="vertical" />}
         {showEditor && (
           <div className="relative flex min-w-0 flex-1 flex-col">
             {blocks ? <BlocksView /> : <MarkdownEditor />}
@@ -50,7 +51,7 @@ export function EditorView() {
         {showPreview && <PreviewPane />}
         {customOpen && <CustomizePanel overlay={narrow} />}
       </div>
-      {stripOn && <SlideStrip />}
+      {stripOn && narrow && <SlideStrip orientation="horizontal" />}
       <InsertMenu />
       <BlockPicker />
     </div>

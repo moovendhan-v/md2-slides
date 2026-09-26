@@ -29,6 +29,11 @@ export function TransitionPicker() {
   const shown = hover || own || def;
   const w = Math.min(440, width - 24);
   const above = pick.y >= 380;
+  // Vertical strip: open beside the chip, kept inside the window.
+  const place: React.CSSProperties =
+    pick.side === "right"
+      ? { left: Math.min(pick.x + 8, width - w - 12), top: Math.max(12, Math.min(pick.y - 120, window.innerHeight - 440)) }
+      : { left: Math.max(12, Math.min(pick.x - 20, width - w - 12)), ...(above ? { bottom: window.innerHeight - pick.y + 8 } : { top: pick.y + 36 }) };
   const choose = (v: string) => {
     actions.setDirective("transition", v === "inherit" ? null : v, pick.index);
     setSeed(seed + 1);
@@ -38,7 +43,7 @@ export function TransitionPicker() {
       <div className="fixed inset-0 z-40" onClick={() => set({ transitionPick: null })} />
       <div
         className="fixed z-50 flex flex-col gap-3 rounded-xl border border-zinc-800 bg-zinc-950 p-3 shadow-2xl"
-        style={{ left: Math.max(12, Math.min(pick.x - 20, width - w - 12)), width: w, ...(above ? { bottom: window.innerHeight - pick.y + 8 } : { top: pick.y + 36 }) }}
+        style={{ ...place, width: w }}
       >
         <div className="flex items-center justify-between text-[13px]">
           <span>
