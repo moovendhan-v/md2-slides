@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useDeferredValue, useMemo, type ReactNode } from "react";
+import { createContext, useContext, useMemo, type ReactNode } from "react";
 import type { Deck } from "@/engine/types";
 import { useEngine } from "@/engine/provider";
 import { buildLook, deckOptions, type DeckOptions, type Look } from "@/domain/deck/look";
@@ -29,9 +29,10 @@ export interface ActiveDeck {
 const Ctx = createContext<ActiveDeck | null>(null);
 
 /**
- * Parses the active file once per change (in Wasm) and shares the result.
- * `useDeferredValue` keeps typing responsive: the preview re-renders at lower
- * priority than keystrokes on very large decks.
+ * Parses the active file once per change (in Wasm, ~1 ms) and shares the
+ * result. Parsing is synchronous on purpose: a deferred (low-priority) value
+ * could be starved and leave the preview showing a stale or empty deck while
+ * the editor moved on. Very large decks use the debounced "live off" mode.
  */
 export function DeckProvider({ children }: { children: ReactNode }) {
   const engine = useEngine();
@@ -39,7 +40,7 @@ export function DeckProvider({ children }: { children: ReactNode }) {
   const live = useSession((s) => pref(s.prefs, "live", true));
   // Live: re-parse every keystroke at low priority. Off: wait for a typing pause (large decks).
   const raw = useWorkspace((s) => s.files[s.activeKey] ?? "");
-  const src = useDebounced(useDeferredValue(raw), live ? 0 : 600);
+  const src = useDebounced(raw, live ? 0 : 600);
   const curLine = useEditor((s) => s.curLine);
   const { repo, path } = splitKey(key);
 
