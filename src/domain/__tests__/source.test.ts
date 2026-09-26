@@ -5,7 +5,7 @@ import { setDirective, setLayout } from "@/domain/source/directives";
 import { writeMeta } from "@/domain/source/frontmatter";
 import { deleteSlide, duplicateSlide, formatSource, lineDiff } from "@/domain/source/slides";
 import { transformBlock } from "@/domain/source/transform";
-import { buildTree } from "@/domain/workspace/tree";
+import { buildTree, isMarkdown } from "@/domain/workspace/tree";
 
 const slide = (startLine: number, dir: Record<string, string> = {}): Slide => ({ startLine, title: "", titleLine: -1, kicker: "", body: "", groups: [[]], notes: "", layout: "", dir });
 
@@ -69,5 +69,13 @@ describe("tree", () => {
   it("sorts folders before files", () => {
     const t = buildTree(["z.md", "decks/b.md", "decks/a.md"]);
     expect(t.map((n) => n.name)).toEqual(["decks", "z.md"]);
+  });
+});
+
+describe("markdown-only tree", () => {
+  it("drops non-Markdown files and empty folders", () => {
+    const paths = ["README.md", "src/index.ts", "crates/lib.rs", "docs/talks/intro.md", "public/logo.svg"].filter(isMarkdown);
+    const t = buildTree(paths);
+    expect(t.map((n) => n.name)).toEqual(["docs", "README.md"]);
   });
 });
