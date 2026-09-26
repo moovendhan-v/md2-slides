@@ -1,0 +1,44 @@
+/* Block entrance animations (`animate:`) — restarted by remounting via React keys. */
+@keyframes sw-fade { from { opacity: 0 } }
+@keyframes sw-fade-up { from { opacity: 0; transform: translateY(3cqw) } }
+@keyframes sw-fade-down { from { opacity: 0; transform: translateY(-3cqw) } }
+@keyframes sw-zoom-in { from { opacity: 0; transform: scale(.88) } }
+@keyframes sw-slide-left { from { opacity: 0; transform: translateX(5cqw) } }
+@keyframes sw-blur-in { from { opacity: 0; filter: blur(1cqw) } }
+@keyframes sw-pop { 0% { opacity: 0; transform: scale(.6) } 70% { opacity: 1; transform: scale(1.05) } 100% { transform: none } }
+@keyframes sw-magic { from { opacity: 0; transform: translateX(-1.5cqw); background: rgba(96, 165, 250, .25) } }
+
+/* Slide transitions (`transition:`). */
+@keyframes tr-fade { from { opacity: 0 } }
+@keyframes tr-slide { from { opacity: 0; transform: translateX(8%) } }
+@keyframes tr-slide-right { from { opacity: 0; transform: translateX(-8%) } }
+@keyframes tr-slide-up { from { opacity: 0; transform: translateY(8%) } }
+@keyframes tr-slide-down { from { opacity: 0; transform: translateY(-8%) } }
+@keyframes tr-push { from { transform: translateX(100%) } }
+@keyframes tr-zoom { from { opacity: 0; transform: scale(.86) } }
+@keyframes tr-zoom-out { from { opacity: 0; transform: scale(1.18) } }
+@keyframes tr-flip { from { opacity: 0; transform: perspective(1600px) rotateY(-50deg) } }
+@keyframes tr-flip-x { from { opacity: 0; transform: perspective(1600px) rotateX(80deg) } }
+@keyframes tr-cube { from { opacity: .2; transform: perspective(1600px) rotateY(90deg); transform-origin: 0 50% } }
+@keyframes tr-swing { from { opacity: 0; transform: perspective(1600px) rotateX(-75deg); transform-origin: 50% 0 } }
+@keyframes tr-rotate { from { opacity: 0; transform: rotate(-8deg) scale(.88) } }
+@keyframes tr-skew { from { opacity: 0; transform: skewX(-14deg) translateX(8%) } }
+@keyframes tr-drop { 0% { opacity: 0; transform: translateY(-35%) } 60% { opacity: 1; transform: translateY(3%) } 80% { transform: translateY(-1%) } 100% { transform: none } }
+@keyframes tr-blur { from { opacity: 0; filter: blur(18px) } }
+@keyframes tr-wipe { from { clip-path: inset(0 100% 0 0) } to { clip-path: inset(0 0 0 0) } }
+@keyframes tr-wipe-up { from { clip-path: inset(100% 0 0 0) } to { clip-path: inset(0 0 0 0) } }
+@keyframes tr-iris { from { clip-path: circle(0% at 50% 50%) } to { clip-path: circle(75% at 50% 50%) } }
+@keyframes tr-glitch { 0% { opacity: 0; transform: translateX(-3%); filter: hue-rotate(90deg) } 20% { opacity: 1; transform: translateX(3%) } 40% { transform: translateX(-2%); filter: none } 60% { transform: translateX(1%) } 100% { transform: none } }
+
+@keyframes laser {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(239, 68, 68, .35), 0 0 18px 6px rgba(239, 68, 68, .6) }
+  50% { box-shadow: 0 0 0 7px rgba(239, 68, 68, .2), 0 0 26px 10px rgba(239, 68, 68, .5) }
+}
+
+@media print {
+  body * { visibility: hidden !important }
+  [data-print-root], [data-print-root] * { visibility: visible !important }
+  [data-print-root] { position: absolute !important; left: 0; top: 0; width: 100%; background: #fff !important }
+  [data-pg] { break-after: page; page-break-after: always }
+}
+@page { size: landscape; margin: 0 }
