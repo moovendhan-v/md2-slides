@@ -87,3 +87,29 @@ export function setFenceArg(src: string, line: number, key: string, value: strin
   L[line] = re.test(L[line]) ? L[line].replace(re, `${key}=${value}`) : `${L[line]} ${key}=${value}`;
   return L.join("\n");
 }
+
+/** Blocks whose rows start with an icon cell: `- icon | Title | text`. */
+export const hasRowIcons = (b: Block) => (b.type === "cards" || b.type === "flow") && !b.mermaid && !b.bare && (b.rows?.length ?? 0) > 0;
+
+/** Set the icon (first cell) of row `row` inside a fenced cards/flow block. */
+export function setRowIcon(src: string, b: Block, row: number, icon: string): string {
+  const L = src.split("\n");
+  const { start, end } = blockRange(src, b);
+  let k = -1;
+  for (let i = start + 1; i < end; i++) {
+    if (!L[i].trim()) continue;
+    if (++k !== row) continue;
+    const m = L[i].match(/^(\s*[-*]\s+)(.*)$/);
+    if (!m) return src;
+    const [, marker, rest] = m;
+    L[i] = marker + (rest.includes("|") ? rest.replace(/^[^|]*/, `${icon} `) : `${icon} | ${rest}`);
+    return L.join("\n");
+  }
+  return src;
+}
+
+/** Insert `text` at character `offset` (clamped). */
+export const insertAtOffset = (src: string, offset: number, text: string) => {
+  const at = Math.max(0, Math.min(src.length, offset));
+  return src.slice(0, at) + text + src.slice(at);
+};

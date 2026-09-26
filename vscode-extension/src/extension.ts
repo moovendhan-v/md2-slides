@@ -22,10 +22,19 @@ export function activate(context: vscode.ExtensionContext) {
       const doc = await targetDocument(uri);
       if (doc) panels.open(doc);
     }),
-    vscode.commands.registerCommand("slidewise.present", async (uri?: vscode.Uri) => {
-      const doc = await targetDocument(uri);
-      if (doc) panels.open(doc, true);
-    }),
+    ...(
+      [
+        ["slidewise.present", { type: "present" }],
+        ["slidewise.insertSlide", { type: "newSlide" }],
+        ["slidewise.insertBlock", { type: "insertBlock" }],
+        ["slidewise.insertIcon", { type: "pickIcon" }],
+      ] as const
+    ).map(([id, action]) =>
+      vscode.commands.registerCommand(id, async (uri?: vscode.Uri) => {
+        const doc = await targetDocument(uri);
+        if (doc) panels.open(doc, action);
+      }),
+    ),
     vscode.commands.registerCommand("slidewise.openInEditor", async (uri?: vscode.Uri) => {
       const doc = await targetDocument(uri);
       if (doc) await vscode.commands.executeCommand("vscode.openWith", doc.uri, SlideEditorProvider.viewType);

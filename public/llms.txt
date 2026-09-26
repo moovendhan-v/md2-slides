@@ -10,7 +10,7 @@
 - [Blocks](/llms-full.txt#blocks): lists, cards, stats, flow, timeline, code, terminal, table, callout, quote, image
 - [Charts](/llms-full.txt#chart): column, bar, line, donut, pie, rings
 - [Gallery](/llms-full.txt#gallery): grid, strip, circles, mosaic
-- [Diagrams](/llms-full.txt#more-diagrams): pipeline, steps, stack, hub, cycle, funnel, pyramid, mermaid-lite
+- [Diagrams](/llms-full.txt#more-diagrams): pipeline, steps, stack, hub, cycle, funnel, pyramid, Mermaid (all diagram types)
 - [Media layouts](/llms-full.txt#media-layouts): image-left, image-right, image-full, image-top, diagonal, circle, arch
 - [Presenting](/llms-full.txt#presenting): click reveals, zoom, imports, logo
 - [Motion](/llms-full.txt#motion): 21 transitions, 8 block animations, stagger

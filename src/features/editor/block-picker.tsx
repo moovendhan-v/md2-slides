@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import type { Block } from "@/engine/types";
 import { TRANSFORMS, VARIANTS } from "@/domain/deck/constants";
 import { thumbLook } from "@/domain/deck/look";
-import { blockRange, setVariant } from "@/domain/source/blocks";
+import { blockRange, hasRowIcons, setVariant } from "@/domain/source/blocks";
 import { canTransform } from "@/domain/source/transform";
 import { useDeck } from "@/app-shell/deck-context";
 import { Chip, Seg } from "@/components/common/controls";
@@ -16,6 +16,7 @@ import { useDeckActions } from "@/hooks/use-deck-actions";
 import { cn } from "@/lib/utils";
 import { useEditor } from "@/stores/editor";
 import { ImageOptions } from "./image-options";
+import { RowIcons } from "./row-icons";
 
 const label = (v: string) => (v === "iconLeft" ? "icon left" : v === "h" ? "horizontal" : v === "v" ? "vertical" : v.toLowerCase());
 
@@ -72,6 +73,7 @@ export function BlockPicker() {
             <Seg size="sm" value={pick.args?.cols ?? ""} onChange={(v) => actions.setFenceArg(pick, "cols", String(v))} options={["1", "2", "3", "4"].map((id) => ({ id, label: id }))} />
           </div>
         )}
+        {hasRowIcons(pick) && <RowIcons block={pick} />}
         {pick.type === "image" && <ImageOptions block={pick} />}
         {canTransform(pick) && (
           <div className="flex flex-col gap-2">

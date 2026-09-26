@@ -154,3 +154,11 @@
     outline-offset: 2px;
   }
 }
+
+/* Mermaid diagrams scale with the slide (they are sized in px by Mermaid). */
+.sw-mermaid svg {
+  width: 100%;
+  max-width: 100% !important;
+  height: auto;
+  max-height: 30cqw;
+}

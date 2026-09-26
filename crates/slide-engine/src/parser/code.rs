@@ -1,4 +1,4 @@
-//! Code fences, repository imports (`<<<`) and mermaid-lite diagrams.
+//! Code fences and repository imports (`<<<`).
 
 use super::text::{parse_steps, word_prefix};
 use crate::model::{Args, Block};
@@ -99,112 +99,9 @@ pub fn import_line(l: &str) -> Option<Import<'_>> {
     Some(Import { file, from, to, lang, spec, magic })
 }
 
-const MERMAID_ICONS: [&str; 8] = ["cube", "gear", "database", "globe", "lightning", "shield-check", "plug", "user"];
-
-/// Turn `graph LR; A[Client] --> B[API]` into flow rows.
-/// Returns (rows, style) or None when there are no edges.
-pub fn mermaid(code: &[String]) -> Option<(Vec<String>, &'static str)> {
-    let mut nodes: Vec<String> = Vec::new();
-    let mut labels: std::collections::HashMap<String, String> = Default::default();
-    let mut out: std::collections::HashMap<String, Vec<String>> = Default::default();
-    let joined = code.join(";");
-    for ln in joined.split([';', '\n']) {
-        let ln = strip_graph_prefix(ln.trim());
-        let parts: Vec<&str> = split_edges(ln);
-        if parts.len() < 2 {
-            continue;
-        }
-        let mut prev: Option<String> = None;
-        for p in parts {
-            let p = p.trim();
-            let id = word_prefix(p);
-            if id.is_empty() {
-                continue;
-            }
-            let label = node_label(&p[id.len()..]);
-            if !nodes.iter().any(|n| n == id) {
-                nodes.push(id.to_string());
-            }
-            if let Some(l) = label {
-                labels.insert(id.to_string(), l);
-            }
-            if let Some(pv) = prev {
-                out.entry(pv).or_default().push(id.to_string());
-            }
-            prev = Some(id.to_string());
-        }
-    }
-    if nodes.is_empty() {
-        return None;
-    }
-    let hub = nodes.iter().find(|n| out.get(*n).is_some_and(|v| v.len() >= 3)).cloned();
-    let order: Vec<String> = match &hub {
-        Some(h) => std::iter::once(h.clone()).chain(nodes.iter().filter(|n| *n != h).cloned()).collect(),
-        None => nodes.clone(),
-    };
-    let style = if hub.is_some() { "hub" } else if nodes.len() > 5 { "steps" } else { "pipeline" };
-    let rows = order
-        .iter()
-        .enumerate()
-        .map(|(k, n)| format!("- {} | {} | ", MERMAID_ICONS[k % 8], labels.get(n).unwrap_or(n)))
-        .collect();
-    Some((rows, style))
-}
-
-fn strip_graph_prefix(ln: &str) -> &str {
-    let lower = ln.to_ascii_lowercase();
-    for kw in ["graph", "flowchart"] {
-        if lower.starts_with(kw) {
-            let r = ln[kw.len()..].trim_start();
-            let w = word_prefix(r);
-            return r[w.len()..].trim_start();
-        }
-    }
-    ln
-}
-
-fn split_edges(ln: &str) -> Vec<&str> {
-    let mut parts = Vec::new();
-    let (mut start, mut i) = (0, 0);
-    let b = ln.as_bytes();
-    while i < b.len() {
-        let dash = b[i..].iter().take_while(|c| **c == b'-').count();
-        if dash >= 2 && b.get(i + dash) == Some(&b'>') {
-            parts.push(&ln[start..i]);
-            i += dash + 1;
-            start = i;
-        } else if b[i..].starts_with(b"==>") {
-            parts.push(&ln[start..i]);
-            i += 3;
-            start = i;
-        } else {
-            i += 1;
-        }
-    }
-    parts.push(&ln[start..]);
-    parts
-}
-
-fn node_label(rest: &str) -> Option<String> {
-    let r = rest.trim_start();
-    let r = r.trim_start_matches(['[', '(', '{']);
-    if r.len() == rest.trim_start().len() {
-        return None;
-    }
-    let end = r.find([']', ')', '}'])?;
-    Some(r[..end].to_string())
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn mermaid_pipeline() {
-        let (rows, style) = mermaid(&["graph LR".into(), "A[Client] --> B[API] --> C[DB]".into()]).unwrap();
-        assert_eq!(style, "pipeline");
-        assert_eq!(rows[1], "- gear | API | ");
-    }
 
     #[test]
     fn fence() {

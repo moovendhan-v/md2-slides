@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useDeck } from "@/app-shell/deck-context";
 import { sourceCount } from "@/domain/deck/paginate";
 import { Icon } from "@/components/common/icon";
+import { IconPicker } from "@/components/common/icon-picker";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useDeckActions } from "@/hooks/use-deck-actions";
@@ -64,6 +65,12 @@ export function EditorToolbar() {
       >
         <Icon name="caret-down" className="text-[10px] text-zinc-500" />
       </Tool>
+      <IconPicker onSelect={(name) => actions.insertInline(`:${name}:`)}>
+        <button type="button" title="Insert an icon at the cursor (:name:)" className="flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[13px] text-zinc-300 hover:bg-zinc-900">
+          <Icon name="smiley" />
+          <span className="hidden lg:inline">Icon</span>
+        </button>
+      </IconPicker>
       <Tool icon="sparkle" label="AI" tip="Generate slides with AI" onClick={() => { useAi.getState().set({ phase: "idle" }); openModal("ai"); }} />
       <Tool icon="plus" label="Slide" tip="Add slide after current" onClick={() => openModal("newSlide")} />
       <Tool icon="magic-wand" label="Format" tip="Clean whitespace" onClick={actions.format} />

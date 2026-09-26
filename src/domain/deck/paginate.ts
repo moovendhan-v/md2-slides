@@ -21,7 +21,8 @@ const SECTION_FILL = 0.5;
 
 /** Blocks that can be cut between rows, and how. */
 const SPLITTABLE: Partial<Record<Block["type"], { count: (b: Block) => number; slice: (b: Block, from: number, to: number) => Block }>> = {
-  code: { count: (b) => b.code?.length ?? 0, slice: (b, f, t) => ({ ...b, code: b.code!.slice(f, t), codeOffset: (b.codeOffset ?? 0) + f }) },
+  // A diagram is one unit: never cut a Mermaid fence.
+  code: { count: (b) => (b.mermaid ? 0 : (b.code?.length ?? 0)), slice: (b, f, t) => ({ ...b, code: b.code!.slice(f, t), codeOffset: (b.codeOffset ?? 0) + f }) },
   terminal: { count: (b) => b.rows?.length ?? 0, slice: (b, f, t) => ({ ...b, rows: b.rows!.slice(f, t) }) },
   list: { count: (b) => b.rows?.length ?? 0, slice: (b, f, t) => ({ ...b, rows: b.rows!.slice(f, t) }) },
   table: { count: (b) => b.tableRows?.length ?? 0, slice: (b, f, t) => ({ ...b, tableRows: b.tableRows!.slice(f, t) }) },

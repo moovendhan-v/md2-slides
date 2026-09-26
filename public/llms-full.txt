@@ -160,8 +160,8 @@ style: grid | strip | circles | mosaic.
 ### More diagrams
 `:::flow` also accepts style=hub (first row is the centre), cycle, funnel, pyramid.
 
-### Mermaid (lite)
-A ```mermaid fence with `graph LR` and `A[Client] --> B[API] --> C[DB]` edges becomes a native pipeline; a node with 3+ outgoing edges becomes a hub diagram.
+### Mermaid
+A ```mermaid fence is rendered as a real Mermaid diagram, themed to the deck (colours, font, dark/light). Every Mermaid diagram type works: flowchart, sequenceDiagram, classDiagram, stateDiagram-v2, erDiagram, gantt, pie, mindmap, timeline, gitGraph, journey, quadrantChart, xychart-beta, sankey-beta. Keep one diagram per slide with at most ~12 nodes; a diagram is never split across continuation slides.
 
 ### Code walkthroughs
 - Click steps: ```ts file.ts {2|3-4|all} — each `|` group is one click while presenting; other lines dim.

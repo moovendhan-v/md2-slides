@@ -96,3 +96,13 @@ fn soft_wrapped_lines_join_into_one_paragraph() {
     assert_eq!(g[1].kind, "list");
     assert_eq!(s.notes, "n\nmore notes");
 }
+
+#[test]
+fn mermaid_fence_is_kept_for_client_rendering() {
+    let d = p("# T\n```mermaid\nsequenceDiagram\n  A->>B: hi\n```");
+    let b = &d.slides[0].groups[0][0];
+    assert_eq!(b.kind, "code");
+    assert!(b.mermaid);
+    assert_eq!(b.lang.as_deref(), Some("mermaid"));
+    assert_eq!(b.code.as_ref().unwrap(), &vec!["sequenceDiagram".to_string(), "  A->>B: hi".to_string()]);
+}

@@ -1,6 +1,6 @@
 {
   "name": "slidewise",
-  "displayName": "Slidewise — Markdown Slides",
+  "displayName": "Slidewise \u2014 Markdown Slides",
   "description": "Open Markdown decks as slides: live preview, draggable components, customizer and presenter mode, powered by the Slidewise engine.",
   "version": "0.1.0",
   "publisher": "moovendhan-v",
@@ -14,41 +14,154 @@
   "engines": {
     "vscode": "^1.90.0"
   },
-  "categories": ["Visualization", "Other"],
-  "keywords": ["markdown", "slides", "presentation", "deck", "slidewise"],
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "markdown",
+    "slides",
+    "presentation",
+    "deck",
+    "slidewise"
+  ],
   "main": "./dist/extension.js",
-  "activationEvents": ["onLanguage:markdown"],
+  "activationEvents": [
+    "onLanguage:markdown"
+  ],
   "contributes": {
     "commands": [
-      { "command": "slidewise.openPreview", "title": "Open as Slides", "category": "Slidewise", "icon": "$(preview)" },
-      { "command": "slidewise.present", "title": "Present Slides", "category": "Slidewise", "icon": "$(play)" },
-      { "command": "slidewise.openInEditor", "title": "Reopen as Slides Editor", "category": "Slidewise" }
+      {
+        "command": "slidewise.openPreview",
+        "title": "Open as Slides",
+        "category": "Slidewise",
+        "icon": "$(preview)"
+      },
+      {
+        "command": "slidewise.present",
+        "title": "Present Slides",
+        "category": "Slidewise",
+        "icon": "$(play)"
+      },
+      {
+        "command": "slidewise.openInEditor",
+        "title": "Reopen as Slides Editor",
+        "category": "Slidewise"
+      },
+      {
+        "command": "slidewise.insertSlide",
+        "title": "Insert Slide\u2026",
+        "category": "Slidewise",
+        "icon": "$(add)"
+      },
+      {
+        "command": "slidewise.insertBlock",
+        "title": "Insert Block\u2026",
+        "category": "Slidewise"
+      },
+      {
+        "command": "slidewise.insertIcon",
+        "title": "Insert Icon\u2026",
+        "category": "Slidewise"
+      }
     ],
     "menus": {
       "editor/title": [
-        { "command": "slidewise.openPreview", "when": "resourceLangId == markdown && activeEditor == workbench.editors.files.textFileEditor", "group": "navigation@10" }
+        {
+          "command": "slidewise.openPreview",
+          "when": "resourceLangId == markdown && activeEditor == workbench.editors.files.textFileEditor",
+          "group": "navigation@10"
+        },
+        {
+          "command": "slidewise.insertSlide",
+          "when": "resourceLangId == markdown && activeEditor == workbench.editors.files.textFileEditor",
+          "group": "navigation@11"
+        }
       ],
       "editor/title/context": [
-        { "command": "slidewise.openPreview", "when": "resourceLangId == markdown" }
+        {
+          "command": "slidewise.openPreview",
+          "when": "resourceLangId == markdown"
+        }
       ],
       "explorer/context": [
-        { "command": "slidewise.openPreview", "when": "resourceLangId == markdown", "group": "navigation@20" },
-        { "command": "slidewise.present", "when": "resourceLangId == markdown", "group": "navigation@21" }
+        {
+          "command": "slidewise.openPreview",
+          "when": "resourceLangId == markdown",
+          "group": "navigation@20"
+        },
+        {
+          "command": "slidewise.present",
+          "when": "resourceLangId == markdown",
+          "group": "navigation@21"
+        }
       ],
       "commandPalette": [
-        { "command": "slidewise.openPreview", "when": "editorLangId == markdown" },
-        { "command": "slidewise.present", "when": "editorLangId == markdown" },
-        { "command": "slidewise.openInEditor", "when": "editorLangId == markdown" }
+        {
+          "command": "slidewise.openPreview",
+          "when": "editorLangId == markdown"
+        },
+        {
+          "command": "slidewise.present",
+          "when": "editorLangId == markdown"
+        },
+        {
+          "command": "slidewise.openInEditor",
+          "when": "editorLangId == markdown"
+        },
+        {
+          "command": "slidewise.insertSlide",
+          "when": "editorLangId == markdown"
+        },
+        {
+          "command": "slidewise.insertBlock",
+          "when": "editorLangId == markdown"
+        },
+        {
+          "command": "slidewise.insertIcon",
+          "when": "editorLangId == markdown"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "slidewise.insertSlide",
+          "when": "editorLangId == markdown",
+          "group": "slidewise@1"
+        },
+        {
+          "command": "slidewise.insertBlock",
+          "when": "editorLangId == markdown",
+          "group": "slidewise@2"
+        },
+        {
+          "command": "slidewise.insertIcon",
+          "when": "editorLangId == markdown",
+          "group": "slidewise@3"
+        },
+        {
+          "command": "slidewise.openPreview",
+          "when": "editorLangId == markdown",
+          "group": "slidewise@4"
+        }
       ]
     },
     "keybindings": [
-      { "command": "slidewise.openPreview", "key": "ctrl+k shift+s", "mac": "cmd+k shift+s", "when": "editorLangId == markdown" }
+      {
+        "command": "slidewise.openPreview",
+        "key": "ctrl+k shift+s",
+        "mac": "cmd+k shift+s",
+        "when": "editorLangId == markdown"
+      }
     ],
     "customEditors": [
       {
         "viewType": "slidewise.editor",
         "displayName": "Slidewise Slides",
-        "selector": [{ "filenamePattern": "*.md" }],
+        "selector": [
+          {
+            "filenamePattern": "*.md"
+          }
+        ],
         "priority": "option"
       }
     ],
@@ -57,7 +170,11 @@
       "properties": {
         "slidewise.suggestOnOpen": {
           "type": "string",
-          "enum": ["decks", "always", "never"],
+          "enum": [
+            "decks",
+            "always",
+            "never"
+          ],
           "enumDescriptions": [
             "Suggest for Markdown files that look like decks (front matter, --- slide breaks, ::: blocks)",
             "Suggest for every Markdown file",
@@ -68,8 +185,14 @@
         },
         "slidewise.defaultView": {
           "type": "string",
-          "enum": ["preview", "blocks"],
-          "enumDescriptions": ["Rendered slides", "Draggable component view"],
+          "enum": [
+            "preview",
+            "blocks"
+          ],
+          "enumDescriptions": [
+            "Rendered slides",
+            "Draggable component view"
+          ],
           "default": "preview",
           "description": "View the slides panel opens with."
         }
