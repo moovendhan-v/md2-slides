@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useDeck } from "@/app-shell/deck-context";
 import { resolveRelative } from "@/domain/deck/queries";
 import { encodeShare, linkHealth } from "@/domain/share/codec";
-import { collectImports, expiresAt, relativeImages, type SharePayload } from "@/domain/share/payload";
+import { collectAssets, collectImports, expiresAt, relativeImages, type SharePayload } from "@/domain/share/payload";
 import type { ShareSettings } from "@/stores/session";
 import { fileKey, useWorkspace } from "@/stores/workspace";
 
@@ -12,12 +12,12 @@ export interface ShareLink {
   url: string;
   bytes: number;
   health: ReturnType<typeof linkHealth>;
-  /** Relative images that exist only in the repo (viewers can't load them). */
+  /** Relative images that exist only in the repo and were not bundled. */
   missingImages: string[];
   payload: SharePayload;
 }
 
-/** Build the payload for the active deck (imports resolved from loaded files). */
+/** Build the payload for the active deck (imports and assets resolved from loaded files). */
 export function buildPayload(deck: { src: string; path: string; repo: string }, s: ShareSettings, now = Date.now()): SharePayload {
   const files = useWorkspace.getState().files;
   const imports = collectImports(
@@ -25,11 +25,17 @@ export function buildPayload(deck: { src: string; path: string; repo: string }, 
     (ref, kind) => (kind === "src" ? resolveRelative(deck.path, ref) : ref.replace(/^\.?\//, "")),
     (p) => files[fileKey(deck.repo, p)],
   );
+  const assets = collectAssets(
+    deck.src,
+    (ref) => resolveRelative(deck.path, ref),
+    (p) => files[fileKey(deck.repo, p)],
+  );
   const name = (deck.path.split("/").pop() ?? "deck").replace(/\.md$/, "");
   return {
     v: 1,
     md: deck.src,
     ...(Object.keys(imports).length ? { files: imports } : {}),
+    ...(Object.keys(assets).length ? { assets } : {}),
     path: deck.path,
     name,
     created: now,

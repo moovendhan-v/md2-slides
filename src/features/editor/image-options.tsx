@@ -34,8 +34,13 @@ export function ImageOptions({ block }: { block: Block }) {
             onChange={(e) => {
               const f = e.target.files?.[0];
               if (!f) return;
-              actions.setImageSrc(block.line, URL.createObjectURL(f));
-              toast("Image added for this session — commit uploads it to /assets");
+              const reader = new FileReader();
+              reader.onload = () => {
+                const dataUrl = reader.result as string;
+                actions.setImageSrc(block.line, dataUrl);
+                toast.success("Image embedded into deck");
+              };
+              reader.readAsDataURL(f);
             }}
           />
         </label>

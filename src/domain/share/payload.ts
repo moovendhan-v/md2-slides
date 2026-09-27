@@ -14,6 +14,8 @@ export interface SharePayload {
   opts: ShareOptions;
   /** Pre-rendered Mermaid SVG by source (HTML export works offline without the library). */
   svg?: Record<string, string>;
+  /** Bundled images & assets as data URLs (supports private repos and offline embedding). */
+  assets?: Record<string, string>;
 }
 
 export interface ShareOptions {
@@ -62,5 +64,26 @@ export function collectImports(md: string, resolve: (ref: string, kind: "src" | 
   return out;
 }
 
-/** Image paths a viewer cannot load: relative ones that only exist in the repo. */
-export const relativeImages = (md: string) => [...new Set([...md.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g)].map((m) => m[1]).filter((u) => !/^(https?:|data:|\/\/)/i.test(u)))];
+/** Image paths that are local or relative to the repository. */
+export function relativeImages(md: string): string[] {
+  const urls: string[] = [];
+  // Markdown images ![alt](url)
+  for (const m of md.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g)) urls.push(m[1]);
+  // Directive images <!-- ... image: url ... -->
+  for (const m of md.matchAll(/<!--[\s\S]*?\bimage:\s*([^\s;>]+)[\s\S]*?-->/g)) urls.push(m[1]);
+  // Filter out external http/https and data URIs
+  return [...new Set(urls.filter((u) => u && !/^(https?:|data:|\/\/)/i.test(u)))];
+}
+
+/**
+ * Collects bundled assets from workspace for relative/local images.
+ */
+export function collectAssets(md: string, resolve: (ref: string) => string, read: (path: string) => string | undefined): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const img of relativeImages(md)) {
+    const path = resolve(img);
+    const content = read(path);
+    if (content != null) out[img] = content;
+  }
+  return out;
+}

@@ -61,8 +61,13 @@ export function LayoutSection() {
                 onChange={(e) => {
                   const f = e.target.files?.[0];
                   if (!f) return;
-                  actions.setLayoutImage(URL.createObjectURL(f));
-                  toast("Image added for this session — commit uploads it to /assets");
+                  const reader = new FileReader();
+                  reader.onload = () => {
+                    const dataUrl = reader.result as string;
+                    actions.setLayoutImage(dataUrl);
+                    toast.success("Image embedded into deck");
+                  };
+                  reader.readAsDataURL(f);
                 }}
               />
             </label>

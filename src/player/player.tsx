@@ -122,10 +122,29 @@ export function Player({ payload, speaker = false }: { payload: SharePayload; sp
   const [ready, setReady] = useState(false);
   useEffect(() => {
     const key = fileKey(REPO, payload.path);
-    const files: Record<string, string> = { [key]: payload.md };
-    for (const [p, text] of Object.entries(payload.files ?? {})) files[fileKey(REPO, p)] = text;
+    let md = payload.md;
+    const files: Record<string, string> = {};
+
+    for (const [p, text] of Object.entries(payload.files ?? {})) {
+      files[fileKey(REPO, p)] = text;
+    }
+
+    if (payload.assets) {
+      for (const [ref, dataUrl] of Object.entries(payload.assets)) {
+        files[fileKey(REPO, ref)] = dataUrl;
+        const escaped = ref.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        md = md.replace(new RegExp(`(\\bimage:\\s*|!\\[[^\\]]*\\]\\(|\\|\\s*)(\\./)?${escaped}`, "g"), `$1${dataUrl}`);
+      }
+    }
+
+    files[key] = md;
     seedMermaid(payload.svg);
-    useWorkspace.setState({ files, orig: files, paths: { [REPO]: [payload.path, ...Object.keys(payload.files ?? {})] }, activeKey: key });
+    useWorkspace.setState({
+      files,
+      orig: files,
+      paths: { [REPO]: [payload.path, ...Object.keys(payload.files ?? {}), ...Object.keys(payload.assets ?? {})] },
+      activeKey: key,
+    });
     setReady(true);
   }, [payload]);
   if (!ready) return null;
