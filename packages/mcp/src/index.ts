@@ -1,4 +1,6 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { exec } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -11,7 +13,9 @@ import { loadNodeEngine } from "../../../src/engine/node";
 import { BRAND } from "../../../src/lib/brand";
 import { previewLink, readDeck, validateDeck, writeDeck, type Context } from "./handlers";
 
-const VERSION = "0.1.0";
+import { startLocalSlideServer } from "./local-server";
+
+const VERSION = "0.1.3";
 
 function arg(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`);
@@ -23,6 +27,21 @@ const ctx: Context = {
   root: arg("root") ?? process.env.MD2SLIDES_ROOT ?? process.cwd(),
   appUrl: arg("app-url") ?? process.env.MD2SLIDES_APP_URL ?? BRAND.url,
 };
+
+// Check if user passed a file to open or preview directly via CLI
+const directFile =
+  arg("file") ??
+  arg("open") ??
+  process.argv.slice(2).find((a) => !a.startsWith("-") && a.endsWith(".md"));
+
+if (directFile) {
+  const portStr = arg("port");
+  const port = portStr ? parseInt(portStr, 10) : 4321;
+  await startLocalSlideServer(ctx, directFile, {
+    port,
+    open: !process.argv.includes("--no-open"),
+  });
+}
 
 const json = (value: unknown) => ({ content: [{ type: "text" as const, text: JSON.stringify(value, null, 2) }] });
 const fail = (e: unknown) => ({ isError: true, content: [{ type: "text" as const, text: (e as Error).message }] });
@@ -128,3 +147,4 @@ server.registerPrompt(
 
 await server.connect(new StdioServerTransport());
 console.error(`md2slides MCP ${VERSION} ready · workspace ${ctx.root}`);
+

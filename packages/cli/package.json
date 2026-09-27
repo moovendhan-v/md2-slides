@@ -1,0 +1,28 @@
+{
+  "name": "md2-slides",
+  "version": "0.1.0",
+  "description": "CLI for md2slides: validate Markdown slide decks and open interactive browser presentations",
+  "keywords": ["markdown", "slides", "presentation", "deck", "md2slides", "cli"],
+  "type": "module",
+  "bin": {
+    "md2-slides": "bin/cli.js",
+    "md2slides": "bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.17"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moovendhan-v/md2-slides.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/moovendhan-v/md2-slides",
+  "license": "MIT",
+  "dependencies": {
+    "md2slides-mcp": "^0.1.1"
+  }
+}

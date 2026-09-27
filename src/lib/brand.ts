@@ -5,7 +5,7 @@ export const BRAND = {
   description: "Markdown slide decks synced to GitHub: live preview, draggable components, share links without a server, HTML export and a VS Code extension.",
   repo: "https://github.com/moovendhan-v/md2-slides",
   /** Public app URL (preview links from the MCP server, canonical links). Override with NEXT_PUBLIC_SITE_URL / MD2SLIDES_APP_URL. */
-  url: "https://md2slides.app",
+  url: "https://md2slides.cybertechmind.com",
   /** npm package that runs the MCP server: `npx -y md2slides-mcp`. */
   mcpPackage: "md2slides-mcp",
   support: {

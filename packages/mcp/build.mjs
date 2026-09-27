@@ -30,5 +30,9 @@ await esbuild.build({
   logLevel: "warning",
 });
 copyFileSync(join(root, "public/wasm/slide_engine_bg.wasm"), join(out, "slide_engine_bg.wasm"));
+mkdirSync(join(out, "player"), { recursive: true });
+copyFileSync(join(root, "public/player/player.js"), join(out, "player/player.js"));
+copyFileSync(join(root, "public/player/player.css"), join(out, "player/player.css"));
+copyFileSync(join(root, "public/player/app.css"), join(out, "player/app.css"));
 chmodSync(join(out, "index.js"), 0o755);
 console.log("md2slides-mcp built → packages/mcp/dist");
