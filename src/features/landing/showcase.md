@@ -12,7 +12,7 @@ nums: true
 ---
 
 <!-- shade: 0; align: center; titleSize: 7 -->
-<!-- layout: image-top; image: blob:http://localhost:3000/424cf708-1108-4430-8f1b-fe63d4de4281 -->
+<!-- layout: image-top; image: https://github.com/moovendhan-v.png -->
 ^ www.cybertechmind.com
 # Moovendhan v
 AWS Cloud Developer · Full-Stack Engineer · Builder of CyberTechMind

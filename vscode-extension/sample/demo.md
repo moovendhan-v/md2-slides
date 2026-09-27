@@ -12,7 +12,7 @@ nums: true
 ---
 
 <!-- shade: 0; align: center; titleSize: 7 -->
-<!-- layout: image-top; image: blob:https://private-user-images.githubusercontent.com/96030910/659471006-a291c96a-f9fd-41bf-93a2-28d689dc9ba6.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3OTA0NzY4MjcsIm5iZiI6MTc5MDQ3NjUyNywicGF0aCI6Ii85NjAzMDkxMC82NTk0NzEwMDYtYTI5MWM5NmEtZjlmZC00MWJmLTkzYTItMjhkNjg5ZGM5YmE2LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjA5MjclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwOTI3VDAyMzUyN1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWVkYmYxM2ZhMWFlY2IxZmFmZGY2MWFiNDA4MTlmNzY0MTkxMGQzMTgyYzNjYjUxYWY2OWFkMDc4OGQxNmFmZTcmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JnJlc3BvbnNlLWNvbnRlbnQtdHlwZT1pbWFnZSUyRnBuZyJ9.iT1-w9OHtlHaaLxsmHU4QakfYtQZ5p8znE1tm4GA344 -->
+<!-- layout: image-top; image: https://github.com/moovendhan-v.png -->
 ^ www.cybertechmind.com
 # Moovendhan v
 AWS Cloud Developer · Full-Stack Engineer · Builder of CyberTechMind
