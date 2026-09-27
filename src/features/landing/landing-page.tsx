@@ -9,6 +9,7 @@ import { PainGrid, Workflow, WorksWith } from "./sections-a";
 import { CommunitySection, ExportStrip, Faq, FinalCta } from "./sections-b";
 import { SupportSection } from "./support-section";
 import { useSignedIn } from "./use-signed-in";
+import { VideoDemo } from "./video-demo";
 
 /** The public landing page at `/` (the editor lives at `/app`). */
 export function LandingPage() {
@@ -19,6 +20,7 @@ export function LandingPage() {
       <main>
         <Hero signedIn={signedIn} />
         <WorksWith />
+        <VideoDemo />
         <PainGrid />
         <Workflow />
         <Features />

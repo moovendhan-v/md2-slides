@@ -11,6 +11,7 @@ export function LandingNav({ signedIn }: { signedIn: boolean }) {
           <Logo size={28} wordmark />
         </Link>
         <div className="hidden items-center gap-5 text-[13px] text-zinc-400 md:flex">
+          <a href="#demo" className="hover:text-zinc-100">Demo</a>
           <a href="#how" className="hover:text-zinc-100">How it works</a>
           <a href="#features" className="hover:text-zinc-100">Features</a>
           <a href="#mcp" className="hover:text-zinc-100">MCP</a>

@@ -19,7 +19,9 @@
     "predev": "node scripts/community.mjs && node scripts/build-player.mjs --dev",
     "prebuild": "node scripts/community.mjs --check && node scripts/build-player.mjs",
     "community": "node scripts/community.mjs",
-    "mcp:build": "node packages/mcp/build.mjs"
+    "mcp:build": "node packages/mcp/build.mjs",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview"
   },
   "dependencies": {
     "@phosphor-icons/core": "^2.1.1",
@@ -47,6 +49,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@modelcontextprotocol/sdk": "^1.30.1",
+    "@opennextjs/cloudflare": "^1.20.6",
     "@tailwindcss/cli": "^4.3.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22.20.4",
@@ -62,6 +65,7 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^5.0.2",
+    "wrangler": "^4.141.0",
     "zod": "^4.6.5"
   }
 }
