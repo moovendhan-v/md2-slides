@@ -18,6 +18,8 @@ export interface DeckOptions {
   clicks: boolean;
   titleScale: number;
   bodyScale: number;
+  fontScale: number;
+  codeScale: number;
   animate: string;
   transition: string;
   stagger: number;
@@ -44,6 +46,8 @@ export function deckOptions(m: Record<string, string>): DeckOptions {
     clicks: m.clicks === "true",
     titleScale: +m.titleScale || 1,
     bodyScale: +m.bodyScale || 1,
+    fontScale: +m.fontScale || +m.fontSize || 1,
+    codeScale: +m.codeScale || 1,
     animate: m.animate || "fade-up",
     transition: m.transition || "fade",
     stagger: +m.stagger || 90,
@@ -144,13 +148,13 @@ export function buildLook(o: DeckOptions): Look {
     sp: d,
     chip: hexA(acc, dark ? 0.14 : 0.1),
     codeBg: dark ? "rgba(0,0,0,.35)" : panel,
-    bodySize: 2 * o.bodyScale + "cqw",
-    bulletSize: 1.95 * o.bodyScale + "cqw",
-    titleScale: o.titleScale,
+    bodySize: (2 * o.bodyScale * (o.fontScale || 1)).toFixed(2) + "cqw",
+    bulletSize: (1.95 * o.bodyScale * (o.fontScale || 1)).toFixed(2) + "cqw",
+    titleScale: o.titleScale * (o.fontScale || 1),
     anim: o.animate,
     stagger: o.stagger,
-    codeSize: "1.45cqw",
-    tableSize: "1.6cqw",
+    codeSize: (1.45 * (o.codeScale || 1) * (o.fontScale || 1)).toFixed(2) + "cqw",
+    tableSize: (1.6 * (o.fontScale || 1)).toFixed(2) + "cqw",
     bar: o.bar, logo: o.logo, clicks: o.clicks, nums: o.nums, footer: o.footer,
     card: o.glass ? glassCard : { bg: panel, ring: `inset 0 0 0 1px ${rule}`, blur: "none" },
   };

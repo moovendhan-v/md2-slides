@@ -21,6 +21,10 @@ export const VARIANTS: Partial<Record<BlockType, string[]>> = {
   motion: ["typewriter", "shimmer", "glow", "stagger", "cascade", "gradient", "aurora", "bounce", "float", "pulse", "wave", "flip"],
 };
 
+export const ANIM_TEMPLATES = ["hero", "neon", "glass", "badge", "cyberpunk", "minimal", "gradient-card"] as const;
+
+export const LAYOUTS = ["center", "statement", "image-left", "image-right", "image-full", "image-top", "diagonal", "circle", "arch"] as const;
+
 export const TRANSFORMS = ["list", "cards", "flow", "timeline", "stats", "chart", "table"] as const;
 export type TransformTarget = (typeof TRANSFORMS)[number];
 
@@ -30,6 +34,7 @@ export const TRANSITIONS = [
 ] as const;
 
 export const ANIMS = ["none", "fade", "fade-up", "fade-down", "zoom-in", "slide-left", "blur-in", "pop"] as const;
+
 
 export const BGS = ["solid", "gradient", "mesh", "grid", "dots", "spotlight"] as const;
 export type BgId = (typeof BGS)[number];
@@ -101,7 +106,12 @@ export const SYNTAX: [string, string][] = [
   ["<!-- transition: zoom -->", "fade, slide, slide-right, slide-up, slide-down, push, zoom, zoom-out, flip, flip-x, cube, swing, rotate, skew, drop, blur, wipe, wipe-up, iris, glitch, none"],
   ["<!-- animate: fade-up -->", "Block entrance: fade | fade-up | fade-down | zoom-in | slide-left | blur-in | pop | none (+ stagger=120)"],
   ["![alt](src){w=60 h=30 fit=contain r=0}", "Image size (%/cqw), fit cover|contain, radius, pos, filter=grayscale"],
-  ["titleScale / bodyScale", "Front-matter type scale multipliers, e.g. titleScale: 1.2"],
+  [":::anim style=typewriter", "Animation block — typewriter | shimmer | stagger | gradient | float | pulse | wave | flip | bounce"],
+  [":::math", "Math block — LaTeX equations rendered via KaTeX client-side"],
+  [":::csv style=table", "CSV block — raw tabular data as tables, bar, column, or line charts"],
+  [":::counter style=flip", "Counter block — live animated metric counters (up | flip)"],
+  ["fontScale / titleScale / bodyScale / codeScale", "Front-matter typography scale multipliers, e.g. fontScale: 1.1"],
   ["${var}", "Front-matter variable"],
+
   ["Note:", "Speaker notes (rest of slide)"],
 ];

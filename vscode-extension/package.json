@@ -166,6 +166,15 @@
         "priority": "option"
       }
     ],
+    "grammars": [
+      {
+        "scopeName": "markdown.md2slides.injection",
+        "path": "./syntaxes/md2slides.tmLanguage.json",
+        "injectTo": [
+          "text.html.markdown"
+        ]
+      }
+    ],
     "configuration": {
       "title": "md2slides",
       "properties": {

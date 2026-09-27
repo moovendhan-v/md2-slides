@@ -2,6 +2,8 @@ import * as vscode from "vscode";
 import { SlideEditorProvider } from "./custom-editor";
 import { SlidePanels } from "./panels";
 import { registerSuggestions } from "./suggest";
+import { SlideColorProvider } from "./colors";
+import { SlideCompletionItemProvider } from "./completions";
 
 /** Resolve the Markdown document a command targets (explorer/title URI, or the active editor). */
 async function targetDocument(uri?: vscode.Uri): Promise<vscode.TextDocument | undefined> {
@@ -18,7 +20,14 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     panels,
+    vscode.languages.registerColorProvider({ language: "markdown" }, new SlideColorProvider()),
+    vscode.languages.registerCompletionItemProvider(
+      { language: "markdown" },
+      new SlideCompletionItemProvider(),
+      ":", "=", " ", "-"
+    ),
     vscode.commands.registerCommand("slidewise.openPreview", async (uri?: vscode.Uri) => {
+
       const doc = await targetDocument(uri);
       if (doc) panels.open(doc);
     }),
@@ -45,5 +54,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
   registerSuggestions(context, open);
 }
+
 
 export function deactivate() {}

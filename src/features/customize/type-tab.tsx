@@ -33,8 +33,10 @@ export function TypeTab() {
           ))}
         </div>
       </Section>
+      <SliderRow label="Global text size" value={o.fontScale} min={0.6} max={1.6} step={0.05} display={`${o.fontScale.toFixed(2)}×`} onChange={(v) => setOption("fontScale", v)} />
       <SliderRow label="Title size" value={o.titleScale} min={0.6} max={1.8} step={0.05} display={`${o.titleScale.toFixed(2)}×`} onChange={(v) => setOption("titleScale", v)} />
       <SliderRow label="Body size" value={o.bodyScale} min={0.7} max={1.6} step={0.05} display={`${o.bodyScale.toFixed(2)}×`} onChange={(v) => setOption("bodyScale", v)} />
+      <SliderRow label="Code & data size" value={o.codeScale} min={0.7} max={1.6} step={0.05} display={`${o.codeScale.toFixed(2)}×`} onChange={(v) => setOption("codeScale", v)} />
     </>
   );
 }

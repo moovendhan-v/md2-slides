@@ -13,6 +13,9 @@ import { useAi } from "@/stores/ai";
 import { useEditor } from "@/stores/editor";
 import { useIsNarrow, useUi } from "@/stores/ui";
 
+import { StyleCatalogModal } from "./style-catalog-modal";
+import { useState } from "react";
+
 function Tool({ icon, label, tip, onClick, active, children }: { icon: string; label: string; tip: string; onClick: (e: React.MouseEvent<HTMLButtonElement>) => void; active?: boolean; children?: ReactNode }) {
   return (
     <Tooltip>
@@ -43,8 +46,10 @@ export function EditorToolbar() {
   const narrow = useIsNarrow();
   const { previewOn, stripOn, customOpen, pane, set, openModal } = useUi();
   const { insertOpen, syntaxOpen, sourceView, set: setEditor } = useEditor();
+  const [stylesOpen, setStylesOpen] = useState(false);
   return (
     <div className="flex h-11 shrink-0 items-center gap-0.5 overflow-x-auto border-b border-zinc-800 px-2">
+      <StyleCatalogModal open={stylesOpen} onOpenChange={setStylesOpen} />
       {(!narrow || pane === "editor") && (
         <div className="mr-1 flex rounded-lg bg-zinc-900/60 p-0.5" role="group" aria-label="Source view">
           <ViewToggle icon="code" label="Raw" on={sourceView === "raw"} onClick={() => setEditor({ sourceView: "raw" })} />
@@ -63,6 +68,7 @@ export function EditorToolbar() {
       >
         <Icon name="caret-down" className="text-[10px] text-zinc-500" />
       </Tool>
+      <Tool icon="palette" label="Styles" tip="Browse block styles & templates catalog" active={stylesOpen} onClick={() => setStylesOpen(true)} />
       <IconPicker onSelect={(name) => actions.insertInline(`:${name}:`)}>
         <button type="button" title="Insert an icon at the cursor (:name:)" className="flex h-8 items-center gap-1.5 rounded-md px-2.5 text-[13px] text-zinc-300 hover:bg-zinc-900">
           <Icon name="smiley" />
@@ -74,6 +80,7 @@ export function EditorToolbar() {
       <Tool icon="magic-wand" label="Format" tip="Clean whitespace" onClick={actions.format} />
       <Tool icon="book-open" label="Syntax" tip="Syntax reference" active={syntaxOpen} onClick={() => setEditor({ syntaxOpen: !syntaxOpen, insertOpen: false })} />
       <Tool icon="export" label="Export" tip="Export as HTML presentation, PDF or Markdown" onClick={() => openModal("export")} />
+
       <div className="flex-1" />
       <span className="hidden px-2 font-mono text-xs text-zinc-500 md:inline">
         {sourceCount(deck)} slides{deck.slides.length > sourceCount(deck) ? ` · ${deck.slides.length} pages` : ""}

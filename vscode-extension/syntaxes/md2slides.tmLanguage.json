@@ -1,0 +1,96 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "md2slides",
+  "scopeName": "markdown.md2slides.injection",
+  "injectionSelector": "L:text.html.markdown",
+  "patterns": [
+    { "include": "#kicker" },
+    { "include": "#column-break" },
+    { "include": "#slide-directive" },
+    { "include": "#fenced-block" },
+    { "include": "#import-syntax" },
+    { "include": "#callouts" },
+    { "include": "#variables" }
+  ],
+  "repository": {
+    "kicker": {
+      "match": "^(\\^)\\s+(.*)$",
+      "captures": {
+        "1": { "name": "punctuation.definition.heading.kicker.markdown" },
+        "2": { "name": "entity.name.tag.kicker.markdown" }
+      }
+    },
+    "column-break": {
+      "match": "^(\\|\\|\\|)$",
+      "captures": {
+        "1": { "name": "keyword.control.column-break.markdown" }
+      }
+    },
+    "slide-directive": {
+      "match": "(<!--)\\s*(layout|bg|color|titleColor|pad|zoom|align|titleSize|fontSize|fontScale|bodySize|accent|transition|animate|stagger|clicks|src|mw):\\s*([^>]+)(-->)",
+      "captures": {
+        "1": { "name": "punctuation.definition.comment.markdown" },
+        "2": { "name": "keyword.other.directive.markdown" },
+        "3": { "name": "string.quoted.directive-value.markdown" },
+        "4": { "name": "punctuation.definition.comment.markdown" }
+      }
+    },
+    "fenced-block": {
+      "begin": "^(:::)(anim|animation|motion|math|csv|counter|cards|stats|flow|timeline|list|terminal|chart|gallery)(\\b.*)?$",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.block.markdown" },
+        "2": { "name": "support.class.block-type.markdown" },
+        "3": { "name": "variable.parameter.block-args.markdown" }
+      },
+      "end": "^(:::)$",
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.block.markdown" }
+      },
+      "patterns": [
+        {
+          "match": "(style|template|class|className|speed|loop|cols|cursor|fit|r|w|h)=([^\\s]+)",
+          "captures": {
+            "1": { "name": "entity.other.attribute-name.markdown" },
+            "2": { "name": "string.quoted.attribute-value.markdown" }
+          }
+        },
+        {
+          "match": "^\\s*(-)\\s*([^|]+)(?:\\|([^|]+))?(?:\\|([^|]+))?(?:\\|(.*))?$",
+          "captures": {
+            "1": { "name": "punctuation.definition.list.begin.markdown" },
+            "2": { "name": "entity.name.section.item-title.markdown" },
+            "3": { "name": "string.unquoted.item-desc.markdown" },
+            "4": { "name": "constant.numeric.item-badge.markdown" },
+            "5": { "name": "variable.other.item-extra.markdown" }
+          }
+        }
+      ]
+    },
+    "import-syntax": {
+      "match": "^(<<<)\\s*(@?[^#\\s]+)(?:#L(\\d+)(?:-(\\d+))?)?(?:\\s*\\{([^}]+)\\})?",
+      "captures": {
+        "1": { "name": "keyword.control.import.markdown" },
+        "2": { "name": "string.quoted.import-file.markdown" },
+        "3": { "name": "constant.numeric.line-start.markdown" },
+        "4": { "name": "constant.numeric.line-end.markdown" },
+        "5": { "name": "variable.parameter.highlight.markdown" }
+      }
+    },
+    "callouts": {
+      "match": "^(>)\\s*(\\[!(?:NOTE|TIP|WARNING|DANGER|SUCCESS)\\])(.*)$",
+      "captures": {
+        "1": { "name": "punctuation.definition.quote.markdown" },
+        "2": { "name": "support.constant.callout-tag.markdown" },
+        "3": { "name": "markup.quote.markdown" }
+      }
+    },
+    "variables": {
+      "match": "(\\$\\{)([^}]+)(\\})",
+      "captures": {
+        "1": { "name": "punctuation.definition.variable.begin.markdown" },
+        "2": { "name": "variable.other.readwrite.markdown" },
+        "3": { "name": "punctuation.definition.variable.end.markdown" }
+      }
+    }
+  }
+}

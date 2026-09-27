@@ -7,6 +7,7 @@ import { lineOffset } from "@/domain/source/slides";
 import { useDeck } from "@/app-shell/deck-context";
 import { useEditor } from "@/stores/editor";
 import { useActiveSource, useWorkspace } from "@/stores/workspace";
+import { AutoSuggest } from "./auto-suggest";
 
 const LINE = 20;
 const PAD = 12;
@@ -22,6 +23,8 @@ export function MarkdownEditor() {
   const { curLine, jump, set } = useEditor();
   const ta = useRef<HTMLTextAreaElement>(null);
   const [scroll, setScroll] = useState({ top: 0, left: 0 });
+  const [suggestPos, setSuggestPos] = useState<{ x: number; y: number } | null>(null);
+  const [textBeforeCaret, setTextBeforeCaret] = useState("");
 
   const lines = useMemo(() => {
     const L = src.split("\n");
@@ -42,8 +45,33 @@ export function MarkdownEditor() {
 
   const syncCaret = (el: HTMLTextAreaElement) => {
     const ln = el.value.slice(0, el.selectionStart).split("\n").length - 1;
+    const lineStr = el.value.slice(0, el.selectionStart).split("\n").pop() ?? "";
+    setTextBeforeCaret(lineStr);
+
+    const r = el.getBoundingClientRect();
+    setSuggestPos({
+      x: r.left + 54 + Math.min(lineStr.length * 7.8, 300) - el.scrollLeft,
+      y: r.top + PAD + (ln + 1) * LINE - el.scrollTop + 4,
+    });
+
     const st = useEditor.getState();
     if (ln !== st.curLine || el.selectionStart !== st.caret) set({ curLine: ln, caret: el.selectionStart });
+  };
+
+  const handleSuggestSelect = (insertVal: string, replaceLen: number) => {
+    const el = ta.current;
+    if (!el) return;
+    const pos = el.selectionStart;
+    const before = el.value.slice(0, pos - replaceLen);
+    const after = el.value.slice(pos);
+    const nextText = before + insertVal + after;
+    setSource(nextText);
+    const nextCaret = before.length + insertVal.length;
+    requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(nextCaret, nextCaret);
+      syncCaret(el);
+    });
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -69,6 +97,12 @@ export function MarkdownEditor() {
   const mono = "font-mono text-[13px] leading-5";
   return (
     <div className="relative flex min-h-0 flex-1 overflow-hidden bg-zinc-950">
+      <AutoSuggest
+        textBeforeCaret={textBeforeCaret}
+        position={suggestPos}
+        onSelect={handleSuggestSelect}
+        onClose={() => setTextBeforeCaret("")}
+      />
       <div className={`${mono} w-12 shrink-0 overflow-hidden pr-3 text-right select-none`} style={{ paddingTop: PAD }} aria-hidden>
         <div style={{ transform: `translateY(${-scroll.top}px)` }}>
           {lines.map((_, i) => (
@@ -114,3 +148,4 @@ export function MarkdownEditor() {
     </div>
   );
 }
+
