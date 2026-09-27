@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/common/icon";
-import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useDeck } from "@/app-shell/deck-context";
 import { useWorkspace, fileKey } from "@/stores/workspace";

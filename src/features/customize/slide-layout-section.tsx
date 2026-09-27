@@ -1,6 +1,5 @@
 "use client";
 
-import { toast } from "sonner";
 import { isMediaLayout } from "@/domain/source/directives";
 import { useDeck } from "@/app-shell/deck-context";
 import { Chip, Section, SliderRow } from "@/components/common/controls";

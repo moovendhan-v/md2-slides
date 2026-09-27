@@ -32,7 +32,7 @@ export function BranchSwitcher({ className }: { className?: string }) {
     staleTime: 60_000,
   });
 
-  const branches = branchesQuery.data ?? [currentBranch];
+  const branches = useMemo(() => branchesQuery.data ?? [currentBranch], [branchesQuery.data, currentBranch]);
 
   const filtered = useMemo(() => {
     if (!search.trim()) return branches;

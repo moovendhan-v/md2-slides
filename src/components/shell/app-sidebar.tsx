@@ -28,7 +28,6 @@ function NavItem({ label, icon, count, active, onClick }: { label: string; icon:
 export function AppSidebar() {
   const { view, setView, width, sidebarOpen, set } = useUi();
   const { repo } = useDeck();
-  const repos = useWorkspace((s) => s.repos);
   const mdCount = useWorkspace((s) => Object.keys(s.files).filter((k) => k.endsWith(".md")).length);
   const templates = useTemplatesQuery({ source: "all", per: 1 });
   const { sync, syncing } = useSync();
@@ -39,7 +38,6 @@ export function AppSidebar() {
     ["Template studio", "code-block", "studio"],
     ["Templates", "squares-four", "templates", templates.data?.total],
   ];
-  const branch = repos.find((r) => r.id === repo)?.branch ?? "main";
   return (
     <>
       {overlay && <div className="fixed inset-x-0 top-[52px] bottom-0 z-30 bg-black/50" onClick={() => set({ sidebarOpen: false })} />}
