@@ -171,7 +171,67 @@ A ```mermaid fence is rendered as a real Mermaid diagram, themed to the deck (co
 ### Inline formatting
 `**bold**`, `*italic*`, `` `code` ``, `==highlight==`, `~~strike~~`, `[link](url)`, `:icon-name:` (Phosphor) work in titles, bullets, cards, paragraphs and callouts.
 
-## Custom layouts (HTML + Tailwind)
+## Developer blocks (Wasm-powered)
+
+### Math — LaTeX formulas via KaTeX
+```
+:::math
+E = mc^2
+:::
+```
+Block display by default. `style=inline` for inline sizing. LaTeX is never variable-substituted — write raw LaTeX. Use standard LaTeX syntax: `\frac{a}{b}`, `\sum_{i=0}^{n}`, `\int_0^\infty`, `\alpha \beta \gamma`, `\begin{pmatrix}...\end{pmatrix}` etc.
+
+```
+:::math style=block
+\hat{\sigma}^2 = \frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2
+:::
+```
+
+### CSV — structured data tables and charts
+First row is the header. Columns separated by commas. Quoted fields with embedded commas are supported.
+
+```
+:::csv style=table
+Name,Latency,P99
+API Gateway,12ms,45ms
+Worker (Wasm),3ms,8ms
+Lambda@Edge,28ms,110ms
+:::
+```
+
+style: `table` (default) | `bar` (horizontal bars) | `column` (vertical bars) | `line` (line chart).
+
+Multi-series: add extra numeric columns — each gets its own colour.
+
+```
+:::csv style=column
+Quarter,Revenue,Costs
+Q1,1.2M,0.8M
+Q2,1.8M,0.9M
+Q3,2.4M,1.1M
+Q4,3.1M,1.3M
+:::
+```
+
+### Counter — animated counting numbers
+Rows: `value | Label | Sublabel`. Value supports prefix (`$`, `€`) and suffix (`%`, `ms`, `K`, `M`).
+
+```
+:::counter
+99.99% | Uptime | Last 12 months
+3ms | P99 Latency | Global median
+2.4M | Requests/day | Peak load
+:::
+```
+
+style: `up` (default — smooth count-up) | `flip` (digit-flip animation).
+
+```
+:::counter style=flip
+$4.2M | ARR | Annual run rate
+:::
+```
+
 Use `<!-- layout: custom:<id> -->` to render a slide with a community/code template. The slide Markdown fills its slots: title, kicker, body, image (from `image:` directive or first image), code (first code block) and items (rows of the first block: icon | title | text).
 Built-in ids: hero-split, bento, metric-wall.
 

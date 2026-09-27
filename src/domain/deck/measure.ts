@@ -85,6 +85,16 @@ const ESTIMATE: Record<Block["type"], Estimator> = {
     const [x, y] = (a.ar || "16:9").split(":").map(Number);
     return ((w * (+a.w || 100)) / 100) * ((y || 9) / (x || 16));
   },
+  // Developer power blocks
+  math: () => 10,  // KaTeX block display
+  csv: (b) => {
+    const s = b.args?.style ?? "table";
+    const r = rows(b);
+    if (s === "table") return 4 + r * 3.2;
+    if (s === "bar") return 4 + r * 3.4;
+    return 24; // column / line charts
+  },
+  counter: (b) => rows(b) <= 1 ? 16 : 14,
 };
 
 export const blockHeight = (b: Block, width: number, f: Frame) => (ESTIMATE[b.type] ?? (() => 6))(b, width, f);

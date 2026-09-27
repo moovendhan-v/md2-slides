@@ -25,7 +25,11 @@ export type BlockType =
   | "table"
   | "callout"
   | "quote"
-  | "image";
+  | "image"
+  // Developer power blocks
+  | "math"
+  | "csv"
+  | "counter";
 
 export interface Block {
   type: BlockType;

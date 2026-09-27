@@ -7,6 +7,9 @@ import { FlowBlock, TimelineBlock } from "./flow-blocks";
 import { CardsBlock, ListBlock, StatsBlock } from "./list-blocks";
 import { GalleryBlock, ImageBlock } from "./media-blocks";
 import { CalloutBlock, HeadingBlock, ParaBlock, QuoteBlock } from "./text-blocks";
+import { MathBlock } from "./math-block";
+import { CsvBlock } from "./csv-block";
+import { CounterBlock } from "./counter-block";
 
 export type BlockComponent = ComponentType<{ block: Block }>;
 
@@ -30,6 +33,10 @@ const registry = new Map<BlockType, BlockComponent>([
   ["gallery", GalleryBlock],
   ["image", ImageBlock],
   ["quote", QuoteBlock],
+  // Developer power blocks
+  ["math", MathBlock],
+  ["csv", CsvBlock],
+  ["counter", CounterBlock],
 ]);
 
 export const registerBlock = (type: BlockType, c: BlockComponent) => registry.set(type, c);

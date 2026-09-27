@@ -5,7 +5,7 @@ use super::text::{is_attribution, is_check_item, is_numbered, list_marker, parse
 use super::Ctx;
 use crate::model::{Args, Block, Severity};
 
-pub const FENCES: [&str; 8] = ["cards", "stats", "flow", "timeline", "list", "terminal", "chart", "gallery"];
+pub const FENCES: [&str; 11] = ["cards", "stats", "flow", "timeline", "list", "terminal", "chart", "gallery", "math", "csv", "counter"];
 pub const CALLOUTS: [&str; 5] = ["NOTE", "TIP", "WARNING", "DANGER", "SUCCESS"];
 
 /// Allowed `style=` values per fenced block (warn on anything else).
@@ -19,6 +19,10 @@ pub fn variants(kind: &str) -> &'static [&'static str] {
         "gallery" => &["grid", "strip", "circles", "mosaic"],
         "timeline" => &["h", "v"],
         "terminal" => &["chrome", "bare"],
+        // New developer blocks
+        "math" => &["block", "inline"],
+        "csv"  => &["table", "bar", "line", "column"],
+        "counter" => &["up", "flip"],
         _ => &[],
     }
 }
@@ -94,7 +98,13 @@ fn fenced(cx: &mut Ctx, start: usize, kind: String, arg_str: &str) -> usize {
             break;
         }
         let raw = cx.lines[i];
-        rows.push(cx.sub(raw, i));
+        // Math blocks: keep raw LaTeX verbatim (LaTeX uses ${} which conflicts with var-sub).
+        // Counter blocks: keep raw numbers verbatim.
+        if kind == "math" || kind == "counter" {
+            rows.push(raw.to_string());
+        } else {
+            rows.push(cx.sub(raw, i));
+        }
         i += 1;
     }
     let end = if closed { i } else { i - 1 };
@@ -112,10 +122,16 @@ fn fenced(cx: &mut Ctx, start: usize, kind: String, arg_str: &str) -> usize {
     }
     let mut b = Block::new(&kind, start);
     b.args = Some(args);
-    b.rows = Some(rows.into_iter().filter(|r| !r.trim().is_empty()).collect());
+    // For math blocks, join all rows into one text field (cleaner for the renderer).
+    if kind == "math" {
+        b.text = Some(rows.join("\n").trim().to_string());
+    } else {
+        b.rows = Some(rows.into_iter().filter(|r| !r.trim().is_empty()).collect());
+    }
     cx.push(b);
     end
 }
+
 
 fn import(cx: &mut Ctx, i: usize, imp: super::code::Import) -> usize {
     let Some(txt) = cx.resolver.resolve(imp.file) else {
