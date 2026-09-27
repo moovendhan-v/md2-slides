@@ -95,6 +95,9 @@ const ESTIMATE: Record<Block["type"], Estimator> = {
     return 24; // column / line charts
   },
   counter: (b) => rows(b) <= 1 ? 16 : 14,
+  anim: (b) => Math.max(8, rows(b) * 4),
+  animation: (b) => Math.max(8, rows(b) * 4),
+  motion: (b) => Math.max(8, rows(b) * 4),
 };
 
 export const blockHeight = (b: Block, width: number, f: Frame) => (ESTIMATE[b.type] ?? (() => 6))(b, width, f);

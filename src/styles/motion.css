@@ -38,6 +38,48 @@
   50% { box-shadow: 0 0 0 7px rgba(239, 68, 68, .2), 0 0 26px 10px rgba(239, 68, 68, .5) }
 }
 
+/* Built-in Animation Block (`:::anim`) Keyframes */
+@keyframes anim-shimmer {
+  0% { background-position: -200% 0 }
+  100% { background-position: 200% 0 }
+}
+
+@keyframes anim-gradient {
+  0% { background-position: 0% 50% }
+  50% { background-position: 100% 50% }
+  100% { background-position: 0% 50% }
+}
+
+@keyframes anim-float {
+  0%, 100% { transform: translateY(0px) }
+  50% { transform: translateY(-10px) }
+}
+
+@keyframes anim-pulse-glow {
+  0%, 100% { transform: scale(1); opacity: 0.9; box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5) }
+  50% { transform: scale(1.02); opacity: 1; box-shadow: 0 0 25px 8px rgba(99, 102, 241, 0.4) }
+}
+
+@keyframes anim-wave {
+  0%, 100% { transform: translateY(0) }
+  50% { transform: translateY(-8px) scale(1.08) }
+}
+
+@keyframes anim-blink {
+  0%, 100% { opacity: 1 }
+  50% { opacity: 0 }
+}
+
+@keyframes anim-flip-in {
+  0% { opacity: 0; transform: perspective(800px) rotateX(-90deg) }
+  100% { opacity: 1; transform: perspective(800px) rotateX(0deg) }
+}
+
+@keyframes anim-stagger-in {
+  0% { opacity: 0; transform: translateY(16px) scale(0.96) }
+  100% { opacity: 1; transform: translateY(0) scale(1) }
+}
+
 @media print {
   body * { visibility: hidden !important }
   [data-print-root], [data-print-root] * { visibility: visible !important }
@@ -45,3 +87,4 @@
   [data-pg] { break-after: page; page-break-after: always }
 }
 @page { size: landscape; margin: 0 }
+

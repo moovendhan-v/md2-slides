@@ -67,5 +67,14 @@
   {"label":"Gallery circles","md":":::gallery style=circles\n- | Ada\n- | Leo\n- | Mia\n:::","icon":"ph-user-circle","cat":"Media"},
   {"label":"Image-right layout","md":"<!-- layout: image-right; image: -->","icon":"ph-square-split-horizontal","cat":"Layout"},
   {"label":"Diagonal hero layout","md":"<!-- layout: diagonal; image: -->","icon":"ph-line-segment","cat":"Layout"},
-  {"label":"Full-bleed image layout","md":"<!-- layout: image-full; image: -->","icon":"ph-frame-corners","cat":"Layout"}
+  {"label":"Full-bleed image layout","md":"<!-- layout: image-full; image: -->","icon":"ph-frame-corners","cat":"Layout"},
+  {"label":"Anim · Typewriter","md":":::anim style=typewriter speed=fast\nShip fast. Build with precision and zero config.\n:::","icon":"ph-cursor-text","cat":"Animation"},
+  {"label":"Anim · Shimmer Hero","md":":::anim style=shimmer template=hero\n- sparkle | Next-Gen Performance | Instant WebAssembly reactivity\n- lightning | Blazing Fast HMR | Changes reflect in real time\n:::","icon":"ph-sparkle","cat":"Animation"},
+  {"label":"Anim · Stagger Cards","md":":::anim style=stagger cols=3\n- rocket | Lightning Speed | Sub-millisecond parser\n- shield-check | Memory Safe | Sandboxed WebAssembly\n- paint-brush | Tailwind Styled | Fully customizable presets\n:::","icon":"ph-rows","cat":"Animation"},
+  {"label":"Anim · Gradient Aurora","md":":::anim style=gradient\nNext-Generation Slide Engine\n:::","icon":"ph-rainbow","cat":"Animation"},
+  {"label":"Anim · Floating Panel","md":":::anim style=float template=glass\n- rocket | Orbiting the Edge Cloud | Low latency delivery\n:::","icon":"ph-cloud","cat":"Animation"},
+  {"label":"Math LaTeX","md":":::math\nE = mc^2\n:::","icon":"ph-function","cat":"Data"},
+  {"label":"CSV Table / Chart","md":":::csv style=table\nMonth,Sales,Growth\nJan,120,+15%\nFeb,180,+50%\n:::","icon":"ph-table","cat":"Data"},
+  {"label":"Counter · Animated stats","md":":::counter style=flip\n99.98% | Uptime | Global SLA\n100M+ | Queries | Handled per day\n:::","icon":"ph-timer","cat":"Data"}
 ]
+

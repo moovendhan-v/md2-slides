@@ -29,7 +29,11 @@ export type BlockType =
   // Developer power blocks
   | "math"
   | "csv"
-  | "counter";
+  | "counter"
+  | "anim"
+  | "animation"
+  | "motion";
+
 
 export interface Block {
   type: BlockType;

@@ -5,7 +5,7 @@ use super::text::{is_attribution, is_check_item, is_numbered, list_marker, parse
 use super::Ctx;
 use crate::model::{Args, Block, Severity};
 
-pub const FENCES: [&str; 11] = ["cards", "stats", "flow", "timeline", "list", "terminal", "chart", "gallery", "math", "csv", "counter"];
+pub const FENCES: [&str; 14] = ["cards", "stats", "flow", "timeline", "list", "terminal", "chart", "gallery", "math", "csv", "counter", "anim", "animation", "motion"];
 pub const CALLOUTS: [&str; 5] = ["NOTE", "TIP", "WARNING", "DANGER", "SUCCESS"];
 
 /// Allowed `style=` values per fenced block (warn on anything else).
@@ -19,10 +19,14 @@ pub fn variants(kind: &str) -> &'static [&'static str] {
         "gallery" => &["grid", "strip", "circles", "mosaic"],
         "timeline" => &["h", "v"],
         "terminal" => &["chrome", "bare"],
-        // New developer blocks
+        // Developer power blocks
         "math" => &["block", "inline"],
         "csv"  => &["table", "bar", "line", "column"],
         "counter" => &["up", "flip"],
+        "anim" | "animation" | "motion" => &[
+            "typewriter", "shimmer", "glow", "stagger", "cascade", "gradient", "aurora",
+            "bounce", "pop", "float", "levitate", "pulse", "radar", "wave", "flip", "spotlight"
+        ],
         _ => &[],
     }
 }
@@ -99,8 +103,8 @@ fn fenced(cx: &mut Ctx, start: usize, kind: String, arg_str: &str) -> usize {
         }
         let raw = cx.lines[i];
         // Math blocks: keep raw LaTeX verbatim (LaTeX uses ${} which conflicts with var-sub).
-        // Counter blocks: keep raw numbers verbatim.
-        if kind == "math" || kind == "counter" {
+        // Counter & Anim blocks: keep verbatim.
+        if kind == "math" || kind == "counter" || kind == "anim" || kind == "animation" || kind == "motion" {
             rows.push(raw.to_string());
         } else {
             rows.push(cx.sub(raw, i));
@@ -125,6 +129,9 @@ fn fenced(cx: &mut Ctx, start: usize, kind: String, arg_str: &str) -> usize {
     // For math blocks, join all rows into one text field (cleaner for the renderer).
     if kind == "math" {
         b.text = Some(rows.join("\n").trim().to_string());
+    } else if kind == "anim" || kind == "animation" || kind == "motion" {
+        b.text = Some(rows.join("\n").trim().to_string());
+        b.rows = Some(rows.into_iter().filter(|r| !r.trim().is_empty()).collect());
     } else {
         b.rows = Some(rows.into_iter().filter(|r| !r.trim().is_empty()).collect());
     }

@@ -13,6 +13,12 @@ export const VARIANTS: Partial<Record<BlockType, string[]>> = {
   terminal: ["chrome", "bare"],
   image: ["cover", "contain", "fill"],
   code: ["chrome", "bare"],
+  math: ["block", "inline"],
+  csv: ["table", "bar", "line", "column"],
+  counter: ["up", "flip"],
+  anim: ["typewriter", "shimmer", "glow", "stagger", "cascade", "gradient", "aurora", "bounce", "float", "pulse", "wave", "flip"],
+  animation: ["typewriter", "shimmer", "glow", "stagger", "cascade", "gradient", "aurora", "bounce", "float", "pulse", "wave", "flip"],
+  motion: ["typewriter", "shimmer", "glow", "stagger", "cascade", "gradient", "aurora", "bounce", "float", "pulse", "wave", "flip"],
 };
 
 export const TRANSFORMS = ["list", "cards", "flow", "timeline", "stats", "chart", "table"] as const;

@@ -10,6 +10,7 @@ import { CalloutBlock, HeadingBlock, ParaBlock, QuoteBlock } from "./text-blocks
 import { MathBlock } from "./math-block";
 import { CsvBlock } from "./csv-block";
 import { CounterBlock } from "./counter-block";
+import { AnimBlock } from "./anim-block";
 
 export type BlockComponent = ComponentType<{ block: Block }>;
 
@@ -37,7 +38,11 @@ const registry = new Map<BlockType, BlockComponent>([
   ["math", MathBlock],
   ["csv", CsvBlock],
   ["counter", CounterBlock],
+  ["anim", AnimBlock],
+  ["animation", AnimBlock],
+  ["motion", AnimBlock],
 ]);
 
 export const registerBlock = (type: BlockType, c: BlockComponent) => registry.set(type, c);
 export const blockComponent = (type: BlockType) => registry.get(type);
+

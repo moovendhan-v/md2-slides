@@ -232,7 +232,44 @@ $4.2M | ARR | Annual run rate
 :::
 ```
 
+### Anim — built-in animations with Tailwind CSS customization
+Dynamic interactive animations for text, cards, and hero elements.
+
+```
+:::anim style=typewriter speed=fast loop=true
+Build hyper-speed presentations with Rust and Tailwind CSS.
+:::
+```
+
+Styles:
+- `typewriter`: Character-by-character typewriter with blinking cursor.
+- `shimmer` / `glow`: Radiant moving metallic / aurora light beam across glass cards.
+- `stagger` / `cascade`: Cards/items animate in sequentially with smooth slide + fade.
+- `gradient` / `aurora`: Moving multi-color aurora gradient text and backgrounds.
+- `float` / `levitate`: Continuous smooth floating bobbing wave.
+- `pulse` / `radar`: Expanding pulse aura for live status / beacons.
+- `wave`: Kinetic wave motion across words/letters.
+- `bounce` / `pop`: Springy pop-in entrance.
+- `flip`: 3D perspective card flip.
+
+Customization & Tailwind CSS:
+- `template=...`: `hero`, `neon`, `glass`, `badge`, `minimal`, `gradient-card`
+- `class="..."` or `className="..."`: Full Tailwind CSS utility classes (e.g. `class="p-6 rounded-2xl bg-indigo-950 border border-indigo-500 text-white font-bold"`)
+- `speed=...`: `fast`, `normal`, `slow` or number in ms
+- `cols=...`: number of columns for grid cards
+- `loop=true|false`: repeat animation
+
+Example with Tailwind CSS and Stagger:
+```
+:::anim style=stagger cols=3 class="gap-4"
+- rocket | Extreme Speed | 0.2ms compile time
+- shield-check | Type-Safe | Memory safe WebAssembly
+- paint-brush | Styled | Tailwind CSS presets
+:::
+```
+
 Use `<!-- layout: custom:<id> -->` to render a slide with a community/code template. The slide Markdown fills its slots: title, kicker, body, image (from `image:` directive or first image), code (first code block) and items (rows of the first block: icon | title | text).
+
 Built-in ids: hero-split, bento, metric-wall.
 
 ## Media layouts

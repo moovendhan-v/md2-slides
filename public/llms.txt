@@ -7,8 +7,9 @@
 - [Full syntax, single file](/llms-full.txt): everything below in one document — give this to your LLM.
 - [File structure](/llms-full.txt#file-structure): front-matter, --- separators, kicker, title, notes, columns
 - [Slide directives](/llms-full.txt#slide-directives): per-slide bg, color, pad, align, titleSize, zoom, clicks, src
-- [Blocks](/llms-full.txt#blocks): lists, cards, stats, flow, timeline, code, terminal, table, callout, quote, image
+- [Blocks](/llms-full.txt#blocks): lists, cards, stats, flow, timeline, code, terminal, table, callout, quote, image, math, csv, counter, anim (typewriter, shimmer, stagger, gradient, float, pulse)
 - [Charts](/llms-full.txt#chart): column, bar, line, donut, pie, rings
+
 - [Gallery](/llms-full.txt#gallery): grid, strip, circles, mosaic
 - [Diagrams](/llms-full.txt#more-diagrams): pipeline, steps, stack, hub, cycle, funnel, pyramid, Mermaid (all diagram types)
 - [Media layouts](/llms-full.txt#media-layouts): image-left, image-right, image-full, image-top, diagonal, circle, arch
