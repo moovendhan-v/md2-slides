@@ -10,8 +10,9 @@ transition: slide
 animate: fade-up
 nums: true
 ---
+<!-- pos: right -->
 
-<!-- layout: image-top; image: https://cdn.jsdelivr.net/gh/moovendhan-v/md2-slides@main/public/images/moovendhan_v_cybertechmind.png; shade: 0; align: center; titleSize: 7 -->
+<!-- layout: image-top; image: https://cdn.jsdelivr.net/gh/moovendhan-v/md2-slides@main/public/images/moovendhan_v_cybertechmind.png -->
 ^ www.cybertechmind.com
 # Moovendhan v
 AWS Cloud Developer · Full-Stack Engineer · Builder of CyberTechMind
@@ -102,8 +103,8 @@ $ npx -y md2docs build architecture.md --pdf --theme modern
 > If something has to be done twice, script it.
 
 ---
+<!-- layout: arch; image:  -->
 
-<!-- layout: center -->
 ^ Get in Touch
 # Let's build something together
 Moovendhan V · AWS Cloud Developer & Full-Stack Engineer
@@ -111,6 +112,6 @@ Moovendhan V · AWS Cloud Developer & Full-Stack Engineer
 :::cards style=outline cols=2
 - globe | CyberTechMind | cybertechmind.com
 - github-logo | GitHub | github.com/moovendhan-v
-:::
+::::address-book:
 
 note: Thanks for checking out my work. Let's connect!

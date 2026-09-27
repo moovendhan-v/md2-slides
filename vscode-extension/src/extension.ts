@@ -24,8 +24,9 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.languages.registerCompletionItemProvider(
       { language: "markdown" },
       new SlideCompletionItemProvider(),
-      ":", "=", " ", "-"
+      ":", "=", " ", "-", "/"
     ),
+
     vscode.commands.registerCommand("slidewise.openPreview", async (uri?: vscode.Uri) => {
 
       const doc = await targetDocument(uri);

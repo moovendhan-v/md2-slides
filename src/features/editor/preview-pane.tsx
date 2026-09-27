@@ -37,8 +37,11 @@ function AllSlides() {
   const { deck, look, current } = useDeck();
   const opts = useEditRenderOpts();
   const refs = useRef<(HTMLDivElement | null)[]>([]);
-  useEffect(() => refs.current[current]?.scrollIntoView({ block: "nearest", behavior: "smooth" }), [current]);
+  useEffect(() => {
+    refs.current[current]?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [current]);
   return (
+
     <div className="flex flex-col gap-6">
       {deck.slides.map((sl, i) => (
         <div key={i} ref={(el) => void (refs.current[i] = el)} className="flex flex-col gap-2">

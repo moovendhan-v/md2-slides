@@ -25,15 +25,14 @@ export function InsertTools() {
     useEditor.getState().set({ insertOpen: true, syntaxOpen: false, insertAt: { x: r?.left ?? 12, y: (r?.bottom ?? 44) + 6 } });
   };
 
-  useEffect(
-    () =>
-      onHost((m) => {
-        if (m.type === "newSlide") newSlide();
-        else if (m.type === "insertBlock") insertBlock();
-        else if (m.type === "pickIcon") setIconOpen(true);
-      }),
-    [],
-  );
+  useEffect(() => {
+    return onHost((m) => {
+      if (m.type === "newSlide") newSlide();
+      else if (m.type === "insertBlock") insertBlock();
+      else if (m.type === "pickIcon") setIconOpen(true);
+    });
+  }, []);
+
 
   return (
     <div className="flex items-center" role="group" aria-label="Insert">

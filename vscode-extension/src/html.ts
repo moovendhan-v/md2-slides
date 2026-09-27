@@ -19,10 +19,11 @@ export function webviewHtml(webview: vscode.Webview, extensionUri: vscode.Uri, d
     `media-src ${webview.cspSource} https:`,
     `style-src ${webview.cspSource} 'unsafe-inline' https://fonts.googleapis.com`,
     `font-src ${webview.cspSource} https://fonts.gstatic.com data:`,
-    // The entry script carries the nonce; its lazily imported chunks come from the extension's dist folder.
-    `script-src 'nonce-${n}' ${webview.cspSource} 'wasm-unsafe-eval'`,
-    `connect-src ${webview.cspSource} https:`,
+    // Allow all extension assets, inline scripts, chunks, and WebAssembly evaluation.
+    `script-src ${webview.cspSource} 'nonce-${n}' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'`,
+    `connect-src ${webview.cspSource} https: data: blob:`,
   ].join("; ");
+
   return `<!doctype html>
 <html lang="en" class="dark">
 <head>

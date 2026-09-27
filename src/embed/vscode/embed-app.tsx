@@ -41,7 +41,12 @@ function EmbedShell({ settings }: { settings: EmbedSettings }) {
   const customOpen = useUi((s) => s.customOpen);
   const presenting = usePresent((s) => s.active);
 
-  useEffect(() => onHost((m) => m.type === "present" && actions.present()), [actions]);
+  useEffect(() => {
+    return onHost((m) => {
+      if (m.type === "present") actions.present();
+    });
+  }, [actions]);
+
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-zinc-950">

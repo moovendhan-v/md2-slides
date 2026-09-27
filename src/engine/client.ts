@@ -10,8 +10,10 @@ let pending: Promise<SlideEngine> | null = null;
 /** Load the engine once per tab; later calls share the same instance. */
 export function loadEngine(): Promise<SlideEngine> {
   pending ??= import("./wasm/pkg/slide_engine").then(async (b) => {
-    await b.default({ module_or_path: WASM_URL });
+    const wasmUrl = (globalThis as { __MD2SLIDES_WASM__?: string }).__MD2SLIDES_WASM__ ?? WASM_URL;
+    await b.default({ module_or_path: wasmUrl });
     return createEngine(b);
   });
   return pending;
 }
+

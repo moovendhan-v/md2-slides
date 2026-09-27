@@ -43,7 +43,10 @@ export function SlideStrip() {
   const openModal = useUi((s) => s.openModal);
   const lk = useMemo(() => thumbLook(look), [look]);
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
-  useEffect(() => refs.current[current]?.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" }), [current]);
+  useEffect(() => {
+    refs.current[current]?.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
+  }, [current]);
+
 
   return (
     <nav aria-label="Slides" className="flex h-[92px] shrink-0 items-start gap-2 overflow-x-auto border-t border-zinc-800 bg-zinc-950 px-3 pt-2">
