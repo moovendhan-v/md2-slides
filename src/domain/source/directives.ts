@@ -8,14 +8,12 @@ const isLayout = (l: string) => /^<!--\s*layout:/.test(l.trim());
 
 export function parseDirective(line: string): Record<string, string> {
   const map: Record<string, string> = {};
-  line
-    .trim()
-    .replace(/^<!--\s*|\s*-->$/g, "")
-    .split(";")
-    .forEach((kv) => {
-      const x = kv.match(/^\s*(\w+)\s*:\s*(.*?)\s*$/);
-      if (x) map[x[1]] = x[2];
-    });
+  const clean = line.trim().replace(/^<!--\s*|\s*-->$/g, "");
+  const regex = /(?:^|;\s*)([a-zA-Z0-9_]+)\s*:\s*(.*?)(?=(?:;\s*[a-zA-Z0-9_]+\s*:|$))/g;
+  let match;
+  while ((match = regex.exec(clean)) !== null) {
+    map[match[1]] = match[2].trim();
+  }
   return map;
 }
 
@@ -60,7 +58,11 @@ export function setLayout(src: string, slide: Slide, layout: string): string {
 export function setLayoutImage(src: string, slide: Slide, url: string): string {
   const L = src.split("\n");
   const at = findLine(L, slide.startLine, isLayout);
-  if (at < 0) return src;
+  if (at < 0) {
+    const lay = slide.layout || "image-top";
+    upsertLine(L, -1, slide.startLine, `<!-- layout: ${lay}; image: ${url} -->`);
+    return L.join("\n");
+  }
   const map = parseDirective(L[at]);
   map.image = url;
   L[at] = render(map) ?? L[at];

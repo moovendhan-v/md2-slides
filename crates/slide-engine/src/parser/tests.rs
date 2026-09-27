@@ -44,6 +44,12 @@ fn directives_and_layout() {
     assert_eq!(s.layout, "center");
     assert_eq!(s.dir.get("bg").unwrap(), "#111");
     assert_eq!(s.dir.get("accent").unwrap(), "#f472b6");
+
+    let d2 = p("<!-- layout: image-top; image: data:image/png;base64,iVBORw0KGgoAAA==; shade: 0 -->\n# Image slide");
+    let s2 = &d2.slides[0];
+    assert_eq!(s2.layout, "image-top");
+    assert_eq!(s2.dir.get("image").unwrap(), "data:image/png;base64,iVBORw0KGgoAAA==");
+    assert_eq!(s2.dir.get("shade").unwrap(), "0");
 }
 
 #[test]

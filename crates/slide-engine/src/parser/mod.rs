@@ -123,14 +123,12 @@ pub fn parse(src: &str, resolver: &dyn Resolver) -> Deck {
 fn line(cx: &mut Ctx, i: usize, l: &str) -> usize {
     if let Some(inner) = text::html_comment(l) {
         if text::starts_with_pair(inner) {
-            for kv in inner.split(';') {
-                if let Some((k, v)) = text::directive_pair(kv) {
-                    if k == "layout" {
-                        cx.cur().layout = v;
-                    } else {
-                        let v = cx.sub(&v, i);
-                        cx.cur().dir.insert(k, v);
-                    }
+            for (k, v) in text::parse_directives(inner) {
+                if k == "layout" {
+                    cx.cur().layout = v;
+                } else {
+                    let v = cx.sub(&v, i);
+                    cx.cur().dir.insert(k, v);
                 }
             }
         }

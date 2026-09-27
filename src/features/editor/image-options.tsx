@@ -6,6 +6,7 @@ import { useDeck } from "@/app-shell/deck-context";
 import { Chip, SliderRow } from "@/components/common/controls";
 import { Input } from "@/components/ui/input";
 import { useDeckActions } from "@/hooks/use-deck-actions";
+import { RepoImagePicker } from "./repo-image-picker";
 
 const GROUPS: [string, string, string[], string][] = [
   ["Filter", "filter", ["none", "grayscale", "blur"], "none"],
@@ -25,22 +26,32 @@ export function ImageOptions({ block }: { block: Block }) {
     <div className="flex flex-col gap-4">
       <div className="flex gap-2">
         <Input placeholder="https://…/image.jpg" defaultValue={live.src ?? ""} onChange={(e) => actions.setImageSrc(block.line, e.target.value)} className="h-8 border-zinc-800 text-xs" />
-        <label className="flex h-8 cursor-pointer items-center rounded-md border border-zinc-800 px-3 text-xs whitespace-nowrap hover:bg-zinc-900">
+        <RepoImagePicker onSelect={(url) => actions.setImageSrc(block.line, url)} />
+        <label className="flex h-8 cursor-pointer items-center rounded-md border border-zinc-800 px-3 text-xs whitespace-nowrap hover:bg-zinc-900" title="Upload to repo assets/">
           Upload
           <input
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={(e) => {
+            onChange={async (e) => {
               const f = e.target.files?.[0];
               if (!f) return;
-              const reader = new FileReader();
-              reader.onload = () => {
-                const dataUrl = reader.result as string;
-                actions.setImageSrc(block.line, dataUrl);
-                toast.success("Image embedded into deck");
-              };
-              reader.readAsDataURL(f);
+              const res = await actions.uploadAsset(f, "repo");
+              actions.setImageSrc(block.line, res);
+            }}
+          />
+        </label>
+        <label className="flex h-8 cursor-pointer items-center rounded-md border border-zinc-800 px-2.5 text-xs text-zinc-400 whitespace-nowrap hover:bg-zinc-900" title="Embed raw Base64 into deck">
+          Base64
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={async (e) => {
+              const f = e.target.files?.[0];
+              if (!f) return;
+              const res = await actions.uploadAsset(f, "base64");
+              actions.setImageSrc(block.line, res);
             }}
           />
         </label>

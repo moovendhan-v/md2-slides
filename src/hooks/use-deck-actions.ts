@@ -14,7 +14,7 @@ import { useDeck } from "@/app-shell/deck-context";
 import { useEditor } from "@/stores/editor";
 import { usePresent } from "@/stores/present";
 import { useUi } from "@/stores/ui";
-import { useWorkspace } from "@/stores/workspace";
+import { fileKey, useWorkspace } from "@/stores/workspace";
 
 /**
  * Every edit the UI can make to the active deck. Each action is a pure source
@@ -46,6 +46,31 @@ export function useDeckActions() {
       setLayoutImage: (url: string) => {
         const sl = slideAt();
         if (sl) apply(setLayoutImage(src(), sl, url));
+      },
+      uploadAsset: async (file: File, mode: "repo" | "base64" = "repo"): Promise<string> => {
+        return new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const dataUrl = reader.result as string;
+            const repo = active.repo || ws().repos[0]?.id || "";
+            if (mode === "repo" && repo) {
+              const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-").toLowerCase();
+              const assetPath = `assets/${cleanName}`;
+              const key = fileKey(repo, assetPath);
+              const currentPaths = ws().paths[repo] ?? [];
+              useWorkspace.setState({
+                files: { ...ws().files, [key]: dataUrl },
+                paths: { ...ws().paths, [repo]: currentPaths.includes(assetPath) ? currentPaths : [...currentPaths, assetPath] },
+              });
+              toast.success(`Saved to ${assetPath} — ready to commit to GitHub`);
+              resolve(assetPath);
+            } else {
+              toast.success("Image embedded into deck");
+              resolve(dataUrl);
+            }
+          };
+          reader.readAsDataURL(file);
+        });
       },
       resetSlide: () => {
         const sl = slideAt();

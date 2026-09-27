@@ -11,8 +11,7 @@ animate: fade-up
 nums: true
 ---
 
-<!-- shade: 0; align: center; titleSize: 7 -->
-<!-- layout: image-top; image: https://github.com/moovendhan-v.png -->
+<!-- layout: image-top; image: https://cdn.jsdelivr.net/gh/moovendhan-v/md2-slides@main/public/images/moovendhan_v_cybertechmind.png; shade: 0; align: center; titleSize: 7 -->
 ^ www.cybertechmind.com
 # Moovendhan v
 AWS Cloud Developer · Full-Stack Engineer · Builder of CyberTechMind

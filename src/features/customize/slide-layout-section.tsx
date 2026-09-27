@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { useDeckActions } from "@/hooks/use-deck-actions";
 import { cn } from "@/lib/utils";
 
+import { RepoImagePicker } from "@/features/editor/repo-image-picker";
+
 /** [id, label, image box: left, top, width, height, radius, clip, text left] — drawn as mini diagrams. */
 const LAYOUTS: [string, string, string, string, string, string, string, string, string][] = [
   ["", "Auto", "0", "0", "0", "0", "0", "none", "8%"],
@@ -52,22 +54,32 @@ export function LayoutSection() {
         <Section title="Image">
           <div className="flex gap-2">
             <Input key={current} defaultValue={dir.image || ""} placeholder="https://…/photo.jpg" onChange={(e) => actions.setLayoutImage(e.target.value)} className="h-8 border-zinc-800 text-xs" />
-            <label className="flex h-8 cursor-pointer items-center rounded-md border border-zinc-800 px-3 text-xs hover:bg-zinc-900">
+            <RepoImagePicker onSelect={(url) => actions.setLayoutImage(url)} />
+            <label className="flex h-8 cursor-pointer items-center rounded-md border border-zinc-800 px-3 text-xs hover:bg-zinc-900" title="Upload to repo assets/">
               Upload
               <input
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={(e) => {
+                onChange={async (e) => {
                   const f = e.target.files?.[0];
                   if (!f) return;
-                  const reader = new FileReader();
-                  reader.onload = () => {
-                    const dataUrl = reader.result as string;
-                    actions.setLayoutImage(dataUrl);
-                    toast.success("Image embedded into deck");
-                  };
-                  reader.readAsDataURL(f);
+                  const res = await actions.uploadAsset(f, "repo");
+                  actions.setLayoutImage(res);
+                }}
+              />
+            </label>
+            <label className="flex h-8 cursor-pointer items-center rounded-md border border-zinc-800 px-2.5 text-xs text-zinc-400 hover:bg-zinc-900" title="Embed raw Base64 data into deck">
+              Base64
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={async (e) => {
+                  const f = e.target.files?.[0];
+                  if (!f) return;
+                  const res = await actions.uploadAsset(f, "base64");
+                  actions.setLayoutImage(res);
                 }}
               />
             </label>

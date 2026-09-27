@@ -71,13 +71,26 @@ export class GitHubClient {
     return this.req<string>(`/repos/${repo}/contents/${p}?ref=${encodeURIComponent(ref)}`, { raw: true });
   }
 
+  /** Fetch file metadata and content (handles base64 binary files). */
+  async fileContent(repo: string, path: string, ref: string): Promise<{ content: string; encoding?: string }> {
+    const p = path.split("/").map(encodeURIComponent).join("/");
+    const res = await this.req<{ content?: string; encoding?: string }>(`/repos/${repo}/contents/${p}?ref=${encodeURIComponent(ref)}`);
+    return { content: res.content ?? "", encoding: res.encoding };
+  }
+
   /** One commit containing every change, via the Git Data API. */
   async commit(repo: string, branch: string, message: string, changes: FileChange[]) {
     const ref = await this.req<{ object: { sha: string } }>(`/repos/${repo}/git/ref/heads/${encodeURIComponent(branch)}`);
     const parent = ref.object.sha;
     const base = await this.req<{ tree: { sha: string } }>(`/repos/${repo}/git/commits/${parent}`);
     const blobs = await Promise.all(
-      changes.map((c) => this.req<{ sha: string }>(`/repos/${repo}/git/blobs`, { method: "POST", body: JSON.stringify({ content: c.content, encoding: "utf-8" }) })),
+      changes.map((c) => {
+        const m = c.content.match(/^data:[^;]+;base64,([\s\S]*)$/);
+        if (m) {
+          return this.req<{ sha: string }>(`/repos/${repo}/git/blobs`, { method: "POST", body: JSON.stringify({ content: m[1].replace(/\s+/g, ""), encoding: "base64" }) });
+        }
+        return this.req<{ sha: string }>(`/repos/${repo}/git/blobs`, { method: "POST", body: JSON.stringify({ content: c.content, encoding: "utf-8" }) });
+      }),
     );
     const tree = await this.req<{ sha: string }>(`/repos/${repo}/git/trees`, {
       method: "POST",

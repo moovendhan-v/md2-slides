@@ -1,15 +1,15 @@
 /* tslint:disable */
 /* eslint-disable */
-export function engineVersion(): string;
-/**
- * Render a custom layout's HTML slots with JSON slide data.
- */
-export function fillTemplate(html: string, data_json: string): string;
 /**
  * Parse a deck. `resolve(path) => string | undefined` serves `<<<` imports.
  * Returns the deck model as a JSON string.
  */
 export function parseDeck(src: string, resolve?: Function | null): string;
+/**
+ * Render a custom layout's HTML slots with JSON slide data.
+ */
+export function fillTemplate(html: string, data_json: string): string;
+export function engineVersion(): string;
 /**
  * Template registry exposed to JS. All payloads are JSON strings so the
  * boundary stays cheap and schema-checked on the Rust side.

@@ -123,35 +123,29 @@ function getDataViewMemory0() {
     }
     return cachedDataViewMemory0;
 }
-
-function passArray8ToWasm0(arg, malloc) {
-    const ptr = malloc(arg.length * 1, 1) >>> 0;
-    getUint8ArrayMemory0().set(arg, ptr / 1);
-    WASM_VECTOR_LEN = arg.length;
-    return ptr;
-}
-
-function getArrayU8FromWasm0(ptr, len) {
-    ptr = ptr >>> 0;
-    return getUint8ArrayMemory0().subarray(ptr / 1, ptr / 1 + len);
-}
 /**
+ * Parse a deck. `resolve(path) => string | undefined` serves `<<<` imports.
+ * Returns the deck model as a JSON string.
+ * @param {string} src
+ * @param {Function | null} [resolve]
  * @returns {string}
  */
-export function engineVersion() {
-    let deferred1_0;
-    let deferred1_1;
+export function parseDeck(src, resolve) {
+    let deferred2_0;
+    let deferred2_1;
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        wasm.engineVersion(retptr);
+        const ptr0 = passStringToWasm0(src, wasm.__wbindgen_export_1, wasm.__wbindgen_export_2);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.parseDeck(retptr, ptr0, len0, isLikeNone(resolve) ? 0 : addHeapObject(resolve));
         var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
         var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        deferred1_0 = r0;
-        deferred1_1 = r1;
+        deferred2_0 = r0;
+        deferred2_1 = r1;
         return getStringFromWasm0(r0, r1);
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
-        wasm.__wbindgen_export_3(deferred1_0, deferred1_1, 1);
+        wasm.__wbindgen_export_3(deferred2_0, deferred2_1, 1);
     }
 }
 
@@ -183,29 +177,35 @@ export function fillTemplate(html, data_json) {
 }
 
 /**
- * Parse a deck. `resolve(path) => string | undefined` serves `<<<` imports.
- * Returns the deck model as a JSON string.
- * @param {string} src
- * @param {Function | null} [resolve]
  * @returns {string}
  */
-export function parseDeck(src, resolve) {
-    let deferred2_0;
-    let deferred2_1;
+export function engineVersion() {
+    let deferred1_0;
+    let deferred1_1;
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        const ptr0 = passStringToWasm0(src, wasm.__wbindgen_export_1, wasm.__wbindgen_export_2);
-        const len0 = WASM_VECTOR_LEN;
-        wasm.parseDeck(retptr, ptr0, len0, isLikeNone(resolve) ? 0 : addHeapObject(resolve));
+        wasm.engineVersion(retptr);
         var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
         var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        deferred2_0 = r0;
-        deferred2_1 = r1;
+        deferred1_0 = r0;
+        deferred1_1 = r1;
         return getStringFromWasm0(r0, r1);
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
-        wasm.__wbindgen_export_3(deferred2_0, deferred2_1, 1);
+        wasm.__wbindgen_export_3(deferred1_0, deferred1_1, 1);
     }
+}
+
+function passArray8ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 1, 1) >>> 0;
+    getUint8ArrayMemory0().set(arg, ptr / 1);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
+}
+
+function getArrayU8FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getUint8ArrayMemory0().subarray(ptr / 1, ptr / 1 + len);
 }
 
 const TemplateStoreFinalization = (typeof FinalizationRegistry === 'undefined')

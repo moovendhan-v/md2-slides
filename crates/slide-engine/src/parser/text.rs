@@ -44,6 +44,68 @@ pub fn directive_pair(kv: &str) -> Option<(String, String)> {
     Some((key.to_string(), kv[colon + 1..].trim().to_string()))
 }
 
+/// Parses multiple `key: value; key2: value2` directives from inside `<!-- ... -->`.
+/// Handles values that contain embedded semicolons (like base64 data URLs `data:image/png;base64,...`).
+pub fn parse_directives(inner: &str) -> Vec<(String, String)> {
+    let mut pairs = Vec::new();
+    let s = inner.trim();
+    if s.is_empty() {
+        return pairs;
+    }
+
+    let is_key_at = |pos: usize| -> Option<(&str, usize)> {
+        if pos >= s.len() {
+            return None;
+        }
+        let rest = &s[pos..];
+        let trimmed_start_len = rest.len() - rest.trim_start().len();
+        let trimmed = &rest[trimmed_start_len..];
+        let w = word_prefix(trimmed);
+        if w.is_empty() {
+            return None;
+        }
+        let after_w = &trimmed[w.len()..];
+        let trimmed_after = after_w.trim_start();
+        if trimmed_after.starts_with(':') {
+            let colon_offset = pos + trimmed_start_len + w.len() + (after_w.len() - trimmed_after.len());
+            Some((w, colon_offset + 1))
+        } else {
+            None
+        }
+    };
+
+    let bytes = s.as_bytes();
+    let len = bytes.len();
+    let (mut cur_key, mut val_start, mut i) = match is_key_at(0) {
+        Some((k, after_colon)) => (Some(k.to_string()), after_colon, after_colon),
+        None => return pairs,
+    };
+
+    while i < len {
+        if bytes[i] == b';' {
+            if let Some((k, after_colon)) = is_key_at(i + 1) {
+                if let Some(prev_k) = cur_key.take() {
+                    let val = s[val_start..i].trim();
+                    pairs.push((prev_k, val.to_string()));
+                }
+                cur_key = Some(k.to_string());
+                val_start = after_colon;
+                i = after_colon;
+                continue;
+            }
+        }
+        i += 1;
+    }
+
+    if let Some(prev_k) = cur_key {
+        let val = s[val_start..].trim();
+        pairs.push((prev_k, val.to_string()));
+    }
+
+    pairs
+}
+
+
 /// Inner text of `<!-- ... -->` when the whole line is one comment.
 pub fn html_comment(l: &str) -> Option<&str> {
     let inner = l.strip_prefix("<!--")?.strip_suffix("-->")?;
