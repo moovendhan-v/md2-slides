@@ -19,7 +19,7 @@ export const WORKS_WITH: [string, string][] = [
   ["code", "VS Code"],
   ["sparkle", "Claude (MCP)"],
   ["flow-arrow", "Mermaid"],
-  ["triangle", "Vercel"],
+  ["cloud", "Cloudflare"],
   ["file-html", "Any browser"],
 ];
 

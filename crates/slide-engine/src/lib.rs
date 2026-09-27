@@ -1,6 +1,6 @@
 //! Slidewise engine — the performance-critical core compiled to WebAssembly.
 //! The same `.wasm` runs in the browser (live preview on every keystroke) and
-//! in Vercel Functions (`src/app/api/*`), so parsing and template search
+//! in Cloudflare Workers / server runtimes (`src/app/api/*`), so parsing and template search
 //! behave identically on both sides.
 
 pub mod model;

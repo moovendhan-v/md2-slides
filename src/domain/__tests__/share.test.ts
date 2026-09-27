@@ -105,7 +105,7 @@ describe("storage migration after the rename", () => {
 describe("author credit", () => {
   it("builds GitHub profile and avatar URLs only for valid handles", async () => {
     const { githubProfile } = await import("@/lib/github");
-    expect(githubProfile("moovendhan-v", 40)).toEqual({ url: "https://github.com/moovendhan-v", avatar: "https://cdn.jsdelivr.net/gh/moovendhan-v/md2-slides@main/public/images/moovendhan_v_cybertechmind.png?size=40" });
+    expect(githubProfile("moovendhan-v", 40)).toEqual({ url: "https://github.com/moovendhan-v", avatar: "https://github.com/moovendhan-v.png?size=40" });
     expect(githubProfile("bad handle")).toBeUndefined();
     expect(githubProfile("-leading")).toBeUndefined();
     expect(githubProfile(undefined)).toBeUndefined();

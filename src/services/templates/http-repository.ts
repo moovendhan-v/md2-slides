@@ -6,7 +6,7 @@ async function json<T>(res: Response): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-/** Talks to `/api/templates`, which runs the same Wasm store on Vercel. */
+/** Talks to `/api/templates`, which runs the same Wasm store on the server. */
 export class HttpTemplateRepository implements TemplateRepository {
   constructor(private base = "/api/templates") {}
 

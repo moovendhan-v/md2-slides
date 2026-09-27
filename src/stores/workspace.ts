@@ -23,9 +23,12 @@ interface WorkspaceState {
   activeKey: string;
   expanded: Record<string, boolean>;
   setRepos: (repos: Repo[]) => void;
+  setBranch: (repoId: string, branch: string) => void;
   setPaths: (repo: string, paths: string[]) => void;
   /** Add fetched content (never overwrites local edits). */
   loadFile: (key: string, content: string) => void;
+  /** Force reload file content with latest remote version. */
+  reloadFile: (key: string, content: string) => void;
   setSource: (value: string) => void;
   updateSource: (fn: (src: string) => string) => void;
   openFile: (key: string) => void;
@@ -42,6 +45,10 @@ export const useWorkspace = create<WorkspaceState>((set, get) => ({
   activeKey: "",
   expanded: {},
   setRepos: (repos) => set({ repos }),
+  setBranch: (repoId, branch) =>
+    set((s) => ({
+      repos: s.repos.map((r) => (r.id === repoId ? { ...r, branch } : r)),
+    })),
   setPaths: (repo, paths) =>
     set((s) => {
       // Keep locally created files that are not on GitHub yet.
@@ -50,6 +57,11 @@ export const useWorkspace = create<WorkspaceState>((set, get) => ({
     }),
   loadFile: (key, content) =>
     set((s) => (s.files[key] != null ? s : { files: { ...s.files, [key]: content }, orig: { ...s.orig, [key]: content } })),
+  reloadFile: (key, content) =>
+    set((s) => ({
+      files: { ...s.files, [key]: content },
+      orig: { ...s.orig, [key]: content },
+    })),
   setSource: (value) => set((s) => (s.activeKey ? { files: { ...s.files, [s.activeKey]: value } } : s)),
   updateSource: (fn) => set((s) => (s.activeKey ? { files: { ...s.files, [s.activeKey]: fn(s.files[s.activeKey] ?? "") } } : s)),
   openFile: (key) => set({ activeKey: key }),

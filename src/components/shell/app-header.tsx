@@ -11,6 +11,10 @@ import { Logo } from "@/components/brand/logo";
 import { BRAND } from "@/lib/brand";
 import { UserMenu } from "./user-menu";
 
+import { useSync } from "@/hooks/use-sync";
+import { cn } from "@/lib/utils";
+import { BranchSwitcher } from "./branch-switcher";
+
 export function AppHeader() {
   const { repo: activeRepo, path } = useDeck();
   const repoView = useUi((s) => s.repoView);
@@ -19,6 +23,7 @@ export function AppHeader() {
   const set = useUi((s) => s.set);
   const openModal = useUi((s) => s.openModal);
   const changes = useWorkspace((s) => selectChanged(s).length);
+  const { sync, syncing } = useSync();
   return (
     <header className="flex h-[52px] shrink-0 items-center gap-3 border-b border-zinc-800 px-3">
       <Button variant="ghost" size="icon" className="size-8 text-zinc-400" onClick={() => set({ sidebarOpen: !useUi.getState().sidebarOpen })} aria-label="Toggle sidebar">
@@ -30,6 +35,7 @@ export function AppHeader() {
         </Link>
         <span className="text-zinc-600">/</span>
         <span className="truncate text-zinc-400">{repo}</span>
+        {repo && <BranchSwitcher className="hidden sm:inline-flex border border-zinc-800 bg-zinc-900/50 py-0.5 text-[11px]" />}
         {view === "editor" && path && (
           <>
             <span className="hidden text-zinc-600 sm:inline">/</span>
@@ -47,6 +53,17 @@ export function AppHeader() {
         <span className="flex-1 text-left">Search files & commands</span>
         <Kbd>⌘K</Kbd>
       </button>
+      <Button
+        size="sm"
+        variant="ghost"
+        disabled={syncing}
+        className="h-8 gap-1.5 border border-zinc-800 bg-zinc-900/60 font-medium text-zinc-300 hover:bg-zinc-900 hover:text-zinc-50"
+        onClick={() => sync()}
+        title="Sync latest changes from GitHub"
+      >
+        <Icon name="arrows-clockwise" className={cn("text-sm", syncing && "animate-spin text-blue-400")} />
+        <span className="hidden sm:inline">Sync</span>
+      </Button>
       <Button size="sm" className="relative h-8 gap-1.5 bg-zinc-50 font-semibold text-zinc-950 hover:bg-zinc-200" onClick={() => openModal("commit")}>
         <Icon name="git-commit" />
         Commit

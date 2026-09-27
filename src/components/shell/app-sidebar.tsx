@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { useUi, type View } from "@/stores/ui";
 import { useWorkspace } from "@/stores/workspace";
 import { useTemplatesQuery } from "@/hooks/use-queries";
+import { useSync } from "@/hooks/use-sync";
+import { BranchSwitcher } from "./branch-switcher";
 import { FileTree } from "./file-tree";
 
 function NavItem({ label, icon, count, active, onClick }: { label: string; icon: string; count?: number; active: boolean; onClick: () => void }) {
@@ -29,6 +31,7 @@ export function AppSidebar() {
   const repos = useWorkspace((s) => s.repos);
   const mdCount = useWorkspace((s) => Object.keys(s.files).filter((k) => k.endsWith(".md")).length);
   const templates = useTemplatesQuery({ source: "all", per: 1 });
+  const { sync, syncing } = useSync();
   const overlay = width <= 760;
   if (!sidebarOpen) return null;
   const nav: [string, string, View, number?][] = [
@@ -54,6 +57,16 @@ export function AppSidebar() {
               <span className="size-1.5 rounded-full bg-green-400" />
               GitHub
             </span>
+            <button
+              type="button"
+              title="Sync latest from GitHub"
+              aria-label="Sync latest from GitHub"
+              onClick={() => sync()}
+              disabled={syncing}
+              className="text-zinc-500 hover:text-zinc-100 transition-colors"
+            >
+              <Icon name="arrows-clockwise" className={cn("text-xs", syncing && "animate-spin text-blue-400")} />
+            </button>
             <button type="button" title="Choose repositories" aria-label="Choose repositories" onClick={() => set({ modal: "repos" })} className="text-zinc-500 hover:text-zinc-100">
               <Icon name="gear-six" />
             </button>
@@ -62,12 +75,18 @@ export function AppSidebar() {
         <ScrollArea className="min-h-0 flex-1 px-2.5">
           <FileTree />
         </ScrollArea>
-        <div className="flex h-10 items-center justify-between border-t border-zinc-800 px-4 text-xs text-zinc-400">
-          <span className="flex items-center gap-1.5">
-            <Icon name="git-branch" />
-            {branch}
-          </span>
-          <span className="font-mono text-zinc-500">synced just now</span>
+        <div className="flex h-10 items-center justify-between border-t border-zinc-800 px-3 text-xs text-zinc-400">
+          <BranchSwitcher />
+          <button
+            type="button"
+            onClick={() => sync()}
+            disabled={syncing}
+            title="Sync with GitHub"
+            className="flex items-center gap-1 font-mono text-zinc-500 hover:text-zinc-200 transition-colors"
+          >
+            <Icon name="arrows-clockwise" className={cn("text-[10px]", syncing && "animate-spin text-blue-400")} />
+            <span>{syncing ? "syncing…" : "synced"}</span>
+          </button>
         </div>
       </aside>
     </>

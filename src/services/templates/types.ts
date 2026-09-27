@@ -2,7 +2,7 @@ import type { TemplateFilter, TemplatePage, TemplateRecord, TemplateSource } fro
 
 /**
  * Where templates live. Implementations: the in-browser Wasm store
- * (IndexedDB-persisted) and the HTTP client for the Wasm-backed Vercel Function.
+ * (IndexedDB-persisted) and the HTTP client for the Wasm-backed server API.
  */
 export interface TemplateRepository {
   query(filter: TemplateFilter): Promise<TemplatePage>;

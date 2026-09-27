@@ -18,7 +18,7 @@ export const indexedDbStorage: SnapshotStorage = {
 
 /**
  * `NEXT_PUBLIC_TEMPLATE_SOURCE=remote` routes template reads/writes through the
- * Vercel Function; the default keeps everything local in the browser's Wasm store.
+ * server API route; the default keeps everything local in the browser's Wasm store.
  */
 export function createTemplateRepository(engine: SlideEngine): TemplateRepository {
   return process.env.NEXT_PUBLIC_TEMPLATE_SOURCE === "remote"

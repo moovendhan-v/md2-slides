@@ -4,7 +4,7 @@ Markdown slide decks synced to GitHub. One `.md` file = one deck. Write Markdown
 visually, present with a full presenter view, and push changes as commits.
 
 Built with **Next.js (App Router)**, **shadcn/ui**, **Zustand**, **TanStack Query + Table**, and a
-**Rust core compiled to WebAssembly** that runs in the browser and in Vercel Functions.
+**Rust core compiled to WebAssembly** that runs in the browser and in Cloudflare Workers / server runtimes.
 
 ## Quick start
 
@@ -15,7 +15,7 @@ npm run dev                  # http://localhost:3000 (landing) · /app (editor)
 ```
 
 **GitHub OAuth App:** set the *Authorization callback URL* to `<your app URL>/api/auth/github/callback`
-(e.g. `http://localhost:3000/api/auth/github/callback` locally, and your Vercel domain in production).
+(e.g. `http://localhost:3000/api/auth/github/callback` locally, and your Cloudflare domain in production).
 
 The compiled engine (`public/wasm/slide_engine_bg.wasm` + `src/engine/wasm/pkg/`) is committed, so
 no Rust toolchain is needed to run or deploy. To change the engine:
@@ -151,11 +151,10 @@ src/
 
 **Why WebAssembly.** Parsing runs on every keystroke and template search runs on every filter change,
 so both live in Rust. The browser loads the 260 KB module once and parses decks with no network
-round-trip. API routes load the same binary as described in
-[Vercel's Wasm guide](https://vercel.com/docs/functions/runtimes/wasm), so CI, bots and the app all
+round-trip. Server and API routes load the same binary, so CI, bots and the app all
 use the same parser. Templates are stored in the Wasm `TemplateStore`. In the browser it is persisted
-to IndexedDB as a compact `SWT1` binary snapshot. On the server it lives per function instance. To
-make it durable, save `store.snapshot()` bytes to Vercel Blob or KV in `src/server/template-store.ts`.
+to IndexedDB as a compact `SWT1` binary snapshot. On the server it lives per worker/function instance. To
+make it durable, save `store.snapshot()` bytes to Cloudflare KV or R2 in `src/server/template-store.ts`.
 
 **Design principles.**
 - *Single responsibility:* parsing (Rust), look tokens, layout maths, source edits and rendering each live in their own module.

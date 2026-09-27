@@ -60,6 +60,12 @@ export class GitHubClient {
     return this.req<GhRepo[]>("/user/repos?per_page=100&sort=pushed&affiliation=owner,collaborator,organization_member");
   }
 
+  /** List branches for a repository. */
+  async branches(repo: string): Promise<string[]> {
+    const list = await this.req<{ name: string }[]>(`/repos/${repo}/branches?per_page=100`);
+    return list.map((b) => b.name);
+  }
+
   /** All file paths on a branch (recursive tree). */
   async paths(repo: string, branch: string) {
     const t = await this.req<{ tree: { path: string; type: string }[]; truncated: boolean }>(`/repos/${repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`);

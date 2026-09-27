@@ -21,6 +21,8 @@ interface Cmd {
 }
 
 /** ⌘K: open any Markdown file or run any command. */
+import { useSync } from "@/hooks/use-sync";
+
 export function CommandPalette() {
   const open = useUi((s) => s.modal === "palette");
   const { closeModal, openModal, setView, set } = useUi();
@@ -33,6 +35,7 @@ export function CommandPalette() {
   const { options } = useDeck();
   const deck = useDeckActions();
   const file = useFileActions();
+  const { sync } = useSync();
 
   const commands = useMemo<Cmd[]>(() => {
     const inEditor = (fn: () => void) => () => {
@@ -40,6 +43,7 @@ export function CommandPalette() {
       fn();
     };
     return [
+      { label: "Sync latest from GitHub", icon: "arrows-clockwise", run: () => { sync(); closeModal(); } },
       { label: "Generate slides with AI", icon: "sparkle", run: () => { useAi.getState().set({ phase: "idle" }); openModal("ai"); } },
       { label: "New slide", icon: "plus", run: inEditor(() => openModal("newSlide")) },
       ...BLOCK_SNIPPETS.map((s) => ({ label: `Insert ${s.label.toLowerCase()}`, icon: "plus-square", run: inEditor(() => deck.insertAtCursor(s.md)) })),
@@ -60,7 +64,7 @@ export function CommandPalette() {
       { label: "Syntax reference", icon: "book-open", run: inEditor(() => { useEditor.getState().set({ syntaxOpen: true }); closeModal(); }) },
       { label: "Customize theme", icon: "sliders-horizontal", run: inEditor(() => { set({ customOpen: true }); closeModal(); }) },
     ];
-  }, [deck, file, options, openModal, closeModal, setView, set]);
+  }, [deck, file, options, openModal, closeModal, setView, set, sync]);
 
   return (
     <CommandDialog open={open} onOpenChange={(o) => (o ? openModal("palette") : closeModal())} className="border-zinc-800 bg-zinc-950 sm:max-w-xl">

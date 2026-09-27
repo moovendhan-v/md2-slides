@@ -36,6 +36,10 @@ export class GitHubProvider implements GitProvider, AuthProvider {
     return call<Repo[]>("/api/github/repos");
   }
 
+  listBranches(repo: string) {
+    return call<string[]>(`/api/github/branches?${q({ repo })}`);
+  }
+
   listPaths(repo: string, branch: string) {
     return call<RepoTree>(`/api/github/tree?${q({ repo, branch })}`);
   }

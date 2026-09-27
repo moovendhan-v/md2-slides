@@ -54,6 +54,7 @@ export interface AuthProvider {
 
 export interface GitProvider {
   listRepos(): Promise<Repo[]>;
+  listBranches(repo: string): Promise<string[]>;
   listPaths(repo: string, branch: string): Promise<RepoTree>;
   readFile(repo: string, path: string, ref: string): Promise<string>;
   commit(req: CommitRequest): Promise<CommitResult>;
