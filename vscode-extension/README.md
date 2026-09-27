@@ -1,7 +1,7 @@
 # md2slides — Markdown Slides for VS Code
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/moovendhan-v/md2-slides/main/vscode-extension/media/image.png" alt="md2slides Banner" width="100%" />
+  <img src="https://cdn.jsdelivr.net/gh/moovendhan-v/md2-slides@main/vscode-extension/media/image.png" alt="md2slides Banner" width="100%" />
 </p>
 
 <p align="center">
