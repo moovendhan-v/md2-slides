@@ -5,7 +5,7 @@ import { useEngine } from "@/engine/provider";
 import { GitHubProvider } from "@/services/git/github-provider";
 import type { AuthProvider, GitProvider } from "@/services/git/types";
 import { createTemplateRepository, type TemplateRepository } from "@/services/templates";
-import { HttpAiDeckService } from "@/services/ai/http-ai-service";
+import { UnifiedAiService } from "@/services/ai/unified-ai-service";
 import type { AiDeckService } from "@/services/ai/types";
 
 export interface Services {
@@ -23,7 +23,7 @@ export function ServicesProvider({ children, override }: { children: ReactNode; 
   const services = useMemo<Services>(
     () => {
       const github = new GitHubProvider();
-      return { auth: github, git: github, templates: createTemplateRepository(engine), ai: new HttpAiDeckService(), ...override };
+      return { auth: github, git: github, templates: createTemplateRepository(engine), ai: new UnifiedAiService(engine), ...override };
     },
     [engine, override],
   );

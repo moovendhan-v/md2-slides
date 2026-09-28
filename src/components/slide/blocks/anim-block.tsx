@@ -110,12 +110,14 @@ export function AnimBlock({ block }: { block: Block }) {
     return isNaN(n) ? 40 : n;
   }, [speedArg]);
 
-  const rawRows = block.rows ?? (block.text ? block.text.split("\n").filter((r) => r.trim().length > 0) : []);
+  const rawRows = useMemo(() => {
+    return block.rows ?? (block.text ? block.text.split("\n").filter((r) => r.trim().length > 0) : []);
+  }, [block.rows, block.text]);
   const items: AnimItem[] = useMemo(() => rawRows.map(parseRow), [rawRows]);
   const textContent = block.text || rawRows.join(" ");
 
   // Typewriter hook
-  const { displayed, isDone } = useTypewriter(textContent, speedMs, loop);
+  const { displayed } = useTypewriter(textContent, speedMs, loop);
 
   // Determine template style wrapper
   const templateClasses = useMemo(() => {
