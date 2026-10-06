@@ -8,7 +8,7 @@ transition: slide
 
 <!-- layout: center -->
 ^ md2slides
-# Write Markdown. Present like a designer.
+# Write Markdown. Present like a designer...
 One .md file is one deck, versioned in Git.
 
 ---
