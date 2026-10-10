@@ -1,0 +1,7 @@
+{
+  "name": "Sprint review",
+  "description": "Show what the team shipped this sprint, the numbers, demos and what comes next.",
+  "category": "Engineering",
+  "author": { "github": "moovendhan-v", "name": "Moovendhan V" },
+  "look": { "theme": "slate", "accent": "#34d399", "bg": "grid" }
+}
