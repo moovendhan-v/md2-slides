@@ -3,6 +3,7 @@ import type { AiDeckService, AiHealth, DeckDraft, GenerateOptions } from "./type
 import { RemoteAiProvider } from "./remote-provider";
 import { LocalAiDeckService } from "./local-provider";
 import { useAi } from "@/stores/ai";
+import { ENABLE_LOCAL_AI } from "@/services/local-ai";
 
 export class UnifiedAiService implements AiDeckService {
   private remote: RemoteAiProvider;
@@ -27,7 +28,7 @@ export class UnifiedAiService implements AiDeckService {
 
   async generate(prompt: string, opts?: GenerateOptions): Promise<DeckDraft> {
     const selectedProvider = opts?.provider ?? useAi.getState().provider;
-    if (selectedProvider === "local") {
+    if (ENABLE_LOCAL_AI && selectedProvider === "local") {
       return this.local.generate(prompt, opts);
     }
     return this.remote.generate(prompt, opts);
@@ -35,9 +36,10 @@ export class UnifiedAiService implements AiDeckService {
 
   async health(): Promise<AiHealth> {
     const selectedProvider = useAi.getState().provider;
-    if (selectedProvider === "local") {
+    if (ENABLE_LOCAL_AI && selectedProvider === "local") {
       return this.local.health();
     }
     return this.remote.health();
   }
 }
+

@@ -13,6 +13,7 @@ import { useUi } from "@/stores/ui";
 import { useWorkspace } from "@/stores/workspace";
 import { useDeck } from "@/app-shell/deck-context";
 import { getSlideContext, getDeckOutline } from "@/services/local-ai/prompts/context";
+import { ENABLE_LOCAL_AI } from "@/services/local-ai";
 
 export const AI_STEPS = [
   "Preparing context & syntax",
@@ -81,7 +82,7 @@ export function useAiGenerate() {
       try {
         draft = await ai.generate(prompt || "Process slide", {
           slides: st.count,
-          provider: st.provider,
+          provider: ENABLE_LOCAL_AI ? st.provider : "remote",
           modelId: st.localModelId,
           task: st.task,
           slideContent: currentSlideContent,

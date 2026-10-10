@@ -13,6 +13,7 @@ import { useEngine } from "@/engine/provider";
 import { cn } from "@/lib/utils";
 import { useAi, type AiTarget } from "@/stores/ai";
 import { useUi } from "@/stores/ui";
+import { ENABLE_LOCAL_AI } from "@/services/local-ai";
 import { AI_STEPS, useAiGenerate } from "./use-ai-generate";
 import { AiStatus } from "./ai-status";
 import { AIProviderSelector } from "./AIProviderSelector";
@@ -59,11 +60,12 @@ function Progress() {
         )}
       </div>
       <pre className="h-48 overflow-y-auto rounded-lg bg-zinc-900/80 p-3 font-mono text-[11px] leading-4 whitespace-pre-wrap text-zinc-300 border border-zinc-800">
-        {typed || "Initializing language model runtime..."}
+        {typed || "Generating slides with AI..."}
       </pre>
     </div>
   );
 }
+
 
 function Result() {
   const engine = useEngine();
@@ -115,15 +117,17 @@ export function AiDialog() {
             <Icon name="sparkle" className="text-violet-400" /> AI Slide Assistant
           </DialogTitle>
           <DialogDescription>
-            Generate and refine slides with local browser SLMs or remote cloud endpoints.
+            {ENABLE_LOCAL_AI
+              ? "Generate and refine slides with local browser SLMs or remote cloud endpoints."
+              : "Generate and refine slides with AI."}
           </DialogDescription>
         </DialogHeader>
 
         {st.phase === "idle" && (
           <div className="flex flex-col gap-4">
-            <AIProviderSelector />
+            {ENABLE_LOCAL_AI && <AIProviderSelector />}
 
-            {st.provider === "local" ? (
+            {ENABLE_LOCAL_AI && st.provider === "local" ? (
               <>
                 <ModelDownload />
                 <LocalAIGeneration />
@@ -131,6 +135,7 @@ export function AiDialog() {
             ) : (
               <AiStatus enabled={open} />
             )}
+
 
             {st.task !== "notes" && st.task !== "summarize" && (
               <Textarea

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { DEFAULT_LOCAL_MODEL_ID } from "@/services/local-ai/models";
+import { DEFAULT_LOCAL_MODEL_ID, ENABLE_LOCAL_AI } from "@/services/local-ai";
 import type { LocalAIStatus } from "@/services/local-ai/types";
 import type { AiTaskType } from "@/services/ai/types";
 
@@ -40,7 +40,7 @@ export const useAi = create<AiState>()(
       prompt: "",
       count: 6,
       target: "new",
-      provider: "local",
+      provider: ENABLE_LOCAL_AI ? "local" : "remote",
       localModelId: DEFAULT_LOCAL_MODEL_ID,
       task: "deck",
       improveMode: "concise",
@@ -61,13 +61,21 @@ export const useAi = create<AiState>()(
     {
       name: "md2slides-ai-settings",
       partialize: (state) => ({
-        provider: state.provider,
+        provider: ENABLE_LOCAL_AI ? state.provider : "remote",
         localModelId: state.localModelId,
         count: state.count,
         target: state.target,
         task: state.task,
         improveMode: state.improveMode,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state && (!ENABLE_LOCAL_AI || state.provider === "local")) {
+          if (!ENABLE_LOCAL_AI) {
+            state.provider = "remote";
+          }
+        }
+      },
     },
   ),
 );
+

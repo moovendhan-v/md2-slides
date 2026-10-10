@@ -4,8 +4,16 @@ import { Icon } from "@/components/common/icon";
 import { cn } from "@/lib/utils";
 import { useAi } from "@/stores/ai";
 import { useLocalAi } from "@/hooks/use-local-ai";
+import { ENABLE_LOCAL_AI } from "@/services/local-ai";
 
 export function AIProviderSelector() {
+  if (!ENABLE_LOCAL_AI) {
+    return null;
+  }
+  return <AIProviderSelectorContent />;
+}
+
+function AIProviderSelectorContent() {
   const provider = useAi((s) => s.provider);
   const setAi = useAi((s) => s.set);
   const { isWebGpuSupported, status } = useLocalAi();

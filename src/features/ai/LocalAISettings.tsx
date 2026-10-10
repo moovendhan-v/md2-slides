@@ -3,8 +3,16 @@
 import { Icon } from "@/components/common/icon";
 import { ModelDownload } from "./ModelDownload";
 import { useLocalAi } from "@/hooks/use-local-ai";
+import { ENABLE_LOCAL_AI } from "@/services/local-ai";
 
 export function LocalAISettings() {
+  if (!ENABLE_LOCAL_AI) {
+    return null;
+  }
+  return <LocalAISettingsContent />;
+}
+
+function LocalAISettingsContent() {
   const { isWebGpuSupported } = useLocalAi();
 
   return (

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { getLocalAIClient } from "@/services/local-ai/worker-client";
-import { LOCAL_MODELS, getModelConfig, DEFAULT_LOCAL_MODEL_ID } from "@/services/local-ai/models";
+import { LOCAL_MODELS, getModelConfig, DEFAULT_LOCAL_MODEL_ID, ENABLE_LOCAL_AI } from "@/services/local-ai";
 import type {
   LocalAIModelConfig,
   LocalAIProgress,
@@ -15,11 +15,12 @@ import { useAi } from "@/stores/ai";
 export function useLocalAi() {
   const localModelId = useAi((s) => s.localModelId);
   const setAiStore = useAi((s) => s.set);
-  const [status, setStatus] = useState<LocalAIStatus>(() => getLocalAIClient().getStatus());
+  const [status, setStatus] = useState<LocalAIStatus>(() => (ENABLE_LOCAL_AI ? getLocalAIClient().getStatus() : { state: "uninitialized" }));
   const [cachedModels, setCachedModels] = useState<Record<string, boolean>>({});
   const [isWebGpuSupported, setIsWebGpuSupported] = useState<boolean | null>(null);
 
   useEffect(() => {
+    if (!ENABLE_LOCAL_AI) return;
     const client = getLocalAIClient();
     const unsub = client.subscribeStatus((newStatus) => {
       setStatus(newStatus);
@@ -36,6 +37,7 @@ export function useLocalAi() {
 
   // Check cache for available models
   const refreshCacheStatus = useCallback(async () => {
+    if (!ENABLE_LOCAL_AI) return;
     const client = getLocalAIClient();
     const map: Record<string, boolean> = {};
     for (const model of LOCAL_MODELS) {
@@ -48,6 +50,7 @@ export function useLocalAi() {
     }
     setCachedModels(map);
   }, []);
+
 
   useEffect(() => {
     refreshCacheStatus();
