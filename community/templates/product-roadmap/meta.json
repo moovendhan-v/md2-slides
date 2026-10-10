@@ -1,0 +1,7 @@
+{
+  "name": "Product roadmap",
+  "description": "Share where the product is going: vision, themes, a quarterly timeline and what's not planned.",
+  "category": "Product",
+  "author": { "github": "moovendhan-v", "name": "Moovendhan V" },
+  "look": { "theme": "night", "accent": "#60a5fa", "bg": "mesh" }
+}

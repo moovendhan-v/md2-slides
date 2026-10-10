@@ -1,0 +1,7 @@
+{
+  "name": "Tech talk",
+  "description": "A conference or meetup talk: the problem, a code walkthrough, an architecture diagram and takeaways.",
+  "category": "Engineering",
+  "author": { "github": "moovendhan-v", "name": "Moovendhan V" },
+  "look": { "theme": "zinc", "accent": "#fbbf24", "bg": "dots", "font": "mono" }
+}

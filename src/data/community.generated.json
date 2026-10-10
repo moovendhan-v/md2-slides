@@ -30,6 +30,72 @@
         "theme": "zinc",
         "accent": "#f87171"
       }
+    },
+    {
+      "id": "community-product-roadmap",
+      "name": "Product roadmap",
+      "description": "Share where the product is going: vision, themes, a quarterly timeline and what's not planned.",
+      "cat": "Product",
+      "author": "Moovendhan V",
+      "authorGithub": "moovendhan-v",
+      "md": "---\nproduct: Relay\nyear: 2027\n---\n<!-- layout: center -->\n^ Roadmap ${year}\n# Where ${product} is going\nOur bets for the next four quarters.\n\n---\n\n## The vision\n\n> Every team ships a change in minutes, not days.\n— ${product} product team\n\n---\n\n## Three themes\n\n:::cards style=accent cols=3\n- lightning | Speed | Cut the time from commit to production\n- users | Collaboration | Review and comment in one place\n- lock | Trust | Audit logs and SSO for every plan\n:::\n\nNote: Every item on the next slide maps to one of these themes.\n\n---\n\n## Timeline\n\n:::timeline style=h\n- Q1 | Faster builds and caching\n- Q2 | Inline review comments\n- Q3 | SSO and audit logs?\n- Q4 | Self-hosted runners?\n:::\n\n---\n\n## How we measure it\n\n:::stats style=bar\n- 5 min | Median deploy time | -60%\n- 80% | Weekly active teams | +15%\n- 99.95% | Uptime | +0.05%\n:::\n\n---\n\n## Not on the roadmap\n\n- Mobile apps in ${year}\n- On-premise installs before Q4\n- A plugin marketplace\n\nNote: Saying no out loud stops the same requests coming back every week.\n\n---\n\n<!-- layout: statement -->\n# Tell us what we missed\n",
+      "stars": 0,
+      "community": true,
+      "look": {
+        "theme": "night",
+        "accent": "#60a5fa",
+        "bg": "mesh"
+      }
+    },
+    {
+      "id": "community-sprint-review",
+      "name": "Sprint review",
+      "description": "Show what the team shipped this sprint, the numbers, demos and what comes next.",
+      "cat": "Engineering",
+      "author": "Moovendhan V",
+      "authorGithub": "moovendhan-v",
+      "md": "---\nteam: Platform\nsprint: 24\n---\n<!-- layout: center -->\n^ ${team} team · Sprint ${sprint}\n# What we shipped\nTwo weeks, one goal: faster deploys.\n\n---\n\n## Sprint goal met\n\n:::stats style=boxed\n- 11 / 12 | Stories done | +3\n- 34 | Points delivered | +6\n- 2 | Bugs carried over | -4\n:::\n\nNote: Call out the one story that slipped and why.\n\n---\n\n## Shipped\n\n:::cards style=iconLeft cols=2\n- rocket | Preview deploys | Every PR gets its own URL\n- clock | Build cache | CI time down from 9 to 4 minutes\n- shield-check | Secret scanning | Blocks pushes with leaked keys\n- chart-line-up | Deploy dashboard | Live status for every service\n:::\n\n---\n\n## Demo\n\n:::terminal zsh\n$ deploy preview --pr 482\nBuilding… done in 38s\nPreview ready → https://pr-482.preview.dev\n:::\n\nNote: Run the live demo here; fall back to the recording if wifi drops.\n\n---\n\n## What we learned\n\n- [x] Pairing on the cache work saved a week\n- [x] Small PRs got reviewed same day\n- [ ] Flaky e2e tests still cost us time\n\n---\n\n## Next sprint\n\n:::timeline style=h\n- Week 1 | Fix flaky e2e tests\n- Week 1 | Roll out preview deploys to all repos\n- Week 2 | Canary releases?\n:::\n\n---\n\n<!-- layout: statement -->\n# Questions and feedback welcome\n",
+      "stars": 0,
+      "community": true,
+      "look": {
+        "theme": "slate",
+        "accent": "#34d399",
+        "bg": "grid"
+      }
+    },
+    {
+      "id": "community-startup-pitch",
+      "name": "Startup pitch",
+      "description": "A short investor pitch: problem, solution, market, traction, team and the ask.",
+      "cat": "Business",
+      "author": "Moovendhan V",
+      "authorGithub": "moovendhan-v",
+      "md": "---\ncompany: Acme\nraise: $2M seed\n---\n<!-- layout: center -->\n^ ${company}\n# Bookkeeping that does itself\nFor freelancers who hate spreadsheets.\n\n---\n\n## The problem\n\n- Freelancers spend 5 hours a month on bookkeeping\n- Tax season means a shoebox of receipts\n- Accounting tools are built for accountants\n\nNote: Open with a story about a real customer.\n\n---\n\n## Our solution\n\n:::flow style=pipeline\n- receipt | Snap | Photo of any receipt\n- sparkle | Sort | Categorised automatically\n- check | File | Tax-ready reports\n:::\n\n---\n\n## Market\n\n:::flow style=funnel\n- TAM | 70M freelancers worldwide\n- SAM | 12M in English-speaking markets\n- SOM | 300k in three years\n:::\n\n---\n\n## Traction\n\n:::chart style=line\n- Jan | 120\n- Mar | 480\n- May | 1300\n- Jul | 3100\n:::\n\nPaying users, growing 40% month over month.\n\n---\n\n## Team\n\n:::cards style=glass cols=3\n- user | Founder, CEO | Ex-fintech product lead\n- code | Founder, CTO | Built payments at scale\n- chart-line-up | Head of Growth | Grew two apps to 1M users\n:::\n\n---\n\n<!-- layout: statement -->\n^ The ask\n# Raising ${raise}\n18 months of runway to reach 50k paying users.\n",
+      "stars": 0,
+      "community": true,
+      "look": {
+        "theme": "stone",
+        "accent": "#f472b6",
+        "bg": "spotlight",
+        "font": "editorial"
+      }
+    },
+    {
+      "id": "community-tech-talk",
+      "name": "Tech talk",
+      "description": "A conference or meetup talk: the problem, a code walkthrough, an architecture diagram and takeaways.",
+      "cat": "Engineering",
+      "author": "Moovendhan V",
+      "authorGithub": "moovendhan-v",
+      "md": "---\nspeaker: Your Name\nevent: DevConf\n---\n<!-- layout: center -->\n^ ${event}\n# Caching without tears\nHow we cut API latency by 70%. ${speaker}\n\n---\n\n## The problem\n\n:::stats style=big\n- 900 ms | p99 latency\n- 40% | Requests that hit the DB twice\n:::\n\nNote: Ask the room who has seen numbers like this.\n\n---\n\n## The architecture\n\n```mermaid\nflowchart LR\n  C[Client] --> A[API]\n  A --> R[(Redis)]\n  A --> D[(Postgres)]\n  R -. miss .-> D\n```\n\n---\n\n## Read-through cache\n\n```ts cache.ts {1|2-3|4-6}\nexport async function getUser(id: string) {\n  const hit = await redis.get(\"user:\" + id);\n  if (hit) return JSON.parse(hit);\n  const user = await db.user.find(id);\n  await redis.set(\"user:\" + id, JSON.stringify(user), \"EX\", 300);\n  return user;\n}\n```\n\nNote: Step through: lookup, hit path, then miss path and write-back.\n\n---\n\n## Gotchas\n\n> [!WARNING] Invalidate on write, or users will see stale data for up to 5 minutes.\n\n- Stampedes when a hot key expires\n- Cache keys that change between releases\n- Caching errors by accident\n\n---\n\n## Results\n\n:::chart style=column ms\n- Before | 900\n- Week 1 | 420\n- Week 4 | 270\n:::\n\n---\n\n## Takeaways\n\n:::cards style=numbered cols=3\n- check | Measure first | Find the hot paths\n- check | Cache reads | Invalidate on writes\n- check | Watch hit rate | Alert when it drops\n:::\n\n---\n\n<!-- layout: center -->\n# Thank you\nSlides and code: github.com/your-name/caching-talk\n",
+      "stars": 0,
+      "community": true,
+      "look": {
+        "theme": "zinc",
+        "accent": "#fbbf24",
+        "bg": "dots",
+        "font": "mono"
+      }
     }
   ],
   "contributors": [
@@ -37,7 +103,7 @@
       "github": "moovendhan-v",
       "name": "Moovendhan V",
       "role": "Creator & maintainer",
-      "templates": 2
+      "templates": 6
     }
   ]
 }
