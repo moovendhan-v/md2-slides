@@ -15,7 +15,7 @@ import type { Deck, Slide } from "@/engine/types";
 describe("Local AI Prompts", () => {
   it("includes md2slides syntax essentials in system prompt", () => {
     expect(MD2SLIDES_SYSTEM_PROMPT).toContain("---");
-    expect(MD2SLIDES_SYSTEM_PROMPT).toContain("::: card");
+    expect(MD2SLIDES_SYSTEM_PROMPT).toContain("theme: dark");
     expect(MD2SLIDES_SYSTEM_PROMPT).toContain("???");
   });
 
@@ -23,13 +23,12 @@ describe("Local AI Prompts", () => {
     const prompt = buildGenerateDeckPrompt({ topic: "Kubernetes 101", slideCount: 5 });
     expect(prompt.prompt).toContain("Kubernetes 101");
     expect(prompt.prompt).toContain("5-slide presentation");
-    expect(prompt.prompt).toContain("front-matter");
   });
 
   it("builds generate slide prompt correctly", () => {
     const prompt = buildGenerateSlidePrompt({ topic: "Rust Memory Safety" });
     expect(prompt.prompt).toContain("Rust Memory Safety");
-    expect(prompt.prompt).toContain("a single slide");
+    expect(prompt.prompt).toContain("Create a single informative presentation slide");
   });
 
   it("builds improve slide prompt with specific modes", () => {

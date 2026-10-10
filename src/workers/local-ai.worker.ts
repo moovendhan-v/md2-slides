@@ -235,7 +235,13 @@ self.onmessage = async (e: MessageEvent<WorkerInMessage>) => {
           temperature: msg.temperature ?? 0.6,
           max_tokens: msg.maxTokens ?? 2048,
           top_p: msg.topP ?? 0.95,
+          repetition_penalty: 1.18,
+          frequency_penalty: 0.15,
+          presence_penalty: 0.15,
+          stop: ["<|im_end|>", "<|endoftext|>", "</s>", "\n---\n---\n"],
         });
+
+        let consecutiveDashes = 0;
 
         for await (const chunk of stream) {
           if (activeAbortController?.signal.aborted) {
@@ -245,6 +251,15 @@ self.onmessage = async (e: MessageEvent<WorkerInMessage>) => {
           if (delta) {
             accumulatedText += delta;
             tokenCount++;
+
+            // Break runaway repetition of slide separators
+            if (delta.includes("---")) {
+              consecutiveDashes++;
+              if (consecutiveDashes > 2) break;
+            } else if (delta.trim().length > 0) {
+              consecutiveDashes = 0;
+            }
+
             self.postMessage({
               type: "TOKEN",
               requestId: msg.requestId,
