@@ -1,0 +1,15 @@
+{
+  "name": "Roadmap rail",
+  "description": "Numbered milestones on a horizontal rail, from a timeline or list.",
+  "category": "Timeline",
+  "author": {
+    "github": "moovendhan-v",
+    "name": "Moovendhan"
+  },
+  "slots": [
+    "kicker",
+    "title",
+    "body",
+    "items[title,text]"
+  ]
+}
