@@ -1,0 +1,15 @@
+{
+  "name": "Category Hub",
+  "description": "Big headline left, rounded image right with accent glow.",
+  "category": "Navigation",
+  "author": {
+    "github": "moovendhan-ops",
+    "name": "moovendhan-ops"
+  },
+  "slots": [
+    "title",
+    "kicker",
+    "items[icon,title]",
+    "image"
+  ]
+}

@@ -1,3 +1,14 @@
 [
-  { "github": "moovendhan-v", "name": "Moovendhan V", "role": "Creator & maintainer" }
+  {
+    "github": "moovendhan-v",
+    "name": "Moovendhan V",
+    "role": "Creator & maintainer"
+  },
+  {
+    "github": "moovendhan-ops",
+    "name": "moovendhan-ops",
+    "role": "Template author",
+    "bio": "Slide creator and open-source enthusiast.",
+    "color": "#3b82f6"
+  }
 ]
