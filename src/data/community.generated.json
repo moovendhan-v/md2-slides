@@ -833,6 +833,34 @@
       }
     },
     {
+      "id": "community-hero-split-grid",
+      "name": "Category Hub",
+      "description": "Floating frosted-glass modal grid over an illuminated dark backdrop for category selection and tech portals.",
+      "cat": "Navigation",
+      "author": "moovendhan-ops",
+      "authorGithub": "moovendhan-ops",
+      "md": "<!-- layout: custom:hero-split-grid; image: https://images.unsplash.com/photo-1587202372775-e229f172b9d7?q=80&w=1200&auto=format&fit=crop -->\n^ Cybertechmind\n# Moovendhan v\n\n:::cards\n- printer | Printers | Hardware\n- monitor | Monitors | Displays\n- headphones | Headsets | Audio\n- cloud-arrow-down | Storage | Cloud\n- cpu | Processors | Silicon\n- mouse-simple | Mouse | Peripherals\n:::\n",
+      "stars": 0,
+      "community": true,
+      "look": {},
+      "single": true,
+      "code": true,
+      "html": "<div class=\"relative h-full w-full overflow-hidden flex flex-col items-center justify-between p-10 bg-[#07090e] text-white select-none\">\n  <!-- Background Image or Ambient Glow Backdrop -->\n  {{#image}}\n  <img src=\"{{image}}\" class=\"absolute inset-0 h-full w-full object-cover filter brightness-[0.35] contrast-125\" alt=\"\" />\n  <div class=\"absolute inset-0 bg-gradient-to-t from-[#07090e] via-[#07090e]/40 to-[#07090e]/90\"></div>\n  {{/image}}\n  {{^image}}\n  <div class=\"absolute inset-0 bg-radial from-slate-900 via-[#07090e] to-[#030407]\"></div>\n  <div class=\"absolute -top-24 -left-24 h-96 w-96 rounded-full bg-blue-600/20 blur-[100px] pointer-events-none\"></div>\n  <div class=\"absolute bottom-10 -right-20 h-96 w-96 rounded-full bg-red-500/15 blur-[120px] pointer-events-none\"></div>\n  <div class=\"absolute top-1/2 left-1/3 -translate-y-1/2 h-80 w-80 rounded-full bg-indigo-500/10 blur-[90px] pointer-events-none\"></div>\n  {{/image}}\n\n  <!-- Header -->\n  <div class=\"relative z-10 flex flex-col items-center text-center pt-2\">\n    <h1 class=\"font-head text-4xl sm:text-5xl font-normal tracking-tight text-white drop-shadow-lg\">\n      {{title}}\n    </h1>\n    {{#kicker}}\n    <span class=\"mt-2 text-[11px] font-semibold tracking-[0.28em] uppercase text-zinc-400\">\n      {{kicker}}\n    </span>\n    {{/kicker}}\n  </div>\n\n  <!-- Center Floating Frosted Glass Card -->\n  <div class=\"relative z-10 my-auto w-full max-w-lg rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 sm:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] backdrop-blur-2xl\">\n    <div class=\"grid grid-cols-3 gap-x-6 gap-y-9 place-items-center\">\n      {{#items}}\n      <div class=\"group flex flex-col items-center justify-center gap-3 text-center cursor-pointer transition-all duration-200 hover:-translate-y-1\">\n        <div class=\"flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.03] text-3xl text-zinc-200 transition-colors group-hover:bg-white/[0.08] group-hover:text-white\">\n          <i class=\"ph {{icon}}\"></i>\n        </div>\n        <span class=\"text-xs font-medium tracking-wide text-zinc-300 transition-colors group-hover:text-white\">\n          {{title}}\n        </span>\n      </div>\n      {{/items}}\n    </div>\n  </div>\n</div>\n",
+      "config": {
+        "id": "hero-split-grid",
+        "name": "Category Hub",
+        "category": "Navigation",
+        "author": "moovendhan-ops",
+        "slots": [
+          "title",
+          "kicker",
+          "items[icon,title]",
+          "image"
+        ],
+        "description": "Floating frosted-glass modal grid over an illuminated dark backdrop for category selection and tech portals."
+      }
+    },
+    {
       "id": "community-icon-grid",
       "name": "Icon grid",
       "description": "Six features in a clean 3x2 grid with tinted icon tiles.",
@@ -2138,6 +2166,17 @@
       "bio": "Creator of md2slides. Focused on developer tooling, Markdown architectures, and interactive slide engines.",
       "website": "https://github.com/moovendhan-v",
       "sponsor": "https://github.com/sponsors/moovendhan-v",
+      "color": "#3b82f6"
+    },
+    {
+      "categories": [
+        "Navigation"
+      ],
+      "templates": 1,
+      "github": "moovendhan-ops",
+      "name": "moovendhan-ops",
+      "role": "Template author",
+      "bio": "Slide creator and open-source enthusiast.",
       "color": "#3b82f6"
     }
   ]
