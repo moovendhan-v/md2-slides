@@ -10,6 +10,7 @@ import { splitKey, useWorkspace } from "@/stores/workspace";
 import { useEditor } from "@/stores/editor";
 import { pref, useSession } from "@/stores/session";
 import { useDebounced } from "@/hooks/use-debounced";
+import { suggestLayouts, useLayoutStore } from "@/stores/layouts";
 
 export interface ActiveDeck {
   key: string;
@@ -59,6 +60,18 @@ export function DeckProvider({ children }: { children: ReactNode }) {
       }
       return engine.parse(text).slides.map((x) => ({ ...x, startLine: sl.startLine, titleLine: sl.startLine, imported: rel }));
     });
+    // Flag `custom:` layouts nobody registered (they render as a regular slide), with a suggestion.
+    const layouts = useLayoutStore.getState().layouts;
+    for (const sl of deck.slides) {
+      const id = sl.layout.startsWith("custom:") ? sl.layout.slice(7) : "";
+      if (!id || layouts[id]) continue;
+      const near = suggestLayouts(id, layouts);
+      deck.problems.push({
+        line: sl.startLine,
+        sev: "warn",
+        msg: `Unknown layout custom:${id}${near.length ? ` — did you mean ${near.map((n) => `custom:${n}`).join(", ")}?` : ""}`,
+      });
+    }
     const options = deckOptions(deck.meta);
     return { deck: paginate(deck, options), source: deck, options, look: buildLook(options) };
   }, [engine, src, repo, path]);

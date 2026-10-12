@@ -12,6 +12,7 @@ import { MediaLayer } from "./media-layer";
 import { CustomLayout } from "./custom-layout";
 import { SlideChrome } from "./slide-chrome";
 import { useFitToSlide } from "./use-fit";
+import { useLayoutStore } from "@/stores/layouts";
 
 interface Props {
   slide: Slide;
@@ -30,6 +31,8 @@ export const SlideView = memo(function SlideView({ slide, index, total, look, op
   const hasBlocks = slide.groups.some((g) => g.length);
   const clicksOn = slide.dir.clicks ? slide.dir.clicks !== "false" : look.clicks;
   const { ref, fit } = useFitToSlide([slide, look, f], f.zoom);
+  // An unknown `custom:` layout falls back to the regular slide instead of rendering nothing.
+  const customId = useLayoutStore((s) => (f.customId && (opts.layouts?.[f.customId] ?? s.layouts[f.customId]) ? f.customId : null));
   return (
     <div style={{ containerType: "inline-size", width: "100%" }}>
       <div
@@ -42,12 +45,12 @@ export const SlideView = memo(function SlideView({ slide, index, total, look, op
       >
         {look.bar && <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: ".45cqw", minHeight: 2, background: look.accent }} />}
         {f.media && <MediaLayer m={f.media} look={look} onPick={opts.edit && opts.onMedia ? () => opts.onMedia?.(index) : undefined} />}
-        {f.customId && <CustomLayout id={f.customId} slide={slide} look={look} overrides={opts.layouts} />}
+        {customId && <CustomLayout id={customId} slide={slide} look={look} overrides={opts.layouts} />}
         <BlockEnvProvider value={env}>
           <div
             ref={ref}
             style={{
-              position: "absolute", inset: 0, pointerEvents: "none", zoom: f.zoom * fit, padding: f.pad, display: f.customId ? "none" : "flex", flexDirection: "column",
+              position: "absolute", inset: 0, pointerEvents: "none", zoom: f.zoom * fit, padding: f.pad, display: customId ? "none" : "flex", flexDirection: "column",
               justifyContent: f.justify, alignItems: f.align, textAlign: f.textAlign, gap: look.gap,
             }}
           >
